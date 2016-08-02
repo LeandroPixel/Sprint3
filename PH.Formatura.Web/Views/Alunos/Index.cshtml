@@ -1,0 +1,138 @@
+﻿@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+    ViewBag.Title = HttpContext.Current.Application["Site_Name"] + " | Alunos";
+
+    ViewBag.MinCSS = HttpContext.Current.Application["MIN_CSS"].ToString() == "1" ? ".min" : "";
+    ViewBag.MinJS = HttpContext.Current.Application["MIN_JS"].ToString() == "1" ? ".min" : "";
+    ViewBag.VersaoCSS = HttpContext.Current.Application["VERSAO_CSS"].ToString();
+    ViewBag.VersaoJS = HttpContext.Current.Application["VERSAO_JS"].ToString();
+    ViewBag.MinCSS_FRAMEWORK = HttpContext.Current.Application["MIN_CSS_FRAMEWORK"].ToString() == "1" ? ".min" : "";
+    ViewBag.MinJS_FRAMEWORK = HttpContext.Current.Application["MIN_JS_FRAMEWORK"].ToString() == "1" ? ".min" : "";
+
+    ViewBag.Breadcrumb = new Dictionary<string, string>();
+    ViewBag.Breadcrumb.Add("Painel Administrativo", Url.Action("Index", "Painel"));
+    ViewBag.Breadcrumb.Add("Alunos", "");
+    
+    var Url_API_Lista_Alunos = Url.Action("List", "api/Alunos");
+
+    List<PH.Formatura.DTO.Aluno.Status> Status = (List<PH.Formatura.DTO.Aluno.Status>)ViewBag.Status;
+}
+@section CSSHeader{
+    <link rel="stylesheet" href="~/Content/css/framework/jquery.datetimepicker@(ViewBag.MinCSS_FRAMEWORK).css" />   
+	<link rel="stylesheet" href="~/Content/bootstrap-table-master/src/bootstrap-table@(ViewBag.MinCSS_FRAMEWORK).css?v=@(ViewBag.VersaoCSS)">
+	<link rel="stylesheet" href="~/Content/css/aluno@(ViewBag.MinCSS).css?v=@(ViewBag.VersaoCSS)" />    
+    <link rel="stylesheet" href="~/Content/css/aluno_responsivo@(ViewBag.MinCSS).css?v=@(ViewBag.VersaoCSS)" />
+}
+@section ScriptHeader{
+    <script type="text/javascript" src="~/Content/js/framework/jquery.datetimepicker.full@(ViewBag.MinJS_FRAMEWORK).js"></script>
+	<script type="text/javascript" src="~/Content/bootstrap-table-master/src/bootstrap-table@(ViewBag.MinJS_FRAMEWORK).js?v=@(ViewBag.VersaoJS)"></script>
+	<script type="text/javascript" src="~/Content/bootstrap-table-master/src/locale/bootstrap-table-pt-BR@(ViewBag.MinJS).js?v=@(ViewBag.VersaoJS)"></script>
+	<script type="text/javascript" src="~/Content/js/aluno@(ViewBag.MinJS).js?v=@(ViewBag.VersaoJS)"></script>   
+    <script>    
+        var cookie_user_name = "@System.Web.HttpContext.Current.Application["Cookie_User_Offline"].ToString()";     
+        var ListStatus = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(Status));    
+        var Url_API_Lista_Alunos = "@(Url_API_Lista_Alunos)";
+    </script>
+}
+<section id="section-principal">    
+	<div class="conteudo-geral">                
+		<div class="conteudo-alunos mdl-tabs mdl-js-tabs mdl-js-ripple-effect">
+            <nav class="menu-tipo-pessoa mdl-navigation mdl-tabs__tab-bar">
+				<a href="#div-alunos-list" class="mdl-tabs__tab is-active">Alunos Cadastrados</a>				
+			</nav>
+
+            <div class="mdl-tabs__panel is-active" id="div-alunos-list">
+                <table id="table-alunos-list"
+					data-toggle="table"
+					data-locale="pt-BR"
+					data-url="@(Url_API_Lista_Alunos)"          
+                    data-ajax-options="oUtil.GetConfigAjaxBootstrapTable"          
+					data-sort-name="Usuario_Tipo"
+					data-sort-order="asc"
+					data-show-refresh="true"
+					data-show-toggle="false"
+					data-show-columns="false"
+					data-search="true"
+                    data-trim-on-search="false"
+					data-pagination="true"
+					data-page-size="5"
+					data-page-list="[5,10,20]"
+                    class="CustomTable">
+					<thead>
+						<tr>
+                            <th data-sortable="false" data-field="AlunoID" data-switchable="false" data-card-visible="false" data-visible="false">AlunoID</th>
+                            <th data-sortable="false" data-field="AlunoTurmaID" data-switchable="false" data-card-visible="false" data-visible="false">AlunoTurmaID</th>                            
+                            <th data-sortable="false" data-field="VendedorID" data-switchable="false" data-card-visible="false" data-visible="false">VendedorID</th>
+                            <th data-sortable="false" data-field="TurmaID" data-switchable="false" data-card-visible="false" data-visible="false" class="thQtd">TurmaID</th>
+                            <th data-sortable="false" data-field="StatusIDAgendamento" data-switchable="false" data-card-visible="false" data-visible="false">StatusIDAgendamento</th>                            
+                            <th data-sortable="false" data-field="AlbumID" data-switchable="false" data-card-visible="false" data-visible="false">AlbumID</th>                            
+							<th data-sortable="true" data-field="NomeTurma" data-visible="false">Turma</th>
+                            <th data-sortable="true" data-field="CodigoCP7">ID Formando</th>	
+                            <th data-sortable="true" data-field="PIT">PIT</th>                            
+                            <th data-sortable="true" data-field="DtAssociaVendedor" data-formatter="oUtil.FormatDate2">Dt Associa Vend.</th>
+							<th data-sortable="true" data-field="NomeAluno" data-formatter="oAluno.BtnDetalhes" class="thAluno">ALUNO</th>							
+                            <th data-sortable="true" data-field="TelefoneAluno" data-visible="false">Telefone</th>			
+                            <th data-sortable="true" data-field="EnderecoAluno" data-visible="false">Endereço</th>	
+                            <!--<th data-sortable="true" data-field="DataAgendamento" data-formatter="oAluno.Data_Agendamento" class="thData">DATA AGENDAMENTO</th>
+                            <th data-sortable="true" data-field="StatusAgendamento" data-formatter="oAluno.Status" class="thStatus">STATUS</th>-->
+                            <th data-sortable="true" data-field="QtdFotosAcervo">Qtd Fotos Acervo</th>
+                            <th data-sortable="true" data-field="QtdFotos" class="thQtd">QTD. FOTOS</th>	                               
+                            <th data-sortable="true" data-field="AlunoTurmaID_Cript" data-switchable="false" data-card-visible="false" data-formatter="oAluno.BtnVisualizarFotos" class="thProduto">Projetos</th>	                               
+                            <th data-sortable="true" data-formatter="oAluno.BtnSync" class="thSync">SINCRONIZAÇÃO</th>	                               
+						</tr>
+					</thead>
+				</table>
+            </div>
+
+            <div class="mdl-tabs__panel" id="div-alunos-new">
+                Cadastrar Novo
+            </div>
+        </div>        
+    </div>
+</section>
+
+<!-- MODAL -->
+<div id="div-dados-sync" class="modal fade" role="dialog">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal">&times;</button>
+				<h4 class="modal-title"><i class="material-icons ">error</i> Atenção</h4>
+			</div>
+			<div class="modal-body">				
+                <p>Identificamos que você sincronizou esse aluno</p>
+                <p>Para visualizar os produtos desse usuário é necessário remover os dados sincronizados</p>
+                <p>Deseja continuar mesmo assim?</p>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+				<button type="button" class="btn btn-default btn-ok" data-dismiss="modal">Continuar</button>				
+			</div>
+		</div>
+	</div>
+</div>
+<!-- /MODAL -->
+
+<!-- MODAL -->
+<div id="div-dados-agendamento" class="modal fade" role="dialog">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal">&times;</button>
+				<h4 class="modal-title"><i class="material-icons ">error</i> Atenção</h4>
+			</div>
+			<div class="modal-body">				
+                <p>Identificamos que esse aluno está com status "Visitado".</p>
+                <p>Ao agendar esse aluno o status será alterado para "Agendado".</p>
+                <p>Deseja continuar mesmo assim?</p>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-default btn-close" data-dismiss="modal">Cancelar</button>
+				<button type="button" class="btn btn-default btn-ok" data-dismiss="modal">Continuar</button>				
+			</div>
+		</div>
+	</div>
+</div>
+<!-- /MODAL -->
+

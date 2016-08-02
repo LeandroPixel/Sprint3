@@ -1,0 +1,72 @@
+﻿
+@{
+    ViewBag.Title = "PedidosPendentes";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewBag.Title = HttpContext.Current.Application["Site_Name"] + " | Pedidos Pendentes";
+
+    ViewBag.MinCSS = HttpContext.Current.Application["MIN_CSS"].ToString() == "1" ? ".min" : "";
+    ViewBag.MinJS = HttpContext.Current.Application["MIN_JS"].ToString() == "1" ? ".min" : "";
+    ViewBag.VersaoCSS = HttpContext.Current.Application["VERSAO_CSS"].ToString();
+    ViewBag.VersaoJS = HttpContext.Current.Application["VERSAO_JS"].ToString();
+
+    ViewBag.Breadcrumb = new Dictionary<string, string>();
+    ViewBag.Breadcrumb.Add("Painel Administrativo", "javascript:oOffline.RedirectUrlONorOFF('" + Url.Action("Index", "Painel") + "','" + Url.Action("Painel", "Offline") + "')");
+    ViewBag.Breadcrumb.Add("Pedidos Pendentes", "");
+
+    PH.Formatura.DTO.User _User = (ViewData["_User"] != null) ? (PH.Formatura.DTO.User)ViewData["_User"] : null;
+
+    ViewBag.MenuAcoes = "<a href='javascript:oOffline.Logout()' title='Deslogar' class='ancora-logout'>Sair</a>";
+
+    List<PH.Formatura.DTO.Checkout.TipoPgto> TipoPgto = (List<PH.Formatura.DTO.Checkout.TipoPgto>)ViewBag.TipoPgto;   
+}
+@section CSSHeader{
+    <link rel="stylesheet" href="~/Content/bootstrap-table-master/src/bootstrap-table@(ViewBag.MinCSS_FRAMEWORK).css?v=@(ViewBag.VersaoCSS)">
+}
+@section ScriptHeader{
+    <script>
+        var cookie_user_name = "@System.Web.HttpContext.Current.Application["Cookie_User_Offline"].ToString()"; 
+        var listTipoPgto = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(TipoPgto));    
+    </script>
+    <script type="text/javascript" src="~/Content/bootstrap-table-master/src/bootstrap-table@(ViewBag.MinJS_FRAMEWORK).js?v=@(ViewBag.VersaoJS)"></script>
+	<script type="text/javascript" src="~/Content/bootstrap-table-master/src/locale/bootstrap-table-pt-BR@(ViewBag.MinJS_FRAMEWORK).js?v=@(ViewBag.VersaoJS)"></script>    
+    <script type="text/javascript" src="~/Content/js/checkout_classes@(ViewBag.MinJS).js?v=@(ViewBag.VersaoJS)"></script>
+    <script type="text/javascript" src="~/Content/js/pedidos-pendentes@(ViewBag.MinJS).js?v=@(ViewBag.VersaoJS)"></script>
+}
+<section id="section-principal">
+	<div class="conteudo-geral">                
+		<div class="conteudo-alunos mdl-tabs mdl-js-tabs mdl-js-ripple-effect">
+            <nav class="menu-tipo-pessoa mdl-navigation mdl-tabs__tab-bar">
+				<a href="#div-alunos-list" class="mdl-tabs__tab is-active">Pedidos Pendentes</a>				
+			</nav>
+
+            <div class="mdl-tabs__panel is-active" id="div-pedidos-list">
+                <table id="table-pedidos-list"					
+					data-locale="pt-BR"					                           					
+					data-sort-order="asc"
+					data-show-refresh="false"
+					data-show-toggle="false"
+					data-show-columns="true"
+					data-search="true"
+					data-pagination="true"
+					data-page-size="5"
+					data-page-list="[5,10,20]">
+					<thead>
+						<tr>                         
+                            <th data-sortable="false" data-field="ID" data-switchable="false" data-card-visible="false" data-visible="false">ID</th>                                                        
+                            <th data-sortable="false" data-field="" data-formatter="oPedidosPendentes.GetAlunoTurmaID" data-switchable="false" data-card-visible="false" class="hidden">AlunoTurmaID</th>                                                        
+							<th data-sortable="true" data-field="NomeAluno">NomeAluno</th>
+							<th data-sortable="true" data-field="CodTurma">CodTurma</th>							
+                            <th data-sortable="true" data-field="Data">Data Pedido</th>			
+                            <th data-sortable="true" data-field="StatusSync">Status Sync</th>	
+                            <th data-sortable="true" data-field="" data-formatter="oPedidosPendentes.GetTipo">Tipo</th>	
+                            <th data-sortable="true" data-field="" data-formatter="oPedidosPendentes.GetValor">Valor</th>	
+                            <th data-sortable="true" data-field="DataConclusaoSync">Data ConclusaoSync</th>	        
+                            <th data-sortable="true" data-field="NumTentativasSync">Numero Tentativas Sync</th>	   
+                            <th data-sortable="true" data-field="" data-switchable="false" data-card-visible="false" data-formatter="oPedidosPendentes.BtnEnviarPedido">Enviar Pedido</th>
+						</tr>
+					</thead>
+				</table>
+            </div>
+        </div>        
+    </div>
+</section>

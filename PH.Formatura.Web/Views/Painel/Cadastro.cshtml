@@ -1,0 +1,325 @@
+﻿@{
+	ViewBag.Title = HttpContext.Current.Application["Site_Name"] + " | Cadastros";
+
+	ViewBag.MinCSS = HttpContext.Current.Application["MIN_CSS"].ToString() == "1" ? ".min" : "";
+	ViewBag.MinJS = HttpContext.Current.Application["MIN_JS"].ToString() == "1" ? ".min" : "";
+	ViewBag.VersaoCSS = HttpContext.Current.Application["VERSAO_CSS"].ToString();
+	ViewBag.VersaoJS = HttpContext.Current.Application["VERSAO_JS"].ToString();
+	ViewBag.MinCSS_FRAMEWORK = HttpContext.Current.Application["MIN_CSS_FRAMEWORK"].ToString() == "1" ? ".min" : "";
+	ViewBag.MinJS_FRAMEWORK = HttpContext.Current.Application["MIN_JS_FRAMEWORK"].ToString() == "1" ? ".min" : "";
+
+	ViewBag.Breadcrumb = new Dictionary<string, string>();
+	ViewBag.Breadcrumb.Add("Painel Administrativo", Url.Action("Index"));
+	ViewBag.Breadcrumb.Add("Cadastro", "");
+
+	Layout = "~/Views/Shared/_Layout.cshtml";
+
+	var ListaEmpresasCadastroPJ = (List<PH.Formatura.DTO.ListaEmpresasCadastroPJ>)Model;
+	var Url_API_Lista_Usuarios_Cadastrados = Url.Action("UsuariosCadastrados", "api/Painel");
+
+	Dictionary<string, string> Estados = new Dictionary<string, string>();
+	Estados.Add("AC", "Acre");
+	Estados.Add("AL", "Alagoas");
+	Estados.Add("AP", "Amapá");
+	Estados.Add("AM", "Amazonas");
+	Estados.Add("BA", "Bahia");
+	Estados.Add("CE", "Ceará");
+	Estados.Add("DF", "Distrito Federal");
+	Estados.Add("ES", "Espírito Santo");
+	Estados.Add("GO", "Goiás");
+	Estados.Add("MA", "Maranhão");
+	Estados.Add("MT", "Mato Grosso");
+	Estados.Add("MS", "Mato Grosso do Sul");
+	Estados.Add("MG", "Minas Gerais");
+	Estados.Add("PA", "Pará");
+	Estados.Add("PB", "Paraíba");
+	Estados.Add("PR", "Paraná");
+	Estados.Add("PE", "Pernambuco");
+	Estados.Add("PI", "Piauí");
+	Estados.Add("RJ", "Rio de Janeiro");
+	Estados.Add("RN", "Rio Grande do Norte");
+	Estados.Add("RS", "Rio Grande do Sul");
+	Estados.Add("RO", "Rondônia");
+	Estados.Add("RR", "Roraima");
+	Estados.Add("SC", "Santa Catarina");
+	Estados.Add("SP", "São Paulo");
+	Estados.Add("SE", "Sergipe");
+	Estados.Add("TO", "Tocantins");
+}
+@section CSSHeader{
+	<link rel="stylesheet" href="~/Content/bootstrap-table-master/src/bootstrap-table@(ViewBag.MinCSS_FRAMEWORK).css?v=@(ViewBag.VersaoCSS)">
+	<link rel="stylesheet" href="~/Content/css/cadastro@(ViewBag.MinCSS).css?v=@(ViewBag.VersaoCSS)" />
+}
+@section ScriptHeader{
+	<script type="text/javascript" src="~/Content/bootstrap-table-master/src/bootstrap-table@(ViewBag.MinJS_FRAMEWORK).js?v=@(ViewBag.VersaoJS)"></script>
+	<script type="text/javascript" src="~/Content/bootstrap-table-master/src/locale/bootstrap-table-pt-BR@(ViewBag.MinJS).js?v=@(ViewBag.VersaoJS)"></script>
+	<script type="text/javascript" src="~/Content/js/cadastro@(ViewBag.MinJS).js?v=@(ViewBag.VersaoJS)"></script>
+}
+
+<section id="section-principal">
+	<div class="conteudo-geral">
+		<div class="conteudo-cadastrar mdl-tabs mdl-js-tabs mdl-js-ripple-effect">
+			<nav class="menu-tipo-pessoa mdl-navigation mdl-tabs__tab-bar">
+				<a href="#div-pessoa-juridica" class="mdl-tabs__tab is-active">Pessoa Jurídica</a>
+				<a href="#div-pessoa-fisica" class="mdl-tabs__tab">Pessoa Física</a>
+				<div class="mdl-layout-spacer"></div>
+				<a href="#div-usuarios-cadastrados" class="mdl-tabs__tab btn-usuarios-cadatrados">Usuários Cadastrados</a>@*mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect*@
+			</nav>
+			<div class="div-pessoa-juridica mdl-tabs__panel is-active" id="div-pessoa-juridica">
+				<form class="form-pessoa-juridica">
+					<div class="etapa-1">
+					<br />
+					<h3>Dados da empresa</h3>
+					<hr />
+					<div class="mdl-cell--12-col">
+						<select name="grdCompanyId" id="grdCompanyId" class="sbx-empresas-pj">
+							<option value="" selected>Nova empresa</option>
+							@{
+								foreach (var item in ListaEmpresasCadastroPJ)
+								{
+									<option value="@item.grdCompanyId">@item.Nome.ToUpper()</option>
+								}
+							}
+						</select>
+						<br />
+						<div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label mdl-cell--4-col">
+							<input class="mdl-textfield__input" type="text" id="tbxNomePessoaJuridica" name="tbxNomePessoaJuridica" />
+							<label class="mdl-textfield__label" for="tbxNomePessoaJuridica">Nome da empresa</label>
+						</div>
+						<div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label mdl-cell--5-col">
+							<input class="mdl-textfield__input" type="text" id="tbxRazaoSocial" name="tbxRazaoSocial" />
+							<label class="mdl-textfield__label" for="tbxRazaoSocial">Razão Social</label>
+						</div>
+						<div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label mdl-cell--3-col">
+							<input class="mdl-textfield__input" type="text" id="tbxCnpj" name="tbxCnpj" title="Somente números" pattern="-?[0-9]*(\.[0-9]+)?" maxlength="14" minlength="14" />
+							<label class="mdl-textfield__label" for="tbxCnpj">CNPJ</label>
+							<span class="mdl-textfield__error">Informe um CNPJ válido</span>
+						</div>
+						<div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label mdl-cell--4-col">
+							<input class="mdl-textfield__input" type="text" id="tbxSite" name="tbxSite" />
+							<label class="mdl-textfield__label" for="tbxSite">Site</label>
+						</div>
+						<div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label mdl-cell--4-col">
+							<input class="mdl-textfield__input" type="text" id="tbxFacebook" name="tbxFacebook" />
+							<label class="mdl-textfield__label" for="tbxFacebook">Facebook</label>
+						</div>
+						<div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label mdl-cell--4-col">
+							<input class="mdl-textfield__input" type="tel" id="tbxTelefone" name="tbxTelefone" title="Somente números" pattern="-?[0-9]*(\.[0-9]+)?" maxlength="11" minlength="10"/>
+							<label class="mdl-textfield__label" for="tbxTelefone">Telefone</label>
+							<span class="mdl-textfield__error">Informe um Telefone válido</span>
+						</div>
+						<div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label mdl-cell--6-col">
+							<input class="mdl-textfield__input" type="text" id="tbxInscricaoEstadual" name="tbxInscricaoEstadual" title="Somente números" pattern="-?[0-9]*(\.[0-9]+)?" maxlength="20" minlength="4"/>
+							<label class="mdl-textfield__label" for="tbxInscricaoEstadual">Inscrição Estadual</label>
+							<span class="mdl-textfield__error">Informe uma Inscrição Estadual válida</span>
+						</div>
+						<div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label mdl-cell--6-col">
+							<input class="mdl-textfield__input" type="text" id="tbxInscricaoMunicipal" name="tbxInscricaoMunicipal" title="Somente números" pattern="-?[0-9]*(\.[0-9]+)?" maxlength="20" minlength="4"/>
+							<label class="mdl-textfield__label" for="tbxInscricaoMunicipal">Inscrição Municipal</label>
+							<span class="mdl-textfield__error">Informe uma Inscrição Municipal válida</span>
+						</div>
+						<div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label mdl-cell--4-col">
+							<input class="mdl-textfield__input" type="text" id="tbxCepPessoaJuridica" name="tbxCepPessoaJuridica" title="Somente números" pattern="-?[0-9]*(\.[0-9]+)?" maxlength="8" minlength="8"/>
+							<label class="mdl-textfield__label" for="tbxCepPessoaJuridica">CEP</label>
+							<span class="mdl-textfield__error">Informe um CEP válido</span>
+						</div>
+						<div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label mdl-cell--6-col">
+							<input class="mdl-textfield__input" type="text" id="tbxEnderecoPessoaJuridica" name="tbxEnderecoPessoaJuridica" />
+							<label class="mdl-textfield__label" for="tbxEnderecoPessoaJuridica">Endereço</label>
+						</div>
+						<div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label mdl-cell--2-col">
+							<input class="mdl-textfield__input" type="text" id="tbxNumeroPessoaJuridica" name="tbxNumeroPessoaJuridica" />
+							<label class="mdl-textfield__label" for="tbxNumeroPessoaJuridica">Número</label>
+						</div>
+						<div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label mdl-cell--4-col">
+							<input class="mdl-textfield__input" type="text" id="tbxComplementoPessoaJuridica" name="tbxComplementoPessoaJuridica" />
+							<label class="mdl-textfield__label" for="tbxComplementoPessoaJuridica">Complemento</label>
+						</div>
+						<div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label mdl-cell--4-col">
+							<input class="mdl-textfield__input" type="text" id="tbxBairroPessoaJuridica" name="tbxBairroPessoaJuridica" />
+							<label class="mdl-textfield__label" for="tbxBairroPessoaJuridica">Bairro</label>
+						</div>
+						<div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label mdl-cell--2-col">
+							<input class="mdl-textfield__input" type="text" id="tbxCidadePessoaJuridica" name="tbxCidadePessoaJuridica" />
+							<label class="mdl-textfield__label" for="tbxCidadePessoaJuridica">Cidade</label>
+						</div>
+						<div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label mdl-cell--2-col">
+							<label class="mdl-selectfield__label" for="tbxEstadoPessoaJuridica">Estado:</label>
+							<select name="tbxEstadoPessoaJuridica" id="tbxEstadoPessoaJuridica" class="" >
+								<option value="" selected>Selecione</option>
+								@{
+									foreach (var Estado in Estados)
+									{
+										<option value="@Estado.Key">@Estado.Value</option>
+									}
+								}
+							</select>
+						</div>
+					</div>
+				</div>
+					<div class="etapa-2">
+					<br />
+					<h3>Dados do usuário</h3>
+					<hr />
+					<div class="mdl-cell--12-col">
+						<div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label mdl-cell--6-col">
+							<input class="mdl-textfield__input" type="text" id="tbxNomeUsuario" name="tbxNomeUsuario" />
+							<label class="mdl-textfield__label" for="tbxNomeUsuario">Nome</label>
+						</div>
+						<div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label mdl-cell--3-col">
+							<input class="mdl-textfield__input" type="text" id="tbxNascimentoUsuario" name="tbxNascimentoUsuario" />
+							<label class="mdl-textfield__label" for="tbxNascimentoUsuario">Nascimento</label>
+						</div>
+						<div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label mdl-cell--3-col">
+							<label class="mdl-selectfield__label" for="tbxSexoPJUsuario">Sexo:</label>
+							<select name="tbxSexoPJUsuario" id="tbxSexoPJUsuario" class="" >
+								<option value="" selected>Selecione</option>
+								<option value="MASCULINO">Masculino</option>
+								<option value="FEMININO">Feminio</option>
+							</select>
+						</div>
+						<div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label mdl-cell--6-col">
+							<input class="mdl-textfield__input" type="email" id="tbxEmailUsuario" name="tbxEmailUsuario" />
+							<label class="mdl-textfield__label" for="tbxEmailUsuario">E-mail</label>
+						</div>
+						<div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label mdl-cell--3-col">
+							<input class="mdl-textfield__input" type="password" id="tbxSenhaUsuario" name="tbxSenhaUsuario" />
+							<label class="mdl-textfield__label" for="tbxSenhaUsuario">Senha</label>
+						</div>
+						<div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label mdl-cell--3-col">
+							<input class="mdl-textfield__input" type="password" id="tbxSenhaConfirmacaoUsuario" name="tbxSenhaConfirmacaoUsuario" />
+							<label class="mdl-textfield__label" for="tbxSenhaConfirmacaoUsuario">Confirmação de Senha</label>
+						</div>
+					</div>
+					
+				</div>
+					<button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored btn-cadastrar-pessoa-juridica">Cadastrar</button>
+					<div class="div-erro-cadastro-pessoa-juridica"></div>
+				</form>
+			</div>
+			<div class="div-pessoa-fisica mdl-tabs__panel" id="div-pessoa-fisica">
+				<form class="form-pessoa-fisica">
+					<div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label mdl-cell--8-col">
+						<input class="mdl-textfield__input" type="text" id="tbxNomePessoaFisica" name="tbxNomePessoaFisica"  />
+						<label class="mdl-textfield__label" for="tbxNomePessoaFisica">Nome</label>
+					</div>
+					<div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label mdl-cell--4-col">
+						<input class="mdl-textfield__input" type="text" id="tbxCpfPessoaFisica" name="tbxCpfPessoaFisica" title="Somente números" pattern="-?[0-9]*(\.[0-9]+)?" maxlength="11" minlength="11"/>
+						<label class="mdl-textfield__label" for="tbxCpfPessoaFisica">CPF</label>
+						<span class="mdl-textfield__error">Informe um CPF válido</span>
+					</div>
+					<div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label mdl-cell--4-col">
+						<input class="mdl-textfield__input" type="text" id="tbxRgPessoaFisica" name="tbxRgPessoaFisica" title="Somente números" pattern="-?[0-9]*(\.[0-9]+)?" maxlength="15" minlength="6" />
+						<label class="mdl-textfield__label" for="tbxRgPessoaFisica">RG</label>
+						<span class="mdl-textfield__error">Informe um RG válido</span>
+					</div>
+					<div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label mdl-cell--4-col">
+						<input class="mdl-textfield__input" type="text" id="tbxEmissorPessoaFisica" name="tbxEmissorPessoaFisica" />
+						<label class="mdl-textfield__label" for="tbxEmissorPessoaFisica">Orgão Emissor</label>
+					</div>
+					<div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label mdl-cell--4-col">
+						<input class="mdl-textfield__input" type="text" id="tbxDataEmissaoRgPessoaFisica" name="tbxDataEmissaoRgPessoaFisica" />
+						<label class="mdl-textfield__label" for="tbxDataEmissaoRgPessoaFisica">Data de Emissão</label>
+					</div>
+					<div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label mdl-cell--4-col">
+						<input class="mdl-textfield__input" type="tel" id="tbxTelefonePessoaFisica" name="tbxTelefonePessoaFisica" title="Somente números" pattern="-?[0-9]*(\.[0-9]+)?" maxlength="11" minlength="10" />
+						<label class="mdl-textfield__label" for="tbxTelefonePessoaFisica">Telefone</label>
+						<span class="mdl-textfield__error">Informe um Telefone válido</span>
+					</div>
+					<div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label mdl-cell--4-col">
+						<input class="mdl-textfield__input" type="text" id="tbxNascimentoPessoaFisica" name="tbxNascimentoPessoaFisica" />
+						<label class="mdl-textfield__label" for="tbxNascimentoPessoaFisica">Nascimento</label>
+					</div>
+					<div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label mdl-cell--4-col">
+						<label class="mdl-selectfield__label" for="tbxSexoPessoaFisica">Sexo:</label>
+						<select name="tbxSexoPessoaFisica" id="tbxSexoPessoaFisica" class="" >
+							<option value="" selected>Selecione</option>
+							<option value="MASCULINO">Masculino</option>
+							<option value="FEMININO">Feminio</option>
+						</select>
+					</div>
+					<div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label mdl-cell--6-col">
+						<input class="mdl-textfield__input" type="text" id="tbxEmailPessoaFisica" name="tbxEmailPessoaFisica" />
+						<label class="mdl-textfield__label" for="tbxEmailPessoaFisica">E-mail</label>
+					</div>
+					<div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label mdl-cell--3-col">
+						<input class="mdl-textfield__input" type="password" id="tbxSenhaPessoaFisica" name="tbxSenhaPessoaFisica" />
+						<label class="mdl-textfield__label" for="tbxSenhaPessoaFisica">Senha</label>
+					</div>
+					<div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label mdl-cell--3-col">
+						<input class="mdl-textfield__input" type="password" id="tbxSenhaConfirmacaoPessoaFisica" name="tbxSenhaConfirmacaoPessoaFisica" />
+						<label class="mdl-textfield__label" for="tbxSenhaConfirmacaoPessoaFisica">Confirmação de senha</label>
+					</div>
+					<div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label mdl-cell--4-col">
+						<input class="mdl-textfield__input" type="text" id="tbxCepPessoaFisica" name="tbxCepPessoaFisica" title="Somente números" pattern="-?[0-9]*(\.[0-9]+)?" maxlength="8" minlength="8" />
+						<label class="mdl-textfield__label" for="tbxCepPessoaFisica">CEP</label>
+						<span class="mdl-textfield__error">Informe um CEP válido</span>
+					</div>
+					<div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label mdl-cell--6-col">
+						<input class="mdl-textfield__input" type="text" id="tbxEnderecoPessoaFisica" name="tbxEnderecoPessoaFisica" />
+						<label class="mdl-textfield__label" for="tbxEnderecoPessoaFisica">Endereço</label>
+					</div>
+					<div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label mdl-cell--2-col">
+						<input class="mdl-textfield__input" type="text" id="tbxNumeroPessoaFisica" name="tbxNumeroPessoaFisica" />
+						<label class="mdl-textfield__label" for="tbxNumeroPessoaFisica">Número</label>
+					</div>
+					<div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label mdl-cell--4-col">
+						<input class="mdl-textfield__input" type="text" id="tbxComplementoPessoaFisica" name="tbxComplementoPessoaFisica" />
+						<label class="mdl-textfield__label" for="tbxComplementoPessoaFisica">Complemento</label>
+					</div>
+					<div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label mdl-cell--4-col">
+						<input class="mdl-textfield__input" type="text" id="tbxBairroPessoaFisica" name="tbxBairroPessoaFisica" />
+						<label class="mdl-textfield__label" for="tbxBairroPessoaFisica">Bairro</label>
+					</div>
+					<div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label mdl-cell--2-col">
+						<input class="mdl-textfield__input" type="text" id="tbxCidadePessoaFisica" name="tbxCidadePessoaFisica" />
+						<label class="mdl-textfield__label" for="tbxCidadePessoaFisica">Cidade</label>
+					</div>
+					<div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label mdl-cell--2-col">
+						<label class="mdl-selectfield__label" for="tbxEstadoPessoaFisica">Estado:</label>
+						<select name="tbxEstadoPessoaFisica" id="tbxEstadoPessoaFisica" class="" >
+							<option value="" selected>Selecione</option>
+							@{
+								foreach (var Estado in Estados)
+								{
+									<option value="@Estado.Key">@Estado.Value</option>
+								}
+							}
+						</select>
+					</div>
+				</form>
+				<button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored btn-cadastrar-pessoa-fisica">Cadastrar</button>
+				<div class="div-erro-cadastro-pessoa-fisica"></div>
+			</div>
+			<div class="div-usuarios-cadastrados mdl-tabs__panel" id="div-usuarios-cadastrados">
+				<table id=""
+					data-toggle="table"
+					data-locale="pt-BR"
+					data-url="@(Url_API_Lista_Usuarios_Cadastrados)"
+                    data-ajax-options="oUtil.GetConfigAjaxBootstrapTable"         
+					data-sort-name="Usuario_Tipo"
+					data-sort-order="asc"
+					data-show-refresh="true"
+					data-show-toggle="true"
+					data-show-columns="true"
+					data-search="true"
+                    data-trim-on-search="false"
+					data-pagination="true"
+					data-page-size="5"
+					data-page-list="[5,10,20]"
+					class="tabela-padrao">
+					<thead>
+						<tr>
+							<th data-sortable="true" class="" data-field="Usuario_Tipo">Tipo</th>
+							<th data-sortable="true" class="" data-field="Empresa">Empresa</th>
+							<th data-sortable="true" class="" data-field="Usuario_Nome">Nome do usuário</th>
+							<th data-sortable="true" class="" data-field="Usuario_Email">Email</th>
+							<th data-sortable="true" class="" data-field="Usuario_Telefone">Telefone</th>
+							<th data-sortable="true" class="" data-field="Usuario_UltimoAcesso">Último acesso</th>
+						</tr>
+					</thead>
+				</table>
+			</div>
+		</div>
+	</div>
+</section>

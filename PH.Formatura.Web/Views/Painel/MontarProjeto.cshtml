@@ -1,0 +1,90 @@
+﻿@{
+	Layout = "~/Views/Shared/_Layout.cshtml";
+	ViewBag.Title = HttpContext.Current.Application["Site_Name"] + " | Montar projeto";
+	ViewBag.MinCSS = HttpContext.Current.Application["MIN_CSS"].ToString() == "1" ? ".min" : "";
+	ViewBag.MinJS = HttpContext.Current.Application["MIN_JS"].ToString() == "1" ? ".min" : "";
+	ViewBag.VersaoCSS = HttpContext.Current.Application["VERSAO_CSS"].ToString();
+	ViewBag.VersaoJS = HttpContext.Current.Application["VERSAO_JS"].ToString();
+
+	var ModeloDadosProdutos = (List<PH.Formatura.DTO.MontarProjetoDadosProdutos>)Model;
+
+	ViewBag.Breadcrumb = new Dictionary<string, string>();
+	ViewBag.Breadcrumb.Add("Painel Administrativo", Url.Action("Index"));
+	ViewBag.Breadcrumb.Add("Montar projeto", "");
+}
+@section CSSHeader{
+	<link rel="stylesheet" href="~/Content/css/montar-projeto@(ViewBag.MinCSS).css?v=@(ViewBag.VersaoCSS)" />
+}
+@section ScriptHeader{
+	<script type="text/javascript" src="~/Content/js/montar-projeto@(ViewBag.MinJS).js?v=@(ViewBag.VersaoJS)"></script>
+	<script type="text/javascript">var DadosProjetosEmAndamento = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(ModeloDadosProdutos))</script>
+}
+
+<section id="section-principal">
+	<div class="conteudo-geral">
+		<div class="conteudo-produtos">
+			<table class="tabela-padrao table-produtos">
+				<thead>
+					@{
+						if (ModeloDadosProdutos.Count == 0)
+						{
+							<tr>
+								<th>
+									<span style="text-align: center;">Nenhum dado encontrado</span>
+								</th>
+							</tr>
+						}
+						else
+						{
+							<tr>
+								<th>Produto</th>
+								<th colspan="2">Páginas</th>
+								<th>Par de páginas extras</th>
+								<th>Preço (a partir de)</th>
+								<th>Ações</th>
+							</tr>
+							<tr>
+								<th></th>
+								<th>Mínimo</th>
+								<th>Máximo</th>
+								<th></th>
+								<th></th>
+								<th></th>
+							</tr>
+						}
+					}
+				</thead>
+				<tbody>
+					@foreach (var item in ModeloDadosProdutos)
+					{
+						<tr>
+							<td>
+								@item.Descricao
+							</td>
+							<td>
+								@item.Paginas_Min
+							</td>
+							<td>
+								@item.Paginas_Max
+							</td>
+							<td>
+								@(item.Paginas_Extra_Preco.HasValue ? item.Paginas_Extra_Preco.Value.ToString("C", System.Globalization.CultureInfo.CreateSpecificCulture("pt-BR")) : "-")
+							</td>
+							<td>
+								@item.Preco.ToString("C", System.Globalization.CultureInfo.CreateSpecificCulture("pt-BR"))
+							</td>
+							<td>
+								<a href="~/Painel/MontarProjetoModulo/?PhotobookLineID=@item.photos_capacity&product_id=@item.Product_ID&DefaultNumPages=@item.Paginas_Default&shelfPhotobookID=@item.shelfPhotobookID" target="_blank" class="ancora-acao ancora-acao-montar ancora-acao-btn" title="Montar">Montar</a>
+								@if(item.Url != null){
+									<a href="@item.Url" class="ancora-acao ancora-acao-gabarito-download" title="Download" download="Gabarito - @item.Descricao" type="application/pdf" >Baixar gabarito</a>
+								}
+							</td>
+						</tr>
+					}
+				</tbody>
+				<tfoot>
+				</tfoot>
+			</table>
+		</div>
+	</div>
+</section>

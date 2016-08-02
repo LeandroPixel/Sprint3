@@ -1,0 +1,136 @@
+﻿@{
+	ViewBag.Title = HttpContext.Current.Application["Site_Name"] + " | Painel";
+	ViewBag.MinCSS = HttpContext.Current.Application["MIN_CSS"].ToString() == "1" ? ".min" : "";
+	ViewBag.MinJS = HttpContext.Current.Application["MIN_JS"].ToString() == "1" ? ".min" : "";
+	ViewBag.VersaoCSS = HttpContext.Current.Application["VERSAO_CSS"].ToString();
+	ViewBag.VersaoJS = HttpContext.Current.Application["VERSAO_JS"].ToString();
+	PH.Formatura.DTO.User _User = (ViewData["_User"] != null) ? (PH.Formatura.DTO.User)ViewData["_User"] : null;
+    string keyPixel = (ViewData["keyPixel"] != null) ? (string)ViewData["keyPixel"] : "";
+        
+	Layout = "~/Views/Shared/_Layout.cshtml";
+
+   
+	ViewBag.Breadcrumb = new Dictionary<string, string>();
+    ViewBag.Breadcrumb.Add("Painel Administrativo", "javascript:oOffline.RedirectUrlONorOFF('"+ Url.Action("Index", "Painel") +"','" + Url.Action("Painel", "Offline") + "')");
+    ViewBag.Breadcrumb.Add("Alunos", Url.Action("Alunos", "Offline"));
+    ViewBag.Breadcrumb.Add("Produtos", "");
+
+    ViewBag.MenuAcoes = "<a href='javascript:oOffline.Logout()' title='Deslogar' class='ancora-logout'>Sair</a>";
+		
+		
+}
+@section CSSHeader{
+    <link rel="stylesheet" href="~/Content/css/produtos@(ViewBag.MinCSS).css?v=@(ViewBag.VersaoCSS)" />
+    <link rel="stylesheet" href="~/Content/css/framework/bootstrap-select@(ViewBag.MinCSS).css" />
+}
+@section ScriptHeader{
+    <script>
+        var cookie_user_name = "@System.Web.HttpContext.Current.Application["Cookie_User_Offline"].ToString()";
+        var urlCART = "@System.Web.HttpContext.Current.Application["CARRINHO_URLCP7"].ToString()"; 
+    </script>
+
+    <script type="text/javascript" src="~/Content/js/produtos-offline@(ViewBag.MinJS).js?v=@(ViewBag.VersaoJS)"></script>
+    <script type="text/javascript" src="~/Content/js/framework/bootstrap-select@(ViewBag.MinJS).js"></script>
+}
+
+
+<section id="section-principal">
+    <div class="conteudo-geral">
+
+        <div>
+            <br />
+            <div class="header-products col-md-12">
+                <div class="cont-pacotes">
+                    <select name="pacotes" id="combo-pacotes" data-style="custom-select" class="selectpicker combo-pacote">
+
+                    </select>        
+                    <input type="hidden" id="pacote-id-old" value="" />
+                </div>
+
+                <button class="mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-button--colored btn-eu-quero-header">
+                  <i class="material-icons">shopping_cart</i>
+                </button>
+            </div>
+
+            <div class="list-products col-md-12">
+
+            </div>
+
+            <div class="footer-products col-md-12">
+			<button class='mdl-button mdl-js-button mdl-js-ripple-effect btn-default-border-rounded btn-eu-quero'>Carrinho</button>
+        </div>
+
+    </div>
+
+    </div>
+</section>
+
+<!-- MODAL -->
+<div id="div-min-fotos-modal" class="modal fade" role="dialog">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal">&times;</button>
+				<h4 class="modal-title"><i class="material-icons">error</i> Atenção</h4>
+			</div>
+			<div class="modal-body">				
+                <p> A quantidade mínima de fotos para o produto:</p>
+                <p> <span class="produtoName"></span> é <span id="QtdMinFoto">0</span> foto(s).</p>
+                <p> Para prosseguir é necessário selecionar as fotos para esse produto.</p>
+			</div>
+			<div class="modal-footer">				
+				<button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>		
+                <button type="button" class="btn btn-default btn-validar-fotos">Selecionar Fotos</button>				
+			</div>
+		</div>
+	</div>
+</div>
+<!-- /MODAL -->
+
+<!-- MODAL -->
+<div id="div-max-fotos-modal" class="modal fade" role="dialog">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal">&times;</button>
+				<h4 class="modal-title"><i class="material-icons">error</i> Atenção</h4>
+			</div>
+			<div class="modal-body">				
+                <p> A quantidade máxima de foto para o produto:</p>
+                <p><span class="produtoName"></span> é <span id="QtdMaxFoto">0</span> foto(s).</p>
+                <p> Para prosseguir é necessário selecionar as fotos para esse produto.</p>
+			</div>
+			<div class="modal-footer">				
+                <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+				<button type="button" class="btn btn-default btn-validar-fotos">Selecionar Foto</button>				
+			</div>
+		</div>
+	</div>
+</div>
+<!-- /MODAL -->
+
+<!-- MODAL -->
+<div id="div-info-change-pacote-modal" class="modal fade" role="dialog">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal">&times;</button>
+				<h4 class="modal-title"><i class="material-icons ico-warning">warning</i> Atenção</h4>
+			</div>
+			<div class="modal-body">				
+                <p> Ao alterar o pacote os produtos selecionados serão desmarcados</p>                
+                <p> Deseja continuar?</p>
+			</div>
+			<div class="modal-footer">				
+                <button type="button" class="btn btn-default btn-close" data-dismiss="modal">Cancelar</button>				
+                <button type="button" class="btn btn-default btn-ok" >Continuar</button>				
+			</div>
+		</div>
+	</div>
+</div>
+<!-- /MODAL -->
+
+<div class="zoom-container">
+    <div class="dvfechar" id="btnFechar"></div>
+    <div class="cont-img"></div>    
+</div>

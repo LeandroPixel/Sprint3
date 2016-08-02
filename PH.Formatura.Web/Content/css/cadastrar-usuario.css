@@ -1,0 +1,8 @@
+﻿.form-cadastrar-usuario.ativo .btn-confirma-cadastro {
+	color: transparent;
+	/*background-image: url('http://isrv.pixelhouse.com.br/albuns/images/loader-btn.gif');*/
+    background-image: url(../images/loader-btn.gif);
+	background-repeat: no-repeat;
+	background-position: center center;
+	background-color: #286090;
+}

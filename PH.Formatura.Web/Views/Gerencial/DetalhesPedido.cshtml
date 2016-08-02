@@ -1,0 +1,350 @@
+﻿@{    
+	Layout = "~/Views/Shared/_Layout.cshtml";
+
+	ViewBag.Title = HttpContext.Current.Application["Site_Name"] + " | Pedidos";
+
+	ViewBag.MinCSS = HttpContext.Current.Application["MIN_CSS"].ToString() == "1" ? ".min" : "";
+	ViewBag.MinJS = HttpContext.Current.Application["MIN_JS"].ToString() == "1" ? ".min" : "";
+	ViewBag.VersaoCSS = HttpContext.Current.Application["VERSAO_CSS"].ToString();
+	ViewBag.VersaoJS = HttpContext.Current.Application["VERSAO_JS"].ToString();
+	ViewBag.MinCSS_FRAMEWORK = HttpContext.Current.Application["MIN_CSS_FRAMEWORK"].ToString() == "1" ? ".min" : "";
+	ViewBag.MinJS_FRAMEWORK = HttpContext.Current.Application["MIN_JS_FRAMEWORK"].ToString() == "1" ? ".min" : "";
+
+	ViewBag.Breadcrumb = new Dictionary<string, string>();
+	ViewBag.Breadcrumb.Add("Painel Administrativo", Url.Action("Index", "Painel"));
+    ViewBag.Breadcrumb.Add("Pedidos", Url.Action("Pedidos", "Gerencial"));
+	ViewBag.Breadcrumb.Add("Detalhes do pedido", "");
+    
+    string orderID = ViewBag.OrderID;
+
+    var Url_API_Lista_Fotos_Pedidos = Url.Action("ListFotosPedido/" + Url.Encode("?OrderID=" + orderID), "api/Gerencial");
+    var FotosPedido = ViewBag.FotosPedido;
+    var VendasPedido = ViewBag.VendasPedido;
+    var ParcelasPedido = ViewBag.ParcelasPedido;
+    var ItensPedido = ViewBag.ItensPedido;
+    
+}
+@section CSSHeader{
+	<link rel="stylesheet" href="~/Content/bootstrap-table-master/src/bootstrap-table@(ViewBag.MinCSS_FRAMEWORK).css?v=@(ViewBag.VersaoCSS)" />
+	<link rel="stylesheet" href="~/Content/css/detalhesPedido@(ViewBag.MinCSS_FRAMEWORK).css?v=@(ViewBag.VersaoCSS)" />
+}
+@section ScriptHeader{
+	<script type="text/javascript" src="~/Content/bootstrap-table-master/src/bootstrap-table@(ViewBag.MinJS_FRAMEWORK).js?v=@(ViewBag.VersaoJS)"></script>
+	<script type="text/javascript" src="~/Content/bootstrap-table-master/src/locale/bootstrap-table-pt-BR@(ViewBag.MinJS).js?v=@(ViewBag.VersaoJS)"></script>
+	<script type="text/javascript" src="~/Content/js/detalhesPedido@(ViewBag.MinJS).js?v=@(ViewBag.VersaoJS)"></script>   
+    
+
+}
+<section id="section-principal">    
+	<div class="conteudo-geral">                
+		<div class="conteudo-alunos mdl-tabs mdl-js-tabs mdl-js-ripple-effect">
+
+
+
+		<div class="conteudo-alunos mdl-tabs mdl-js-tabs mdl-js-ripple-effect">
+			<nav class="menu-tipo-pessoa mdl-navigation mdl-tabs__tab-bar">
+				<a href="#div-pedidos-list" class="mdl-tabs__tab is-active">Detalhes do pedido</a>				
+			</nav>
+
+            <ul class="nav nav-tabs">
+              <li class="active"><a class="jqOpt" data-ref="#div-fotos-pedidos-list" href="#">Fotos do pedido</a></li>
+              <li ><a class="jqOpt" data-ref="#div-vendas" href="#">Vendas</a></li>
+              <li ><a class="jqOpt" data-ref="#div-parcelas" href="#">Parcelas</a></li>
+              <li ><a class="jqOpt" data-ref="#div-itens" href="#">Itens</a></li>
+            </ul>
+
+			<div class="mdl-tabs__panel is-active" id="div-fotos-pedidos-list">
+				<table class="tabela-padrao">
+					<thead>												
+						<tr>
+                            <th >Chave</th>
+                            <th >ID</th>
+							<th >Data</th>
+							<th >PIT Nome</th>
+							<th >Nome Produto</th>
+							<th >NomeArquivo</th>
+						</tr>
+					</thead>
+                    <tbody>
+
+                        @foreach (var item in FotosPedido)
+                        {
+                            <tr>
+                                <td>
+                                    @item.code
+                                </td>
+
+                                <td>
+                                    @item.PhotoID
+                                </td>
+
+                                <td>
+                                    @item.dt
+                                </td>
+
+                                <td>
+                                    @item.PITNome
+                                </td>
+
+                                <td>
+                                    @item.NomeProduto
+                                </td>
+
+                                <td>
+                                    @item.photo_desc
+                                </td>
+
+                            </tr>
+
+                        }
+
+                    </tbody>
+                </table>
+
+			</div>
+
+            <div class="mdl-tabs__panel" id="div-vendas">
+
+				<table class="tabela-padrao">
+                    @foreach (var item in VendasPedido)
+                    { 
+                    <tr>
+                        <td class="tdDadosVenda">Chave</td>
+                        <td >@item.chave</td>
+                    </tr>
+                    <tr>
+						<td class="tdDadosVenda">Formando</td>
+                        <td >@item.Formando</td>
+					</tr>
+                    <tr> 
+                        <td class="tdDadosVenda">Parcelas</td>
+                        <td >@item.Parcelas</td>
+                    </tr>
+                    <tr> 
+                        <td class="tdDadosVenda">Total</td>
+                        <td >
+                            R$ @PH.Formatura.BLL.Util.Format.Valor((decimal)item.ValorRecebido,null)
+                        </td>
+                    </tr>                        
+                    <tr>
+						<td class="tdDadosVenda">ValeVendedor</td>
+                        <td >@item.ValeVendedor</td>
+                    </tr>
+                    <tr>
+						<td class="tdDadosVenda">ValeEmpresa</td>
+                        <td >@item.ValeEmpresa</td>
+                    </tr>    
+                    <tr>
+                        <td class="tdDadosVenda">Recibo1</td>
+                        <td >@item.Recibo1</td>
+                    </tr>
+                    <tr>
+                        <td class="tdDadosVenda">Recibo2</td>
+                        <td >@item.Recibo2</td>
+                    </tr>
+                    <tr>
+                        <td class="tdDadosVenda">Recibo3</td>
+                        <td >@item.Recibo3</td>
+                    </tr>
+                    <tr>
+                        <td class="tdDadosVenda">NomeContrato</td>
+                        <td >@item.NomeContrato</td>
+                    </tr>
+                    <tr>
+                        <td class="tdDadosVenda">CPF/CNPJ</td>
+                        <td >@item.CpfOuCpnjContrato</td>
+                    </tr>
+                    <tr>
+                        <td class="tdDadosVenda">RG/Contrato</td>
+                        <td >@item.RgOuIeContrato</td>
+					</tr>
+                    
+                    }
+
+                  
+                </table>
+
+			</div>
+
+            <div class="mdl-tabs__panel scroll" id="div-parcelas">
+
+                <div class="panel panel-default">
+                    <div class="panel-heading">Dados do pedido</div>
+                    <div class="panel-body">
+                        <div class="boxDados">
+                            <div class="titulo">Chave</div>
+                            <div class="valor">@ParcelasPedido.First.Chave</div>
+                        </div>  
+                        <div class="boxDados">
+                            <div class="titulo">Formando</div>
+                            <div class="valor">@ParcelasPedido.First.Formando</div>
+                        </div>  
+                    </div>
+                </div>
+
+				<table class="tabela-padrao">
+					<thead>												
+						<tr>
+                            <th >#</th>
+							<th >Vencimento</th>
+							<th >Valor</th>
+							<th >MeioPagamento</th>
+
+                            <th >Banco</th>
+                            <th >Agencia</th>
+                            <th >Ag Dig</th>
+                            <th >Conta</th>
+                            <th >Ct Dig</th>
+                            <th >NumeroCheque</th>
+                            <th >Titular</th>
+                            <th >CPF</th>
+
+                            <th >DataBomPara</th>
+                            <th >Bandeira</th>
+                            <th >Autorização</th>
+                            <th >Nr Parcelas</th>
+                            <th >CodigoBarrasCheque</th>
+                            <th >NossoNumeroBoleto</th>
+						</tr>
+					</thead>
+                    <tbody>
+                        <!--ParcelasPedido-->
+                        @foreach (var item in ParcelasPedido)
+                        {
+                            <tr>
+                                <td>
+                                    @item.Parcela
+                                </td>
+                                <td>
+                                    @item.DataVencimento
+                                </td>
+
+                                <td>
+                                    R$ @PH.Formatura.BLL.Util.Format.Valor((decimal)item.Valor,null)
+                                </td>
+
+                                <td>
+                                    @item.MeioPagamento
+                                </td>
+
+                                <td>
+                                    @item.Banco
+                                </td>
+
+
+                                <td>
+                                    @item.Agencia
+                                </td>
+
+                                <td>
+                                    @item.AgenciaDigito
+                                </td>
+
+                                <td>
+                                    @item.Conta
+                                </td>
+
+                                <td>
+                                    @item.ContaDigito
+                                </td>
+
+                                <td>
+                                    @item.NumeroCheque
+                                </td>
+
+                                <td>
+                                    @item.Titular
+                                </td>
+
+                                <td>
+                                    @item.CPF
+                                </td>
+
+                                <td>
+                                    @item.DataBomPara
+                                </td>
+
+                                <td>
+                                    @item.BandeiraCartao
+                                </td>
+
+                                <td>
+                                    @item.AutorizacaoCartao
+                                </td>
+
+                                <td>
+                                    @item.ParcelasCartao
+                                </td>
+
+                                <td>
+                                    @item.CodigoBarrasCheque
+                                </td>
+
+                                <td>
+                                    @item.NossoNumeroBoleto
+                                </td>
+
+                            </tr>
+
+                        }
+
+                    </tbody>
+                </table>
+
+			</div>
+
+            <div class="mdl-tabs__panel" id="div-itens">
+				<table class="tabela-padrao">
+					<thead>												
+						<tr>
+                            <th >Chave</th>
+							<th >Formando</th>
+							<th >QuantidadeVendida</th>
+							<th >QuantidadeBrinde</th>
+                            <th >ProdutoID</th>
+                            <th >Descricao</th>
+						</tr>
+					</thead>
+                    <tbody>
+
+                        @foreach (var item in ItensPedido)
+                        {
+                            <tr>
+                                <td>
+                                    @item.Chave
+                                </td>
+
+                                <td>
+                                    @item.Formando
+                                </td>
+
+                                <td>
+                                    @item.QuantidadeVendida
+                                </td>
+
+                                <td>
+                                    @item.QuantidadeBrinde
+                                </td>
+
+                                <td>
+                                    @item.ProdutoID
+                                </td>
+
+                                <td>
+                                    @item.Descricao
+                                </td>
+                            </tr>
+
+                        }                       
+
+                    </tbody>
+                </table>
+
+			</div>
+
+		</div>   
+	
+		</div>        
+	</div>
+</section>
+

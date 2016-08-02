@@ -1,0 +1,197 @@
+﻿@{
+	Layout = "~/Views/Shared/_Layout.cshtml";
+	ViewBag.Title = HttpContext.Current.Application["Site_Name"] + " | Validação de Fotos";
+	ViewBag.MinCSS = HttpContext.Current.Application["MIN_CSS"].ToString() == "1" ? ".min" : "";
+	ViewBag.MinJS = HttpContext.Current.Application["MIN_JS"].ToString() == "1" ? ".min" : "";
+	ViewBag.VersaoCSS = HttpContext.Current.Application["VERSAO_CSS"].ToString();
+	ViewBag.VersaoJS = HttpContext.Current.Application["VERSAO_JS"].ToString();
+
+	List<PH.Formatura.DTO.Agendamento.Photo> photos = (List<PH.Formatura.DTO.Agendamento.Photo>)ViewData["photos"];
+
+	ViewBag.Breadcrumb = new Dictionary<string, string>();
+	ViewBag.Breadcrumb.Add("Produtos", "javascript:oPage.EuQuero()");//Url.Action("Index", "Produtos", new { a = ViewData["AlunoTurmaID_Cript"] }));
+	ViewBag.Breadcrumb.Add("Validação das Fotos", "");
+
+	string urlRender = HttpContext.Current.Application["Site_Nicephotos_Img_Render"].ToString();
+	string token = ViewData["Token"].ToString();
+	string albumIDCript = ViewData["AlbumIDCript"].ToString();
+
+	int QtdMinFoto = Convert.ToInt32(ViewData["QtdMinFoto"]);
+	int QtdMaxFoto = Convert.ToInt32(ViewData["QtdMaxFoto"]);
+	decimal PercentDiscard = Convert.ToDecimal(ViewData["PercentDiscard"]);
+	bool minEqualMax = QtdMinFoto == QtdMaxFoto;
+    bool isFirstAcess = Convert.ToBoolean(ViewData["isFirstAcess"]);
+}
+@section CSSHeader{
+	<link rel="stylesheet" href="~/Content/css/agendamento-validacao-fotos@(ViewBag.MinCSS).css?v=@(ViewBag.VersaoCSS)" />
+	<link rel="stylesheet" href="~/Content/css/framework/swiper@(ViewBag.MinCSS).css?v=@(ViewBag.VersaoCSS)" />
+	<link rel="stylesheet" href="~/Content/css/agendamento_responsivo@(ViewBag.MinCSS).css?v=@(ViewBag.VersaoCSS)" />
+}
+@section ScriptHeader{
+	<script type="text/javascript">
+		//oInicial.UrlRetorno =  "@ViewData["UrlRetorno"].ToString()";        
+	</script>
+	<script type="text/javascript" src="~/Content/js/framework/swiper@(ViewBag.MinJS).js?v=@(ViewBag.VersaoJS)"></script>
+	<script type="text/javascript" src="~/Content/js/framework/turn@(ViewBag.MinJS).js?v=@(ViewBag.VersaoJS)"></script>
+    <script type="text/javascript" src="~/Content/js/framework/isotope.pkgd@(ViewBag.MinJS_FRAMEWORK).js"></script>
+	<script type="text/javascript" src="~/Content/js/agendamento-validacao-fotos@(ViewBag.MinJS).js?v=@(ViewBag.VersaoJS)"></script>
+	<script type="text/javascript">
+		var oPhotos = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(photos));
+		var urlRender = "@(urlRender)";
+		var token = "@(token)";
+		var albumIDCript = "@(albumIDCript)";
+		var alunoTurmaID = "@(ViewData["AlunoTurmaID"])";
+		var productID = "@(ViewData["productID"])";
+		var limit_percent_discart = @(PercentDiscard.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture));
+		var qtdMinFoto = @(QtdMinFoto);
+		var qtdMaxFoto = @(QtdMaxFoto);
+	    var urlRetorno = "@ViewData["UrlRetorno"].ToString()";
+	    var isFirstAcess = @(ViewData["isFirstAcess"].ToString().ToLower());
+	</script>
+}
+<div class="page-header-fotos">
+	<div class="dvproduto">
+
+		<h1>
+            @{
+                if (isFirstAcess)
+                {
+                    @("Seleção de fotos para álbum")
+                }else{
+                    @("Produto:" +ViewData["NomeProduto"])        
+                }
+            }
+		</h1>
+	</div>
+	<div class="dvSelecao">
+		@{
+			if (minEqualMax == false)
+			{
+			<div class="resumo-fotos">
+				<a href="#" class="todas active" filtro="todas">TODAS AS FOTOS (<span id="fotos_all">@photos.Count</span>)</a>
+				<a href="#" class="selecionadas" filtro="selecionadas">SELECIONADAS (<span id="fotos_selecionadas">@photos.Count</span>) </a>
+				<a href="#" class="excluidas" filtro="excluidas">EXCLUÍDAS (<span id="fotos_excluidas">0</span>) <span id="fotos_excluidas_percent">0%</span></a>
+				<div class="clear"></div>
+			</div>     
+			}
+		}
+	</div>
+	<div class="dvImageView">
+		<a href="#" id="btn-view-thumb" class="ico-view ico-show-thumb active" data-view-type="thumb">
+			<div class="thumb"></div>
+		</a>
+		<a href="#" id="btn-view-big" class="ico-view ico-show-big" data-view-type="big">
+			<div class="big"></div>
+		</a>
+		<a href="#" id="btn-view-flip" class="ico-view ico-show-flip" data-view-type="flip">
+			<div class="flip"></div>
+		</a>
+	</div>
+	<div class="dvProsseguir">
+		<button class="mdl-button mdl-js-button mdl-js-ripple-effect btn-default-border-rounded btn-eu-quero">PROSSEGUIR</button>
+	</div>
+	<div class="clear"></div>
+</div>
+<section id="section-principal">
+	<div class="conteudo-geral">
+		<!-- Thumbs -->
+		<ul id="view-thumb-foto" class="cont-foto">
+			<li class="grid-sizer"></li>
+			@{
+				foreach (var item in photos)
+				{
+				<li id="@item.PhotoIDCript" class="@(item.Selected ? "selecionado" : "nao-selecionado")">
+					<img class='thumbs @(item.Width >= item.Height ? "thumb_h" : "thumb_v") @(item.Selected ? "selecionado" : "nao-selecionado")' alt="@item.Nome" title="@item.Nome" src='@(urlRender + "/?hash=" + item.RenderMain + "&t=" + token)' photoid='@item.PhotoIDCript'>
+				</li>
+				}   
+			}
+		</ul>
+		<!-- /Thumbs -->
+		<!-- Swiper -->
+		<div class="swiper-container">
+			<div class="dvfechar btnFechar"></div>
+			<div class="swiper-wrapper"></div>
+			<button class="mdl-button mdl-js-button mdl-js-ripple-effect btn-carrousel btn-carrousel-prev">
+				<i class="material-icons">navigate_before</i>
+			</button>
+			<button class="mdl-button mdl-js-button mdl-js-ripple-effect btn-carrousel btn-carrousel-next">
+				<i class="material-icons">navigate_next</i>
+			</button>
+		</div>
+		<!-- /Swiper -->
+		<!-- Flip -->
+		<div class="container-turn" style="display: none;">
+			<div class="turn">
+			</div>
+			<div class="dvfechar btnFechar">
+				<div class="ico-fechar"></div>
+				<button class="mdl-button mdl-js-button mdl-js-ripple-effect btn-turn-nav previous">
+					<i class="material-icons">navigate_before</i>
+				</button>
+				<button class="mdl-button mdl-js-button mdl-js-ripple-effect btn-turn-nav next">
+					<i class="material-icons">navigate_next</i>
+				</button>
+			</div>
+		</div>
+		<!-- /Flip -->
+	</div>
+</section>
+
+<!-- MODAL -->
+<div id="div-limite-fotos-modal" class="modal fade" role="dialog">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal">&times;</button>
+				<h4 class="modal-title"><i class="material-icons ">warning</i> Atenção</h4>
+			</div>
+			<div class="modal-body">
+				<p>O limite de descarte foi alcançado!</p>
+				<p>Deseja continuar mesmo assim?</p>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+				<button type="button" class="btn btn-default btn-ok" data-dismiss="modal">Continuar</button>
+			</div>
+		</div>
+	</div>
+</div>
+<!-- /MODAL -->
+
+<!-- MODAL -->
+<div id="div-min-fotos-modal" class="modal fade" role="dialog">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal">&times;</button>
+				<h4 class="modal-title"><i class="material-icons">error</i> Atenção</h4>
+			</div>
+			<div class="modal-body">
+				<p>Para prosseguir é necessário selecionar ao menos (@QtdMinFoto) foto(s).</p>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-default" data-dismiss="modal">Ok</button>
+			</div>
+		</div>
+	</div>
+</div>
+<!-- /MODAL -->
+
+<!-- MODAL -->
+<div id="div-max-fotos-modal" class="modal fade" role="dialog">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal">&times;</button>
+				<h4 class="modal-title"><i class="material-icons">error</i> Atenção</h4>
+			</div>
+			<div class="modal-body">
+				<p>A quantidade máxima de fotos que pode ser selecionada é: @QtdMaxFoto foto(s).</p>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-default" data-dismiss="modal">Ok</button>
+			</div>
+		</div>
+	</div>
+</div>
+<!-- /MODAL -->

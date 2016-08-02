@@ -1,0 +1,7 @@
+﻿.conteudo-esqueci-senha .btn-alterar-senha.ativo {
+	color: transparent;
+	/*background-image: url('http://isrv.pixelhouse.com.br/albuns/images/loader.gif');*/
+    background-image: url(../images/loader.gif);
+	background-repeat: no-repeat;
+	background-position: center;
+}

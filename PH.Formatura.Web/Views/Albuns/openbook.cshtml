@@ -1,0 +1,423 @@
+﻿@{
+	Layout = null;
+
+	PH.Formatura.DTO.User _User = (ViewData["_User"] != null) ? (PH.Formatura.DTO.User)ViewData["_User"] : null;
+
+	string ALBUNS_UPLOAD_PATH_USERS = HttpContext.Current.Application["ALBUNS_UPLOAD_PATH_USERS"].ToString();
+	string sUserPath = String.Empty;
+	string sUserPath_Encrypted = String.Empty;
+	string versao_flash = "19.0.0";
+
+	string KeyCripto = System.Web.HttpContext.Current.Application["KeyCripto"].ToString();
+	PH.Formatura.BLL.CriptografiaBLL CriptoBLL = new PH.Formatura.BLL.CriptografiaBLL();
+	string passAccess = CriptoBLL.Encrypt(_User.User_ID.ToString(), KeyCripto);
+	string Url_Cart = HttpUtility.UrlDecode(System.Web.HttpContext.Current.Application["CARRINHO_URL"].ToString().Replace("[passAccess]", passAccess));
+	Url_Cart += ((Url_Cart.IndexOf("?") > -1) ? "&" : "?") + "origem=newbook";
+
+	var sUserId = String.Format("00000000{0}", _User.User_ID.ToString());
+	sUserId = sUserId.Substring(sUserId.Length - 8, 8);
+	
+	for (int i = 0; i < sUserId.Length; i+=2)
+	{
+		sUserPath = sUserPath + @"\" + sUserId.Substring(i, 2);
+	}
+
+	sUserPath = Server.MapPath(ALBUNS_UPLOAD_PATH_USERS) + sUserPath;
+
+	PH.Formatura.BLL.CriptografiaBLL bll = new PH.Formatura.BLL.CriptografiaBLL();
+	sUserPath_Encrypted = bll.Encrypt(sUserPath, HttpContext.Current.Application["KeyPixel"].ToString());
+
+	int iUploadServerID = PH.Formatura.BLL.Util.ModuloMontagem.GetUploadServerID(Request.ServerVariables["local_addr"]);
+
+	Dictionary<string, string> Parametros = new Dictionary<string, string>();
+	Parametros.Add("bookID", HttpContext.Current.Request["b"]);
+	Parametros.Add("selectedModelID", HttpContext.Current.Request["ModelID"]);
+	Parametros.Add("selectedThemeID", HttpContext.Current.Request["ThemeID"]);
+	Parametros.Add("PhotobookLineID", HttpContext.Current.Request["TipoFotolivro"]);
+	Parametros.Add("DefaultColorID", HttpContext.Current.Request["ColorID"]);
+	Parametros.Add("DefaultCoverID", HttpContext.Current.Request["DefaultCoverID"]);
+	Parametros.Add("DefaultNumPages", HttpContext.Current.Request["DefaultNumPages"]);
+	//Parametros.Add("selectedCategoryID", HttpContext.Current.Request["CategoryID"]);
+	//Parametros.Add("Origem", HttpContext.Current.Request["Origem"]);
+	//Parametros.Add("allowEdit", HttpContext.Current.Request["allowEdit"]);
+
+	if (String.IsNullOrEmpty(Parametros["bookID"]))
+	{
+		foreach (var item in Parametros.Keys)
+		{
+			if (item.ToString() != "bookID" && String.IsNullOrEmpty(Parametros[item.ToString()]))
+			{
+				Response.Redirect("~/Painel/MontarProjeto");
+				return;
+			}
+		} 
+	}
+}
+<!DOCTYPE html>
+<html>
+<head>
+	<meta name="viewport" content="width=device-width" />
+	<meta charset="utf-8" />
+	<title>openbook</title>
+	<script type="text/javascript" src="~/Content/js/framework/jquery.min.js"></script>
+	<script type="text/javascript" src="http://crypto-js.googlecode.com/svn/tags/3.1/build/rollups/hmac-sha1.js"></script>
+	<script type="text/javascript" src="http://crypto-js.googlecode.com/svn/tags/3.0.2/build/components/enc-base64-min.js"></script>
+	<style type="text/css">
+		html, body, div, span, applet, object, iframe,
+		h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+		a, abbr, acronym, address, big, cite, code,
+		del, dfn, em, img, ins, kbd, q, s, samp,
+		small, strike, strong, sub, sup, tt, var,
+		b, u, i, center,
+		dl, dt, dd, ol, ul, li,
+		fieldset, form, label, legend,
+		table, caption, tbody, tfoot, thead, tr, th, td,
+		article, aside, canvas, details, embed,
+		figure, figcaption, footer, header, hgroup,
+		menu, nav, output, ruby, section, summary,
+		time, mark, audio, video {
+			margin: 0;
+			padding: 0;
+			border: 0;
+			font-size: 100%;
+			font: inherit;
+			vertical-align: baseline;
+		}
+		/* HTML5 display-role reset for older browsers */
+		article, aside, details, figcaption, figure,
+		footer, header, hgroup, menu, nav, section {
+			display: block;
+		}
+
+		html, body { height:100%; background-color: #ffffff;}
+
+		body {
+			line-height: 1;
+			overflow:hidden;
+		}
+
+		ol, ul {
+			list-style: none;
+		}
+
+		blockquote, q {
+			quotes: none;
+		}
+
+		blockquote:before, blockquote:after,
+		q:before, q:after {
+			content: '';
+			content: none;
+		}
+
+		table {
+			border-collapse: collapse;
+			border-spacing: 0;
+		}
+		
+		#flashContent { width:100%; height:100%; }
+	</style>
+</head>
+<body>
+	<script type="text/javascript" src="http://connect.facebook.net/en_US/all.js"></script>
+	<script type="text/javascript" src="~/Content/js/framework/swfobject.min.js"></script>
+	<script type="text/javascript">
+		var alertaPopSaida;
+		alertaPopSaida = 2; //Alerta saída só salva
+		var bookID = "@Parametros["bookID"]";
+		var moduloLoaded = false;
+
+		var arr = document.location.href.split('#');
+		if (arr.length > 1) {
+			bookID = arr[1]
+			//alert("hash "+arr[1])
+		}
+
+		window.onbeforeunload = function () {
+			try {
+				if (alertaPopSaida == 1) {
+					//alert('Entrou no onbeforeunload...');
+					var flashObj = document.getElementById('ModuloFotoalbumContainer');
+					//if (flashObj != undefined) { alert('Obteve o flashObj...');}
+					flashObj.saveBook();
+					//alert('Salvou o book...');
+					//return(false);
+					return "Deseja realmente sair da montagem de seu fotoalbum?"  //Os dados que não forem salvos, serão perdidos."
+				} else if (alertaPopSaida == 2) {
+					var flashObj = document.getElementById('ModuloFotoalbumContainer');
+					flashObj.saveBook();
+				} else {
+					//do nothing
+				}
+			} catch (e) {
+				console.debug('Erro: ' + e.message);
+			}
+		};
+
+		function openLoginScreen(_url, _width, _height, _token) {
+			var win = window.open(_url, 'Autorização de Acesso', 'width=' + _width + ', height=' + _height + ', status=0, toolbar=0');
+			var timer = setInterval(function () {
+				if (win.closed) {
+					clearInterval(timer);
+					thisMovie("ModuloFotoAlbum").checkForToken(getCookie(_token));
+				}
+			}, 1000);
+		}
+
+		function checkForJSToken(_token) {
+			return (getCookie(_token));
+		}
+
+		function getCookie(c_name) {
+			var i, x, y, ARRcookies = document.cookie.split(";");
+			var roney = "";
+			for (i = 0; i < ARRcookies.length; i++) {
+				x = ARRcookies[i].substr(0, ARRcookies[i].indexOf("="));
+				y = ARRcookies[i].substr(ARRcookies[i].indexOf("=") + 1);
+				x = x.replace(/^\s+|\s+$/g, "");
+				roney += x + " / ";
+				if (x == c_name) {
+					if (y != "undefined") {
+						return unescape(y);
+					}
+				}
+			}
+		}
+
+		function getApiData(url) {
+			$.ajax({
+				url: url + "&callback=apiResultObjectCallback",
+				dataType: 'script'
+			});
+		}
+
+		function thisMovie(movieName) {
+			if (navigator.appName.indexOf("Microsoft") != -1) {
+				return window[movieName];
+			} else {
+				return document[movieName + "_FF"];
+			}
+		}
+
+		function apiResultObjectCallback(data) {
+			thisMovie("ModuloFotoAlbum").processData(data);
+		}
+
+		function clearToken(_token) {
+			document.cookie = _token = undefined;
+		}
+
+		var key;
+		var method;
+		var version;
+		var secret;
+
+		function returnURL(_key, _method, _version, _secret, _callBack) {
+			key = _key;
+			method = _method;
+			version = _version;
+			secret = _secret;
+			var callBack = _callBack;
+			var nonce = getNonce(18);
+			var timestamp = getTimestamp();
+
+			var concatenatedURL = 'oauth_callback=' + percentEncode(callBack) + '&oauth_consumer_key=' + key + '&oauth_nonce=' + nonce + '&oauth_signature_method=' + method + '&oauth_timestamp=' + timestamp + '&oauth_version=' + version;
+			var encodedURL = percentEncode(concatenatedURL);
+			var baseString = "GET&http%3A%2F%2Fwww.flickr.com%2Fservices%2Foauth%2Frequest_token&" + encodedURL;
+			var signature = percentEncode(CryptoJS.HmacSHA1(baseString, String(secret + "&")).toString(CryptoJS.enc.Base64));
+			var url = encodeURIComponent("http://www.flickr.com/services/oauth/request_token?oauth_callback=" + percentEncode(callBack) + "&oauth_consumer_key=" + key + "&oauth_nonce=" + nonce + "&oauth_timestamp=" + timestamp + "&oauth_signature_method=" + method + "&oauth_version=" + version + "&oauth_signature=" + signature);
+
+			return (url);
+		}
+
+		function returnRequestTokenURL(_secret) {
+			var nonce = getNonce(18);
+			var timestamp = getTimestamp();
+			var verifier = getCookie("flickrVerifier");
+			var oauth = getCookie("flickrToken");
+
+			var concatenatedURL = "oauth_consumer_key=" + key + "&oauth_nonce=" + nonce + "&oauth_signature_method=" + method + "&oauth_timestamp=" + timestamp + "&oauth_token=" + oauth + "&oauth_verifier=" + verifier + "&oauth_version=" + version;
+			var encodedURL = percentEncode(concatenatedURL);
+			var baseString = "GET&http%3A%2F%2Fwww.flickr.com%2Fservices%2Foauth%2Faccess_token&" + encodedURL;;
+			var signature = percentEncode(CryptoJS.HmacSHA1(baseString, String(secret + "&" + _secret)).toString(CryptoJS.enc.Base64));
+			var url = encodeURIComponent("http://www.flickr.com/services/oauth/access_token?oauth_nonce=" + nonce + "&oauth_timestamp=" + timestamp + "&oauth_verifier=" + verifier + "&oauth_consumer_key=" + key + "&oauth_signature_method=" + method + "&oauth_version=" + version + "&oauth_token=" + oauth + "&oauth_signature=" + signature);
+
+			return url;
+		}
+
+
+		function buildURLCall(_secret, _accessToken, _callID, _extra) {
+			var nonce = getNonce(18);
+			var timestamp = getTimestamp();
+			var encodedURL = returnFotoSizes(nonce, timestamp, _callID, _accessToken, _extra);
+			var baseString = "GET&http%3A%2F%2Fapi.flickr.com%2Fservices%2Frest&" + encodedURL;
+			var signature = percentEncode(CryptoJS.HmacSHA1(baseString, String(secret + "&" + _secret)).toString(CryptoJS.enc.Base64));
+
+			if (_callID == "photos.getNotInSet") {
+				return encodeURIComponent("http://api.flickr.com/services/rest?oauth_nonce=" + nonce + "&extras=url_t&format=json&media=photos&nojsoncallback=1&oauth_consumer_key=" + key + "&oauth_timestamp=" + timestamp + "&oauth_signature_method=" + method + "&oauth_version=" + version + "&oauth_token=" + _accessToken + "&oauth_signature=" + signature + "&method=flickr.photos.getNotInSet");
+			}
+
+			else if (_callID == "photos.getSizes") {
+				return encodeURIComponent("http://api.flickr.com/services/rest?oauth_nonce=" + nonce + "&format=json&nojsoncallback=1&oauth_consumer_key=" + key + "&oauth_timestamp=" + timestamp + "&oauth_signature_method=" + method + "&oauth_version=" + version + "&oauth_token=" + _accessToken + "&oauth_signature=" + signature + "&method=flickr.photos.getSizes&photo_id=" + _extra);
+			}
+
+			else if (_callID == "photosets.getList") {
+				return encodeURIComponent("http://api.flickr.com/services/rest?oauth_nonce=" + nonce + "&format=json&nojsoncallback=1&oauth_consumer_key=" + key + "&oauth_timestamp=" + timestamp + "&oauth_signature_method=" + method + "&oauth_version=" + version + "&oauth_token=" + _accessToken + "&oauth_signature=" + signature + "&method=flickr.photosets.getList");
+			}
+
+			else if (_callID == "photosets.getPhotos") {
+				return encodeURIComponent("http://api.flickr.com/services/rest?oauth_nonce=" + nonce + "&extras=url_t&format=json&media=photos&nojsoncallback=1&oauth_consumer_key=" + key + "&oauth_timestamp=" + timestamp + "&oauth_signature_method=" + method + "&oauth_version=" + version + "&oauth_token=" + _accessToken + "&oauth_signature=" + signature + "&photoset_id=" + _extra + "&method=flickr.photosets.getPhotos");
+			}
+		}
+
+		function returnFotoSizes(_nonce, _timestamp, _callID, _accessToken, _extra) {
+			if (_callID == "photos.getNotInSet") {
+				return (percentEncode("extras=url_t&format=json&media=photos&method=flickr.photos.getNotInSet&nojsoncallback=1&oauth_consumer_key=" + key + "&oauth_nonce=" + _nonce + "&oauth_signature_method=" + method + "&oauth_timestamp=" + _timestamp + "&oauth_token=" + _accessToken + "&oauth_version=" + version));
+			}
+
+			else if (_callID == "photos.getSizes") {
+				return (percentEncode("format=json&method=flickr.photos.getSizes&nojsoncallback=1&oauth_consumer_key=" + key + "&oauth_nonce=" + _nonce + "&oauth_signature_method=" + method + "&oauth_timestamp=" + _timestamp + "&oauth_token=" + _accessToken + "&oauth_version=" + version + "&photo_id=" + _extra));
+			}
+
+			else if (_callID == "photosets.getList") {
+				return (percentEncode("format=json&method=flickr.photosets.getList&nojsoncallback=1&oauth_consumer_key=" + key + "&oauth_nonce=" + _nonce + "&oauth_signature_method=" + method + "&oauth_timestamp=" + _timestamp + "&oauth_token=" + _accessToken + "&oauth_version=" + version));
+			}
+
+			else if (_callID == "photosets.getPhotos") {
+				return (percentEncode("extras=url_t&format=json&media=photos&method=flickr.photosets.getPhotos&nojsoncallback=1&oauth_consumer_key=" + key + "&oauth_nonce=" + _nonce + "&oauth_signature_method=" + method + "&oauth_timestamp=" + _timestamp + "&oauth_token=" + _accessToken + "&oauth_version=" + version + "&photoset_id=" + _extra));
+			}
+		}
+
+		function getNonce(length) {
+			var chars = "0123456789";
+			var result = "";
+			for (var i = 0; i < length; ++i) {
+				var rnum = Math.floor(Math.random() * chars.length);
+				result += chars.substring(rnum, rnum + 1);
+			}
+			return result;
+		}
+
+		function getTimestamp() {
+			var t = (new Date()).getTime();
+			return Math.floor(t / 1000);
+		}
+
+		function gotoCart() {
+			alertaPopSaida = 0;
+			document.location.href = '@Url_Cart'.replace(/&amp;/gi, '&');
+		}
+		//@HttpUtility.HtmlDecode(Url_Cart);
+
+		function percentEncode(s) {
+			s = encodeURIComponent(s);
+			s = s.replace(/\!/g, "%21");
+			s = s.replace(/\*/g, "%2A");
+			s = s.replace(/\'/g, "%27");
+			s = s.replace(/\(/g, "%28");
+			s = s.replace(/\)/g, "%29");
+			return s;
+		}
+
+		function setBookID(fotobookID) {
+			//alert("id = "+fotobookID);
+			bookID = fotobookID;
+			document.location.hash = bookID;
+		}
+	</script>
+	<div id="fb-root"></div>
+	<div id="loader_flash" style='display: block; z-index: 2; position: absolute; width: 100%; height: 100%; background-color: white;'>
+		<div style="width: 450px; margin: 0 auto;">
+			<div id="loader_swf"></div>
+			<div style="text-align: center; margin: 0 0 0 15px; color: #999999;">
+				<span style="font-family: Arial, sans-serif; font-size: medium">Aguarde... <br />Carregando Módulo do Fotolivro.</span>
+			</div>
+		</div>
+		<script>
+			swfobject.embedSWF("/swf/Preloader_Fotolivro_V2.swf", "loader_swf", "450", "540", "@versao_flash", "/swf/expressInstall.swf")
+		</script>
+		<!--<div style="width:321px; height:281px;margin:15% 0 0 40%;">
+	<div style="float:left;"><img src='carregando_final.gif' alt="carregando" title="carregando"></div>
+	<div style="text-align:middle;float:right;margin-top:40px;color:#999999;"><font style="Arial" size="6">Carregando...</font></div>
+	</div>  -->
+	</div>
+	<div id="ModuloFotoalbumContainer" style='z-index: 1; position: absolute;'>
+		<a target="_blank" href="http://get.adobe.com/br/flashplayer/">
+			<img src="/imgs/ALERTA-FLASH.jpg" />
+		</a>
+	</div>
+	<script type="text/javascript">
+		var moduloFlash = document.getElementById("ModuloFotoalbumContainer");
+		var loadModulo = document.getElementById("loader_flash");
+		var loaderGif;
+		var flashvars = {
+			token: "@_User.Token",
+			pathUser: "@sUserPath_Encrypted",
+			loginURL: "http://albuns.pixelhouse.com.br/zangraf/Login",
+			UploadServerID: "@iUploadServerID",
+			bookID: bookID || "",
+			userEmail: "@_User.Email",
+			brandID: "@_User.Brand_ID",
+			configLoaderPath: "@HttpContext.Current.Application["Modulo_Montagem_Config_Loader_Path"]",
+			cssLoaderPath: "@HttpContext.Current.Application["Modulo_Montagem_CSS_Loader_Path"]",
+			pathSwf: "@HttpContext.Current.Application["Modulo_Montagem_Path_SWF"]",
+			selectedModelID: "@Parametros["selectedModelID"]",
+			selectedThemeID: "@Parametros["selectedThemeID"]",
+			PhotobookLineID: "@Parametros["PhotobookLineID"]",
+			DefaultColorID: "@Parametros["DefaultColorID"]",
+			DefaultCoverID: "@Parametros["DefaultCoverID"]",
+			DefaultNumPages: "@Parametros["DefaultNumPages"]",
+			selectedCategoryID: "@*@Parametros["selectedCategoryID"]*@",
+			Origem: "@*@Parametros["Origem"]*@",
+			allowEdit: "@*@Parametros["allowEdit"]*@"
+		};
+		// troquei de gpu para direct - para usar starling 
+		var params = {
+			wmode: "opaque",
+			allowscriptaccess: "always",
+			base: "/swf/ModuloFotoAlbum/"
+		};
+		var attributes = {
+			id: "ModuloFotoalbumContainer",
+			name: "ModuloFotoalbumContainer"
+		};
+		swfobject.embedSWF("@HttpContext.Current.Application["Modulo_Montagem_Path_SWF"]", "ModuloFotoalbumContainer", "100%", "100%", "@versao_flash", "@HttpContext.Current.Application["Modulo_Montagem_Express_Install"]", flashvars, params, attributes);
+		if (!swfobject.hasFlashPlayerVersion("@versao_flash")) {
+			//loadModulo.style.display = 'none';
+			moduloFlash.style.marginTop = '5%';
+			moduloFlash.style.marginLeft = '10%';
+			exibeModuloFlash(true);
+		} else {
+			exibeModuloFlash(false);
+			loaderGif = setInterval(FlashLoaded, 2000);
+		}
+
+		function exibeModuloFlash(b) {
+			//console.log('exibemodulo ' + b);
+			if (b) {
+				moduloLoaded = true;
+				loadModulo.style.zIndex = 1;
+				moduloFlash.style.position = "absolute";
+				moduloFlash.style.zIndex = 2;
+				loadModulo.style.display = 'none';
+				window.clearInterval(loaderGif);
+				clearInterval(loaderGif);
+			} else {
+				if (moduloLoaded == true) {
+					window.clearInterval(loaderGif);
+					clearInterval(loaderGif);
+					return;
+				}
+				loadModulo.style.zIndex = 2;
+				moduloFlash.style.zIndex = 1;
+				moduloFlash.style.position = "absolute";
+			}
+		}
+
+		function FlashLoaded() {
+			moduloFlash = document.getElementById("ModuloFotoalbumContainer");
+			exibeModuloFlash(false);
+		}
+	</script>
+</body>
+</html>

@@ -1,0 +1,134 @@
+﻿body { 
+    transition:all .2s linear; 
+    -o-transition:all .2s linear; 
+    -moz-transition:all .2s linear; 
+    -webkit-transition:all .2s linear;
+}
+
+.nav-principal {
+	color: #fff;
+}
+
+.CustomTable{
+
+}
+
+.CustomTable thead{
+    background-color: #EBEBEB;
+    color:#717171;
+}
+
+.CustomTable th{
+    text-align:center;
+    font-size: 12px;
+}
+
+.CustomTable .thAluno{width: 22%;}
+.CustomTable .thData{width: 15%;}
+.CustomTable .thStatus{width: 18%;}
+.CustomTable .thQtd{width: 10%;}
+.CustomTable .thProduto{width: 15%;}
+.CustomTable .thRemover{width: 15%; text-align:center;}
+.CustomTable .thRemover .btnRemover {background-image: url(../images/lixeira.png); width:20px; height:25px; margin: 0 auto; cursor:pointer;}
+
+.CustomTable tbody{
+    font-size: 12px;
+}
+
+.CustomTable tbody tr td{
+    padding: 15px !important;
+}
+
+.CustomButtom{
+    background: rgb(95,216,139) !important;
+    color:#FFF !important;
+    font-size: 10px;
+}
+
+.CustomButtom:hover {
+	background-color: rgb(95,230,139) !important;
+}
+
+.CustomButtom:active {
+	background-color: rgb(95,230,139) !important;
+}
+
+.CustomButtomSync{
+    background: #fff !important;
+    color:#ABABAB !important;
+    font-size: 10px;
+}
+
+.CustomButtomSync:hover {
+	background: #fff !important;
+}
+
+.CustomButtomSync:active {
+	background: #fff !important;
+}
+
+.boxDetalhes{
+
+}
+
+.boxDetalhes .dvLnk{
+    float: left;
+    font-size: 20px;
+    margin:0px 5px 0px 0px;
+ }
+
+.boxDetalhes .dvLnk a{
+    color: #000;
+}
+
+.boxDetalhes .dvBoxConteudo{
+    float: left;
+    width: 80%;
+}
+
+.boxDetalhes .dvBoxConteudo .dvNome{
+
+}
+
+.boxDetalhes .dvBoxConteudo .spNome{
+    min-width: 100px;
+    -o-text-overflow:ellipsis;
+    text-overflow:ellipsis;
+    display: block;
+    white-space: nowrap;
+    display: block;
+    overflow: hidden;
+}
+
+.boxDetalhes .dvBoxConteudo .dvDetalhes{
+
+}
+
+.boxDetalhes .dvBoxConteudo .clear{
+    clear: both;
+}
+
+.fontSizeOpt{
+    font-size: 10px;
+}
+
+.tabelaDetalhes{
+    font-size: 12px;
+}
+
+.tabelaDetalhes tr{
+    border-bottom: 1px solid #000;
+}
+
+.tabelaDetalhes tr th{
+    font-weight:bold;
+    padding:5px;
+    vertical-align: middle;
+    border-right: 1px dotted #000;
+}
+
+.tabelaDetalhes tr td{
+    padding:5px;
+    height: 35px;
+    vertical-align: middle;
+}

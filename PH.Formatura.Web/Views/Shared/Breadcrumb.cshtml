@@ -1,0 +1,13 @@
+﻿@{
+	Dictionary<string, string> Breadcrumb = Model;
+	PH.Formatura.DTO.User _User = (ViewData["_User"] != null) ? (PH.Formatura.DTO.User)ViewData["_User"] : null;
+}
+@if (Breadcrumb != null && Breadcrumb.Count > 0)
+{
+	<nav class="nav-principal">
+	@foreach (var item in Breadcrumb)
+	{	
+		@Html.Raw((String.IsNullOrEmpty(item.Value) ? "<h2>" + item.Key + "</h2>" : "<a href=" + item.Value + " style=\"text-decoration: underline;\" >" + item.Key + "</a>" + (Breadcrumb.Count > 1 ? " &gt; " : "" ) ));
+	}
+	</nav>
+}

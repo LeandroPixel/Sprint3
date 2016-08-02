@@ -1,0 +1,932 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>
+    </ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{39B8D12C-9E5F-4DD2-BB28-71A1401AFD11}</ProjectGuid>
+    <ProjectTypeGuids>{349c5851-65df-11da-9384-00065b846f21};{fae04ec0-301f-11d3-bf4b-00c04f79efbc}</ProjectTypeGuids>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>PH.Formatura.Web</RootNamespace>
+    <AssemblyName>PH.Formatura.Web</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <MvcBuildViews>false</MvcBuildViews>
+    <UseIISExpress>true</UseIISExpress>
+    <IISExpressSSLPort />
+    <IISExpressAnonymousAuthentication />
+    <IISExpressWindowsAuthentication />
+    <IISExpressUseClassicPipelineMode />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\</OutputPath>
+    <DefineConstants>TRACE;DEBUG</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>3</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.SqlServer.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="log4net, Version=1.2.11.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\lib\log4net.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="Newtonsoft.Json, Version=9.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.9.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="PH.Core.Logger, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\lib\PH.Core.Logger.dll</HintPath>
+    </Reference>
+    <Reference Include="PH.Core.ViewModels">
+      <HintPath>..\lib\PH.Core.ViewModels.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Net.Http.Formatting, Version=5.2.3.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.WebApi.Client.5.2.3\lib\net45\System.Net.Http.Formatting.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Web.DynamicData" />
+    <Reference Include="System.Web.Entity" />
+    <Reference Include="System.Web.ApplicationServices" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Web.Helpers, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.3\lib\net45\System.Web.Helpers.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.Http, Version=5.2.3.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.WebApi.Core.5.2.3\lib\net45\System.Web.Http.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Web.Http.WebHost, Version=5.2.3.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.WebApi.WebHost.5.2.3\lib\net45\System.Web.Http.WebHost.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Web.Mvc, Version=5.2.3.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.Mvc.5.2.3\lib\net45\System.Web.Mvc.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Web.Razor, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.Razor.3.2.3\lib\net45\System.Web.Razor.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Web.WebPages, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.3\lib\net45\System.Web.WebPages.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Web.WebPages.Deployment, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.3\lib\net45\System.Web.WebPages.Deployment.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Web.WebPages.Razor, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.3\lib\net45\System.Web.WebPages.Razor.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Web.Extensions" />
+    <Reference Include="System.Web.Abstractions" />
+    <Reference Include="System.Web.Routing" />
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Web.Services" />
+    <Reference Include="System.EnterpriseServices" />
+    <Reference Include="Microsoft.Web.Infrastructure, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <Private>True</Private>
+      <HintPath>..\packages\Microsoft.Web.Infrastructure.1.0.0.0\lib\net40\Microsoft.Web.Infrastructure.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Net.Http">
+    </Reference>
+    <Reference Include="System.Net.Http.WebRequest">
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Controllers\AgendamentoController.cs" />
+    <Compile Include="Controllers\AlbunsController.cs" />
+    <Compile Include="Controllers\AlunosController.cs" />
+    <Compile Include="Controllers\API\AlunosController.cs" />
+    <Compile Include="Controllers\API\GerencialController.cs" />
+    <Compile Include="Controllers\API\DadosController.cs" />
+    <Compile Include="Controllers\API\PainelController.cs" />
+    <Compile Include="Controllers\API\AgendamentoController.cs" />
+    <Compile Include="Controllers\API\CheckoutController.cs" />
+    <Compile Include="Controllers\API\PedidosController.cs" />
+    <Compile Include="Controllers\API\ProductionController.cs" />
+    <Compile Include="Controllers\API\ProdutosController.cs" />
+    <Compile Include="Controllers\API\SupervisorController.cs" />
+    <Compile Include="Controllers\API\ToolsController.cs" />
+    <Compile Include="Controllers\GerencialController.cs" />
+    <Compile Include="Controllers\SupervisorController.cs" />
+    <Compile Include="Controllers\Base\BaseAPIController.cs" />
+    <Compile Include="Controllers\Base\BaseMVCController.cs" />
+    <Compile Include="Controllers\CheckoutController.cs" />
+    <Compile Include="Controllers\ErrorController.cs" />
+    <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\LoginController.cs" />
+    <Compile Include="Controllers\Offline\ManifestResult.cs" />
+    <Compile Include="Controllers\Offline\OfflineController.cs" />
+    <Compile Include="Controllers\Offline\ResourcesController.cs" />
+    <Compile Include="Controllers\PainelController.cs" />
+    <Compile Include="Controllers\PedidosController.cs" />
+    <Compile Include="Controllers\ProdutosController.cs" />
+    <Compile Include="Controllers\SupportController.cs" />
+    <Compile Include="Controllers\UserController.cs" />
+    <Compile Include="Filters\AccessFilter.cs" />
+    <Compile Include="Filters\API\ApiAuthorizeFilter.cs" />
+    <Compile Include="Filters\API\CheckModelForNullAttribute.cs" />
+    <Compile Include="Filters\API\ValidateModelAttribute.cs" />
+    <Compile Include="Global.asax.cs">
+      <DependentUpon>Global.asax</DependentUpon>
+    </Compile>
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="App_Start\FilterConfig.cs" />
+    <Compile Include="App_Start\RouteConfig.cs" />
+    <Compile Include="App_Start\WebApiConfig.cs" />
+    <Content Include="Content\bootstrap-table-master\src\bootstrap-table.css" />
+    <Content Include="Content\bootstrap-table-master\src\bootstrap-table.js" />
+    <Content Include="Content\bootstrap-table-master\src\bootstrap-table.min.css" />
+    <Content Include="Content\bootstrap-table-master\src\bootstrap-table.min.js" />
+    <Content Include="Content\bootstrap-table-master\src\extensions\accent-neutralise\bootstrap-table-accent-neutralise.js" />
+    <Content Include="Content\bootstrap-table-master\src\extensions\angular\bootstrap-table-angular.js" />
+    <Content Include="Content\bootstrap-table-master\src\extensions\cookie\bootstrap-table-cookie.js" />
+    <Content Include="Content\bootstrap-table-master\src\extensions\editable\bootstrap-table-editable.js" />
+    <Content Include="Content\bootstrap-table-master\src\extensions\export\bootstrap-table-export.js" />
+    <Content Include="Content\bootstrap-table-master\src\extensions\filter-control\bootstrap-table-filter-control.js" />
+    <Content Include="Content\bootstrap-table-master\src\extensions\filter\bootstrap-table-filter.js" />
+    <Content Include="Content\bootstrap-table-master\src\extensions\flat-json\bootstrap-table-flat-json.js" />
+    <Content Include="Content\bootstrap-table-master\src\extensions\group-by-v2\bootstrap-table-group-by.css" />
+    <Content Include="Content\bootstrap-table-master\src\extensions\group-by-v2\bootstrap-table-group-by.js" />
+    <Content Include="Content\bootstrap-table-master\src\extensions\group-by\bootstrap-table-group-by.css" />
+    <Content Include="Content\bootstrap-table-master\src\extensions\group-by\bootstrap-table-group-by.js" />
+    <Content Include="Content\bootstrap-table-master\src\extensions\key-events\bootstrap-table-key-events.js" />
+    <Content Include="Content\bootstrap-table-master\src\extensions\mobile\bootstrap-table-mobile.js" />
+    <Content Include="Content\bootstrap-table-master\src\extensions\multiple-search\bootstrap-table-multiple-search.js" />
+    <Content Include="Content\bootstrap-table-master\src\extensions\multiple-sort\bootstrap-table-multiple-sort.js" />
+    <Content Include="Content\bootstrap-table-master\src\extensions\natural-sorting\bootstrap-table-natural-sorting.js" />
+    <Content Include="Content\bootstrap-table-master\src\extensions\reorder-columns\bootstrap-table-reorder-columns.js" />
+    <Content Include="Content\bootstrap-table-master\src\extensions\reorder-rows\bootstrap-table-reorder-rows.css" />
+    <Content Include="Content\bootstrap-table-master\src\extensions\reorder-rows\bootstrap-table-reorder-rows.js" />
+    <Content Include="Content\bootstrap-table-master\src\extensions\resizable\bootstrap-table-resizable.js" />
+    <Content Include="Content\bootstrap-table-master\src\extensions\sticky-header\bootstrap-table-sticky-header.css" />
+    <Content Include="Content\bootstrap-table-master\src\extensions\sticky-header\bootstrap-table-sticky-header.js" />
+    <Content Include="Content\bootstrap-table-master\src\extensions\toolbar\bootstrap-table-toolbar.js" />
+    <Content Include="Content\bootstrap-table-master\src\locale\bootstrap-table-en-US.js" />
+    <Content Include="Content\bootstrap-table-master\src\locale\bootstrap-table-en-US.min.js">
+      <DependentUpon>bootstrap-table-en-US.js</DependentUpon>
+    </Content>
+    <Content Include="Content\bootstrap-table-master\src\locale\bootstrap-table-es-ES.js" />
+    <Content Include="Content\bootstrap-table-master\src\locale\bootstrap-table-es-ES.min.js">
+      <DependentUpon>bootstrap-table-es-ES.js</DependentUpon>
+    </Content>
+    <Content Include="Content\bootstrap-table-master\src\locale\bootstrap-table-pt-BR.js" />
+    <Content Include="Content\bootstrap-table-master\src\locale\bootstrap-table-pt-BR.min.js">
+      <DependentUpon>bootstrap-table-pt-BR.js</DependentUpon>
+    </Content>
+    <Content Include="Content\css\agendamento-validacao-fotos.css" />
+    <Content Include="Content\css\agendamento-validacao-fotos.min.css">
+      <DependentUpon>agendamento-validacao-fotos.css</DependentUpon>
+    </Content>
+    <Content Include="Content\css\agendamento_responsivo.css" />
+    <Content Include="Content\css\agendamento_responsivo.min.css">
+      <DependentUpon>agendamento_responsivo.css</DependentUpon>
+    </Content>
+    <Content Include="Content\css\albuns.css" />
+    <Content Include="Content\css\albuns.min.css">
+      <DependentUpon>albuns.css</DependentUpon>
+    </Content>
+    <Content Include="Content\css\aluno.css" />
+    <Content Include="Content\css\aluno.min.css">
+      <DependentUpon>aluno.css</DependentUpon>
+    </Content>
+    <Content Include="Content\css\alunos.css" />
+    <Content Include="Content\css\alunos.min.css">
+      <DependentUpon>alunos.css</DependentUpon>
+    </Content>
+    <Content Include="Content\css\aluno_responsivo.css" />
+    <Content Include="Content\css\aluno_responsivo.min.css">
+      <DependentUpon>aluno_responsivo.css</DependentUpon>
+    </Content>
+    <Content Include="Content\css\cadastrar-usuario.css" />
+    <Content Include="Content\css\cadastrar-usuario.min.css">
+      <DependentUpon>cadastrar-usuario.css</DependentUpon>
+    </Content>
+    <Content Include="Content\css\cadastro.css" />
+    <Content Include="Content\css\cadastro.min.css">
+      <DependentUpon>cadastro.css</DependentUpon>
+    </Content>
+    <Content Include="Content\css\cadastros.min.css">
+      <DependentUpon>cadastro.css</DependentUpon>
+    </Content>
+    <Content Include="Content\css\checkout.css" />
+    <Content Include="Content\css\checkout.min.css">
+      <DependentUpon>checkout.css</DependentUpon>
+    </Content>
+    <Content Include="Content\css\checkout_confirm.css" />
+    <Content Include="Content\css\checkout_confirm.min.css">
+      <DependentUpon>checkout_confirm.css</DependentUpon>
+    </Content>
+    <Content Include="Content\css\detalhesPedido.css" />
+    <Content Include="Content\css\detalhesPedido.min.css">
+      <DependentUpon>detalhesPedido.css</DependentUpon>
+    </Content>
+    <Content Include="Content\css\framework\bootstrap-select.css" />
+    <Content Include="Content\css\framework\bootstrap-select.min.css">
+      <DependentUpon>bootstrap-select.css</DependentUpon>
+    </Content>
+    <Content Include="Content\css\offline-alunos-responsivo.css" />
+    <Content Include="Content\css\offline-alunos-responsivo.min.css">
+      <DependentUpon>offline-alunos-responsivo.css</DependentUpon>
+    </Content>
+    <Content Include="Content\css\offline-alunos.css" />
+    <Content Include="Content\css\offline-alunos.min.css">
+      <DependentUpon>offline-alunos.css</DependentUpon>
+    </Content>
+    <Content Include="Content\css\produtos.css" />
+    <Content Include="Content\css\esqueci-senha.css" />
+    <Content Include="Content\css\esqueci-senha.min.css">
+      <DependentUpon>esqueci-senha.css</DependentUpon>
+    </Content>
+    <Content Include="Content\css\extrato.css" />
+    <Content Include="Content\css\extrato.min.css">
+      <DependentUpon>extrato.css</DependentUpon>
+    </Content>
+    <Content Include="Content\css\flipbook-basic.css" />
+    <Content Include="Content\css\flipbook-basic.min.css">
+      <DependentUpon>flipbook-basic.css</DependentUpon>
+    </Content>
+    <Content Include="Content\css\fonts\glyphicons-halflings-regular.svg" />
+    <Content Include="Content\css\framework\bootstrap.css" />
+    <Content Include="Content\css\framework\bootstrap.min.css">
+      <DependentUpon>bootstrap.css</DependentUpon>
+    </Content>
+    <Content Include="Content\css\framework\jquery-ui.css" />
+    <Content Include="Content\css\framework\jquery-ui.min.css">
+      <DependentUpon>jquery-ui.css</DependentUpon>
+    </Content>
+    <Content Include="Content\css\framework\material-design-lite-customized.css" />
+    <Content Include="Content\css\framework\material-design-lite-customized.min.css">
+      <DependentUpon>material-design-lite-customized.css</DependentUpon>
+    </Content>
+    <Content Include="Content\css\framework\jquery.datetimepicker.css" />
+    <Content Include="Content\css\framework\jquery.datetimepicker.min.css">
+      <DependentUpon>jquery.datetimepicker.css</DependentUpon>
+    </Content>
+    <Content Include="Content\css\framework\material-design-lite.css" />
+    <Content Include="Content\css\framework\material-design-lite.min.css">
+      <DependentUpon>material-design-lite.css</DependentUpon>
+    </Content>
+    <Content Include="Content\css\framework\material-icons-lite-font.css" />
+    <Content Include="Content\css\framework\material-icons-lite-font.min.css">
+      <DependentUpon>material-icons-lite-font.css</DependentUpon>
+    </Content>
+    <Content Include="Content\css\framework\swiper.css" />
+    <Content Include="Content\css\framework\swiper.min.css">
+      <DependentUpon>swiper.css</DependentUpon>
+    </Content>
+    <Content Include="Content\css\geral.css" />
+    <Content Include="Content\css\geral.min.css">
+      <DependentUpon>geral.css</DependentUpon>
+    </Content>
+    <Content Include="Content\css\login.css" />
+    <Content Include="Content\css\login.min.css">
+      <DependentUpon>login.css</DependentUpon>
+    </Content>
+    <Content Include="Content\css\montar-projeto.css" />
+    <Content Include="Content\css\montar-projeto.min.css">
+      <DependentUpon>montar-projeto.css</DependentUpon>
+    </Content>
+    <Content Include="Content\css\painel.css" />
+    <Content Include="Content\css\painel.min.css">
+      <DependentUpon>painel.css</DependentUpon>
+    </Content>
+    <Content Include="Content\css\produtos.min.css">
+      <DependentUpon>produtos.css</DependentUpon>
+    </Content>
+    <Content Include="Content\css\projetos-em-andamento.css" />
+    <Content Include="Content\css\projetos-em-andamento.min.css">
+      <DependentUpon>projetos-em-andamento.css</DependentUpon>
+    </Content>
+    <Content Include="Content\css\projetos-finalizados.css" />
+    <Content Include="Content\css\projetos-finalizados.min.css">
+      <DependentUpon>projetos-finalizados.css</DependentUpon>
+    </Content>
+    <Content Include="Content\images\alert.png" />
+    <Content Include="Content\images\apple-touch-icon-114x114.png" />
+    <Content Include="Content\images\apple-touch-icon-72x72.png" />
+    <Content Include="Content\images\apple-touch-icon.png" />
+    <Content Include="Content\images\bg_1024_768.jpg" />
+    <Content Include="Content\images\bg_1280_800.jpg" />
+    <Content Include="Content\images\bg_1366_768.jpg" />
+    <Content Include="Content\images\bg_1440_900.jpg" />
+    <Content Include="Content\images\bg_768_1024.jpg" />
+    <Content Include="Content\images\bg_albuns.jpg" />
+    <Content Include="Content\images\bg_login_fdv.jpg" />
+    <Content Include="Content\images\checkok.png" />
+    <Content Include="Content\images\dot.gif" />
+    <Content Include="Content\images\engrenagem.png" />
+    <Content Include="Content\images\favicon.ico" />
+    <Content Include="Content\images\favicon.png" />
+    <Content Include="Content\images\fechar.png" />
+    <Content Include="Content\images\icon_arrow_right_white_24px.svg" />
+    <Content Include="Content\images\icon_trash_gray_24px.svg" />
+    <Content Include="Content\images\ic_archive_white_24px.svg" />
+    <Content Include="Content\images\ic_check_circle_white_24px.svg" />
+    <Content Include="Content\images\ic_check_green_24px.svg" />
+    <Content Include="Content\images\ic_done_all_white_24px.svg" />
+    <Content Include="Content\images\ic_edit_white_24px.svg" />
+    <Content Include="Content\images\ic_error_red_24px.svg" />
+    <Content Include="Content\images\ic_extension_white_24px.svg" />
+    <Content Include="Content\images\ic_launch_white_24px.svg" />
+    <Content Include="Content\images\ic_person_add_white_24px.svg" />
+    <Content Include="Content\images\ic_person_white_24px.svg" />
+    <Content Include="Content\images\ic_receipt_white_24px.svg" />
+    <Content Include="Content\images\ic_shopping_cart_white_24px.svg" />
+    <Content Include="Content\images\ic_sync_problem_white_24px.svg" />
+    <Content Include="Content\images\ic_sync_white_24px.svg" />
+    <Content Include="Content\images\img_1280_800.jpg" />
+    <Content Include="Content\images\Products\Canvas.jpg" />
+    <Content Include="Content\images\Products\Canvas_thumb.jpg" />
+    <Content Include="Content\images\Products\CD.jpg" />
+    <Content Include="Content\images\Products\CD_thumb.jpg" />
+    <Content Include="Content\images\Products\DiplomaAco.jpg" />
+    <Content Include="Content\images\Products\DiplomaAco_thumb.jpg" />
+    <Content Include="Content\images\Products\DVD.jpg" />
+    <Content Include="Content\images\Products\DVD_thumb.jpg" />
+    <Content Include="Content\images\Products\Fotolivro_01_22X30.jpg" />
+    <Content Include="Content\images\Products\Fotolivro_01_22X30_thumb.jpg" />
+    <Content Include="Content\images\Products\Fotolivro_02_30x40.jpg" />
+    <Content Include="Content\images\Products\Fotolivro_02_30x40_thumb.jpg" />
+    <Content Include="Content\images\Products\Imas.jpg" />
+    <Content Include="Content\images\Products\Imas_thumb.jpg" />
+    <Content Include="Content\images\Products\Maleta.jpg" />
+    <Content Include="Content\images\Products\Maleta_thumb.jpg" />
+    <Content Include="Content\images\Products\MiniAlbum.jpg" />
+    <Content Include="Content\images\Products\MiniAlbum_thumb.jpg" />
+    <Content Include="Content\images\Products\PenDrive.jpg" />
+    <Content Include="Content\images\Products\PenDrive_thumb.jpg" />
+    <Content Include="Content\images\Products\Porta_Retrato.jpg" />
+    <Content Include="Content\images\Products\Porta_Retrato_Digital.jpg" />
+    <Content Include="Content\images\Products\Porta_Retrato_Digital_thumb.jpg" />
+    <Content Include="Content\images\Products\Porta_Retrato_thumb.jpg" />
+    <Content Include="Content\images\Products\Quadro_De_Parede.jpg" />
+    <Content Include="Content\images\Products\Quadro_De_Parede_thumb.jpg" />
+    <Content Include="Content\images\Products\Revista.jpg" />
+    <Content Include="Content\images\Products\Revista_thumb.jpg" />
+    <Content Include="Content\images\product_img_full.jpg" />
+    <Content Include="Content\images\product_img_thumb.jpg" />
+    <Content Include="Content\images\lixeira.png" />
+    <Content Include="Content\images\loader-btn.gif" />
+    <Content Include="Content\images\loader-input.gif" />
+    <Content Include="Content\images\loader.gif" />
+    <Content Include="Content\images\logo_pixel.png" />
+    <Content Include="Content\images\modobook.png" />
+    <Content Include="Content\images\modotelacheia.png" />
+    <Content Include="Content\images\modothumbnail.png" />
+    <Content Include="Content\images\nocheck.png" />
+    <Content Include="Content\images\selo_compra-segura.png" />
+    <Content Include="Content\images\selo_navegacao-segura.png" />
+    <Content Include="Content\images\selo_satisfacao.png" />
+    <Content Include="Content\js\adversentment.js" />
+    <Content Include="Content\js\adversentment.min.js">
+      <DependentUpon>adversentment.js</DependentUpon>
+    </Content>
+    <Content Include="Content\js\agendamento-validacao-fotos-offline.js" />
+    <Content Include="Content\js\agendamento-validacao-fotos-offline.min.js">
+      <DependentUpon>agendamento-validacao-fotos-offline.js</DependentUpon>
+    </Content>
+    <Content Include="Content\js\agendamento-validacao-fotos.js" />
+    <Content Include="Content\js\agendamento-validacao-fotos.min.js">
+      <DependentUpon>agendamento-validacao-fotos.js</DependentUpon>
+    </Content>
+    <Content Include="Content\js\albuns.js" />
+    <Content Include="Content\js\albuns.min.js">
+      <DependentUpon>albuns.js</DependentUpon>
+    </Content>
+    <Content Include="Content\js\aluno-offline.js" />
+    <Content Include="Content\js\aluno-offline.min.js">
+      <DependentUpon>aluno-offline.js</DependentUpon>
+    </Content>
+    <Content Include="Content\js\aluno.js" />
+    <Content Include="Content\js\aluno.min.js">
+      <DependentUpon>aluno.js</DependentUpon>
+    </Content>
+    <Content Include="Content\js\cadastrar-usuario.js" />
+    <Content Include="Content\js\cadastrar-usuario.min.js">
+      <DependentUpon>cadastrar-usuario.js</DependentUpon>
+    </Content>
+    <Content Include="Content\js\cadastro.js" />
+    <Content Include="Content\js\cadastros.min.js">
+      <DependentUpon>cadastro.js</DependentUpon>
+    </Content>
+    <Content Include="Content\js\checkout.js" />
+    <Content Include="Content\js\checkout.min.js">
+      <DependentUpon>checkout.js</DependentUpon>
+    </Content>
+    <Content Include="Content\js\checkout_classes.js" />
+    <Content Include="Content\js\checkout_classes.min.js">
+      <DependentUpon>checkout_classes.js</DependentUpon>
+    </Content>
+    <Content Include="Content\js\checkout_confirm.js" />
+    <Content Include="Content\js\checkout_confirm.min.js">
+      <DependentUpon>checkout_confirm.js</DependentUpon>
+    </Content>
+    <Content Include="Content\js\detalhesPedido.js" />
+    <Content Include="Content\js\detalhesPedido.min.js">
+      <DependentUpon>detalhesPedido.js</DependentUpon>
+    </Content>
+    <Content Include="Content\js\framework\bootstrap-select.js" />
+    <Content Include="Content\js\framework\bootstrap-select.min.js">
+      <DependentUpon>bootstrap-select.js</DependentUpon>
+    </Content>
+    <Content Include="Content\js\framework\isotope.pkgd.js" />
+    <Content Include="Content\js\framework\isotope.pkgd.min.js">
+      <DependentUpon>isotope.pkgd.js</DependentUpon>
+    </Content>
+    <Content Include="Content\js\framework\turn.js" />
+    <Content Include="Content\js\framework\turn.min.js">
+      <DependentUpon>turn.js</DependentUpon>
+    </Content>
+    <Content Include="Content\js\gerencial.js" />
+    <Content Include="Content\js\gerencial.min.js">
+      <DependentUpon>gerencial.js</DependentUpon>
+    </Content>
+    <Content Include="Content\js\painel-offline.js" />
+    <Content Include="Content\js\painel-offline.min.js">
+      <DependentUpon>painel-offline.js</DependentUpon>
+    </Content>
+    <Content Include="Content\js\supervisor.js" />
+    <Content Include="Content\js\DbControl.js" />
+    <Content Include="Content\js\DbControl.min.js">
+      <DependentUpon>DbControl.js</DependentUpon>
+    </Content>
+    <Content Include="Content\js\framework\jquery.cookie.js" />
+    <Content Include="Content\js\framework\jquery.cookie.min.js">
+      <DependentUpon>jquery.cookie.js</DependentUpon>
+    </Content>
+    <Content Include="Content\js\framework\jquery.datetimepicker.full.js" />
+    <Content Include="Content\js\framework\jquery.datetimepicker.full.min.js">
+      <DependentUpon>jquery.datetimepicker.full.js</DependentUpon>
+    </Content>
+    <Content Include="Content\js\login-offline.js" />
+    <Content Include="Content\js\esqueci-senha.js" />
+    <Content Include="Content\js\esqueci-senha.min.js">
+      <DependentUpon>esqueci-senha.js</DependentUpon>
+    </Content>
+    <Content Include="Content\js\extrato.js" />
+    <Content Include="Content\js\extrato.min.js">
+      <DependentUpon>extrato.js</DependentUpon>
+    </Content>
+    <Content Include="Content\js\framework\bootstrap.js" />
+    <Content Include="Content\js\framework\bootstrap.min.js">
+      <DependentUpon>bootstrap.js</DependentUpon>
+    </Content>
+    <Content Include="Content\js\framework\jquery-ui.js" />
+    <Content Include="Content\js\framework\jquery-ui.min.js">
+      <DependentUpon>jquery-ui.js</DependentUpon>
+    </Content>
+    <Content Include="Content\js\framework\jquery.js" />
+    <Content Include="Content\js\framework\jquery.min.js">
+      <DependentUpon>jquery.js</DependentUpon>
+    </Content>
+    <Content Include="Content\js\framework\material-design-lite.js" />
+    <Content Include="Content\js\framework\material-design-lite.min.js">
+      <DependentUpon>material-design-lite.js</DependentUpon>
+    </Content>
+    <Content Include="Content\js\framework\modernizr.js" />
+    <Content Include="Content\js\framework\modernizr.min.js">
+      <DependentUpon>modernizr.js</DependentUpon>
+    </Content>
+    <Content Include="Content\js\framework\swfobject.js" />
+    <Content Include="Content\js\framework\swfobject.min.js">
+      <DependentUpon>swfobject.js</DependentUpon>
+    </Content>
+    <Content Include="Content\js\framework\swiper.js" />
+    <Content Include="Content\js\framework\swiper.min.js">
+      <DependentUpon>swiper.js</DependentUpon>
+    </Content>
+    <Content Include="Content\js\geral.js" />
+    <Content Include="Content\js\geral.min.js">
+      <DependentUpon>geral.js</DependentUpon>
+    </Content>
+    <Content Include="Content\js\login-offline.min.js">
+      <DependentUpon>login-offline.js</DependentUpon>
+    </Content>
+    <Content Include="Content\js\login.js" />
+    <Content Include="Content\js\login.min.js">
+      <DependentUpon>login.js</DependentUpon>
+    </Content>
+    <Content Include="Content\js\framework\md5.js" />
+    <Content Include="Content\js\framework\md5.min.js">
+      <DependentUpon>md5.js</DependentUpon>
+    </Content>
+    <Content Include="Content\js\montar-projeto.js" />
+    <Content Include="Content\js\montar-projeto.min.js">
+      <DependentUpon>montar-projeto.js</DependentUpon>
+    </Content>
+    <Content Include="Content\js\offline.js" />
+    <Content Include="Content\js\offline.min.js">
+      <DependentUpon>offline.js</DependentUpon>
+    </Content>
+    <Content Include="Content\js\painel.js" />
+    <Content Include="Content\js\painel.min.js">
+      <DependentUpon>painel.js</DependentUpon>
+    </Content>
+    <Content Include="Content\js\pedidos-pendentes.js" />
+    <Content Include="Content\js\pedidos-pendentes.min.js">
+      <DependentUpon>pedidos-pendentes.js</DependentUpon>
+    </Content>
+    <Content Include="Content\js\produtos-offline.js" />
+    <Content Include="Content\js\produtos-offline.min.js">
+      <DependentUpon>produtos-offline.js</DependentUpon>
+    </Content>
+    <Content Include="Content\js\produtos.js" />
+    <Content Include="Content\js\produtos.min.js">
+      <DependentUpon>produtos.js</DependentUpon>
+    </Content>
+    <Content Include="Content\js\projetos-em-andamento.js" />
+    <Content Include="Content\js\projetos-em-andamento.min.js">
+      <DependentUpon>projetos-em-andamento.js</DependentUpon>
+    </Content>
+    <Content Include="Content\js\projetos-finalizados.js" />
+    <Content Include="Content\js\projetos-finalizados.min.js">
+      <DependentUpon>projetos-finalizados.js</DependentUpon>
+    </Content>
+    <Content Include="Content\js\supervisor.min.js">
+      <DependentUpon>supervisor.js</DependentUpon>
+    </Content>
+    <Content Include="Content\js\util.js" />
+    <Content Include="Content\js\util.min.js">
+      <DependentUpon>util.js</DependentUpon>
+    </Content>
+    <Content Include="Global.asax" />
+    <Content Include="Content\fontes\material-icons-lite.woff2" />
+    <Content Include="Content\js\framework\material-design-lite.min.js.map">
+      <DependentUpon>material-design-lite.js</DependentUpon>
+    </Content>
+    <Content Include="Web.config">
+      <SubType>Designer</SubType>
+    </Content>
+    <Content Include="Web.Debug.config">
+      <DependentUpon>Web.config</DependentUpon>
+    </Content>
+    <Content Include="Web.Release.config">
+      <DependentUpon>Web.config</DependentUpon>
+    </Content>
+    <Content Include="Views\Web.config" />
+    <Content Include="Views\Painel\CadastrarTurma.cshtml" />
+    <Content Include="Views\Gerencial\DetalhesPedido.cshtml" />
+    <Content Include="Views\Support\Index.cshtml" />
+    <Content Include="Views\Shared\ProdutoItem.cshtml" />
+    <Content Include="Views\Shared\Produtos.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\PH.Formatura.BLL\PH.Formatura.BLL.csproj">
+      <Project>{0e6a5394-99a8-4d0e-8c91-62ee2a914ed7}</Project>
+      <Name>PH.Formatura.BLL</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\PH.Formatura.Cache\PH.Formatura.Cache.csproj">
+      <Project>{0d2c474e-de97-4ef8-b71d-a1d394987fac}</Project>
+      <Name>PH.Formatura.Cache</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\PH.Formatura.DAL\PH.Formatura.DAL.csproj">
+      <Project>{973a56d9-1b64-4bd2-8bbe-cefa8b2c269a}</Project>
+      <Name>PH.Formatura.DAL</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\PH.Formatura.DTO\PH.Formatura.DTO.csproj">
+      <Project>{9dec0afd-316f-42b4-ba53-8ef0b78596c0}</Project>
+      <Name>PH.Formatura.DTO</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\PH.Formatura.Log\PH.Formatura.Log.csproj">
+      <Project>{297eda61-ec37-4c2e-8da8-c9fd605252c9}</Project>
+      <Name>PH.Formatura.Log</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\PH.Core.Cache\PH.Core.Cache.csproj">
+      <Project>{2622b09e-2649-4a58-97b6-002a8759355f}</Project>
+      <Name>PH.Core.Cache</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Error\Index.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Shared\_Layout.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Content\js\geral.min.js.map">
+      <DependentUpon>geral.js</DependentUpon>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Content\js\framework\bootstrap.min.js.map">
+      <DependentUpon>bootstrap.js</DependentUpon>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Content\js\framework\jquery.min.js.map">
+      <DependentUpon>jquery.js</DependentUpon>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Login\Index.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Shared\Header.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Shared\Footer.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Content\js\framework\jquery-ui.min.js.map">
+      <DependentUpon>jquery-ui.js</DependentUpon>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Content\js\adversentment.min.js.map">
+      <DependentUpon>adversentment.js</DependentUpon>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Content\js\albuns.min.js.map">
+      <DependentUpon>albuns.js</DependentUpon>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Content\js\login.min.js.map">
+      <DependentUpon>login.js</DependentUpon>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Content\js\framework\modernizr.min.js.map">
+      <DependentUpon>modernizr.js</DependentUpon>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Content\js\projetos-em-andamento.min.js.map">
+      <DependentUpon>projetos-em-andamento.js</DependentUpon>
+    </Content>
+    <Content Include="Content\js\projetos-finalizados.min.js.map">
+      <DependentUpon>projetos-finalizados.js</DependentUpon>
+    </Content>
+    <Content Include="Content\js\painel.min.js.map">
+      <DependentUpon>painel.js</DependentUpon>
+    </Content>
+    <Content Include="Content\js\montar-projeto.min.js.map">
+      <DependentUpon>montar-projeto.js</DependentUpon>
+    </Content>
+    <Content Include="Content\js\esqueci-senha.min.js.map">
+      <DependentUpon>esqueci-senha.js</DependentUpon>
+    </Content>
+    <Content Include="Content\js\extrato.min.js.map">
+      <DependentUpon>extrato.js</DependentUpon>
+    </Content>
+    <Content Include="Content\js\cadastrar-usuario.min.js.map">
+      <DependentUpon>cadastrar-usuario.js</DependentUpon>
+    </Content>
+    <Content Include="Content\js\framework\swfobject.min.js.map">
+      <DependentUpon>swfobject.js</DependentUpon>
+    </Content>
+    <Content Include="Content\js\cadastros.min.js.map">
+      <DependentUpon>cadastro.js</DependentUpon>
+    </Content>
+    <Content Include="Content\js\framework\swiper.min.js.map">
+      <DependentUpon>swiper.js</DependentUpon>
+    </Content>
+    <Content Include="Content\js\util.min.js.map">
+      <DependentUpon>util.js</DependentUpon>
+    </Content>
+    <Content Include="Content\css\fonts\glyphicons-halflings-regular.eot" />
+    <Content Include="Content\css\fonts\glyphicons-halflings-regular.ttf" />
+    <Content Include="Content\css\fonts\glyphicons-halflings-regular.woff" />
+    <Content Include="Content\css\fonts\glyphicons-halflings-regular.woff2" />
+    <Content Include="Content\js\agendamento-validacao-fotos.min.js.map">
+      <DependentUpon>agendamento-validacao-fotos.js</DependentUpon>
+    </Content>
+    <Content Include="Content\js\framework\md5.min.js.map">
+      <DependentUpon>md5.js</DependentUpon>
+    </Content>
+    <Content Include="Content\js\offline.min.js.map">
+      <DependentUpon>offline.js</DependentUpon>
+    </Content>
+    <Content Include="Content\js\framework\jquery.cookie.min.js.map">
+      <DependentUpon>jquery.cookie.js</DependentUpon>
+    </Content>
+    <Content Include="Content\bootstrap-table-master\src\bootstrap-table.min.js.map" />
+    <Content Include="Content\bootstrap-table-master\src\extensions\accent-neutralise\extension.json" />
+    <Content Include="Content\bootstrap-table-master\src\extensions\accent-neutralise\README.md" />
+    <Content Include="Content\bootstrap-table-master\src\extensions\cookie\extension.json" />
+    <Content Include="Content\bootstrap-table-master\src\extensions\cookie\README.md" />
+    <Content Include="Content\bootstrap-table-master\src\extensions\editable\extension.json" />
+    <Content Include="Content\bootstrap-table-master\src\extensions\editable\README.md" />
+    <Content Include="Content\bootstrap-table-master\src\extensions\export\extension.json" />
+    <Content Include="Content\bootstrap-table-master\src\extensions\export\README.md" />
+    <Content Include="Content\bootstrap-table-master\src\extensions\filter-control\extension.json" />
+    <Content Include="Content\bootstrap-table-master\src\extensions\filter-control\README.md" />
+    <Content Include="Content\bootstrap-table-master\src\extensions\filter\extension.json" />
+    <Content Include="Content\bootstrap-table-master\src\extensions\filter\README.md" />
+    <Content Include="Content\bootstrap-table-master\src\extensions\flat-json\extension.json" />
+    <Content Include="Content\bootstrap-table-master\src\extensions\flat-json\README.md" />
+    <Content Include="Content\bootstrap-table-master\src\extensions\group-by-v2\extension.json" />
+    <Content Include="Content\bootstrap-table-master\src\extensions\group-by-v2\README.md" />
+    <Content Include="Content\bootstrap-table-master\src\extensions\group-by\extension.json" />
+    <Content Include="Content\bootstrap-table-master\src\extensions\group-by\README.md" />
+    <Content Include="Content\bootstrap-table-master\src\extensions\key-events\extension.json" />
+    <Content Include="Content\bootstrap-table-master\src\extensions\key-events\README.md" />
+    <Content Include="Content\bootstrap-table-master\src\extensions\mobile\extension.json" />
+    <Content Include="Content\bootstrap-table-master\src\extensions\mobile\README.md" />
+    <Content Include="Content\bootstrap-table-master\src\extensions\multiple-search\extension.json" />
+    <Content Include="Content\bootstrap-table-master\src\extensions\multiple-search\README.md" />
+    <Content Include="Content\bootstrap-table-master\src\extensions\multiple-sort\extension.json" />
+    <Content Include="Content\bootstrap-table-master\src\extensions\multiple-sort\README.md" />
+    <Content Include="Content\bootstrap-table-master\src\extensions\natural-sorting\extension.json" />
+    <Content Include="Content\bootstrap-table-master\src\extensions\natural-sorting\README.md" />
+    <Content Include="Content\bootstrap-table-master\src\extensions\reorder-columns\extension.json" />
+    <Content Include="Content\bootstrap-table-master\src\extensions\reorder-columns\README.md" />
+    <Content Include="Content\bootstrap-table-master\src\extensions\reorder-rows\extension.json" />
+    <Content Include="Content\bootstrap-table-master\src\extensions\reorder-rows\README.md" />
+    <Content Include="Content\bootstrap-table-master\src\extensions\resizable\extension.json" />
+    <Content Include="Content\bootstrap-table-master\src\extensions\resizable\README.md" />
+    <Content Include="Content\bootstrap-table-master\src\extensions\sticky-header\extension.json" />
+    <Content Include="Content\bootstrap-table-master\src\extensions\sticky-header\README.md" />
+    <Content Include="Content\bootstrap-table-master\src\extensions\toolbar\extension.json" />
+    <Content Include="Content\bootstrap-table-master\src\extensions\toolbar\README.md" />
+    <Content Include="Content\bootstrap-table-master\src\locale\bootstrap-table-en-US.js.template" />
+    <Content Include="Content\bootstrap-table-master\src\locale\README.md" />
+    <Content Include="Content\js\checkout.min.js.map">
+      <DependentUpon>checkout.js</DependentUpon>
+    </Content>
+    <Content Include="Content\js\aluno.min.js.map">
+      <DependentUpon>aluno.js</DependentUpon>
+    </Content>
+    <Content Include="Content\js\framework\jquery.datetimepicker.full.min.js.map">
+      <DependentUpon>jquery.datetimepicker.full.js</DependentUpon>
+    </Content>
+    <Content Include="Content\js\DbControl.min.js.map">
+      <DependentUpon>DbControl.js</DependentUpon>
+    </Content>
+    <Content Include="Content\js\aluno-offline.min.js.map">
+      <DependentUpon>aluno-offline.js</DependentUpon>
+    </Content>
+    <Content Include="Content\js\produtos-offline.min.js.map">
+      <DependentUpon>produtos-offline.js</DependentUpon>
+    </Content>
+    <Content Include="Content\js\produtos.min.js.map">
+      <DependentUpon>produtos.js</DependentUpon>
+    </Content>
+    <Content Include="Content\js\agendamento-validacao-fotos-offline.min.js.map">
+      <DependentUpon>agendamento-validacao-fotos-offline.js</DependentUpon>
+    </Content>
+    <Content Include="Content\js\checkout_classes.min.js.map">
+      <DependentUpon>checkout_classes.js</DependentUpon>
+    </Content>
+    <Content Include="Content\js\login-offline.min.js.map">
+      <DependentUpon>login-offline.js</DependentUpon>
+    </Content>
+    <Content Include="Content\js\pedidos-pendentes.min.js.map">
+      <DependentUpon>pedidos-pendentes.js</DependentUpon>
+    </Content>
+    <Content Include="Content\js\checkout_confirm.min.js.map">
+      <DependentUpon>checkout_confirm.js</DependentUpon>
+    </Content>
+    <Content Include="Content\js\supervisor.min.js.map">
+      <DependentUpon>supervisor.js</DependentUpon>
+    </Content>
+    <Content Include="Content\js\gerencial.min.js.map">
+      <DependentUpon>gerencial.js</DependentUpon>
+    </Content>
+    <Content Include="Content\js\detalhesPedido.min.js.map">
+      <DependentUpon>detalhesPedido.js</DependentUpon>
+    </Content>
+    <Content Include="Content\js\framework\isotope.pkgd.min.js.map">
+      <DependentUpon>isotope.pkgd.js</DependentUpon>
+    </Content>
+    <Content Include="Content\js\painel-offline.min.js.map">
+      <DependentUpon>painel-offline.js</DependentUpon>
+    </Content>
+    <Content Include="Content\bootstrap-table-master\src\locale\bootstrap-table-pt-BR.min.js.map">
+      <DependentUpon>bootstrap-table-pt-BR.js</DependentUpon>
+    </Content>
+    <Content Include="Content\bootstrap-table-master\src\locale\bootstrap-table-en-US.min.js.map">
+      <DependentUpon>bootstrap-table-en-US.js</DependentUpon>
+    </Content>
+    <Content Include="Content\bootstrap-table-master\src\locale\bootstrap-table-es-ES.min.js.map">
+      <DependentUpon>bootstrap-table-es-ES.js</DependentUpon>
+    </Content>
+    <Content Include="Content\js\framework\bootstrap-select.min.js.map">
+      <DependentUpon>bootstrap-select.js</DependentUpon>
+    </Content>
+    <Content Include="Content\fontes\Signika-Bold.woff2" />
+    <Content Include="Content\fontes\Signika-Bold_ext.woff2" />
+    <Content Include="Content\fontes\Signika-Light.woff2" />
+    <Content Include="Content\fontes\Signika-Light_etx.woff2" />
+    <Content Include="Content\fontes\Signika-Regular.woff2" />
+    <Content Include="Content\fontes\Signika-Regular_ext.woff2" />
+    <Content Include="Content\fontes\Signika-Semibold.woff2" />
+    <Content Include="Content\fontes\Signika-Semibold_ext.woff2" />
+    <None Include="Properties\PublishProfiles\1.pubxml" />
+    <None Include="Properties\PublishProfiles\Alan Bacha.pubxml" />
+    <None Include="Properties\PublishProfiles\Albuns.pubxml" />
+    <None Include="Properties\PublishProfiles\Publish.pubxml" />
+    <None Include="Properties\PublishProfiles\Publisher.pubxml" />
+    <Content Include="Views\Painel\Index.cshtml" />
+    <Content Include="Views\Painel\ProjetosEmAndamento.cshtml" />
+    <Content Include="Views\Painel\ProjetosFinalizados.cshtml" />
+    <Content Include="Views\Painel\Extrato.cshtml" />
+    <Content Include="Views\Shared\Breadcrumb.cshtml" />
+    <Content Include="Settings\Log4Net.config" />
+    <Content Include="Views\Painel\MontarProjeto.cshtml" />
+    <Content Include="Views\Login\EsqueciMinhaSenha.cshtml" />
+    <Content Include="Views\Painel\CadastrarUsuario.cshtml" />
+    <Content Include="Views\Albuns\openbook.cshtml" />
+    <Content Include="Views\Painel\Cadastro.cshtml" />
+    <Content Include="Views\Agendamento\ValidacaoFotos.cshtml" />
+    <Content Include="Views\Painel\Alunos.cshtml" />
+    <Content Include="Views\Offline\Alunos.cshtml" />
+    <Content Include="Views\Checkout\Index.cshtml" />
+    <Content Include="Views\Produtos\Index.cshtml" />
+    <Content Include="Views\Alunos\Index.cshtml" />
+    <Content Include="Views\Offline\Produtos.cshtml" />
+    <Content Include="Views\Offline\ValidacaoFotos.cshtml" />
+    <Content Include="Views\Checkout\Confirm.cshtml" />
+    <Content Include="Views\Offline\Painel.cshtml" />
+    <Content Include="Views\Offline\PedidosPendentes.cshtml" />
+    <Content Include="Views\Pedidos\Realizados.cshtml" />
+    <Content Include="Views\Supervisor\AssociaAlunoVendedor.cshtml" />
+    <Content Include="Views\Gerencial\Pedidos.cshtml" />
+    <Content Include="Views\Gerencial\FotosPedidos.cshtml" />
+    <Content Include="Views\Gerencial\FaturamentoDiario.cshtml" />
+    <Content Include="Views\Gerencial\FaturamentoMensal.cshtml" />
+    <Content Include="Views\Gerencial\IntegracaoCP7Vendas.cshtml" />
+    <Content Include="Views\Gerencial\IntegracaoCP7VendasItens.cshtml" />
+    <Content Include="Views\Gerencial\IntegracaoCP7VendasParcela.cshtml" />
+    <None Include="Properties\PublishProfiles\teste.pubxml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Content\js\framework\locales\" />
+  </ItemGroup>
+  <PropertyGroup>
+    <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
+    <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
+  </PropertyGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <Import Project="$(VSToolsPath)\WebApplications\Microsoft.WebApplication.targets" Condition="'$(VSToolsPath)' != ''" />
+  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v10.0\WebApplications\Microsoft.WebApplication.targets" Condition="false" />
+  <Target Name="MvcBuildViews" AfterTargets="AfterBuild" Condition="'$(MvcBuildViews)'=='true'">
+    <AspNetCompiler VirtualPath="temp" PhysicalPath="$(WebProjectOutputDir)" />
+  </Target>
+  <ProjectExtensions>
+    <VisualStudio>
+      <FlavorProperties GUID="{349c5851-65df-11da-9384-00065b846f21}">
+        <WebProjectProperties>
+          <UseIIS>False</UseIIS>
+          <AutoAssignPort>False</AutoAssignPort>
+          <DevelopmentServerPort>48977</DevelopmentServerPort>
+          <DevelopmentServerVPath>/</DevelopmentServerVPath>
+          <IISUrl>
+          </IISUrl>
+          <NTLMAuthentication>False</NTLMAuthentication>
+          <UseCustomServer>False</UseCustomServer>
+          <CustomServerUrl>
+          </CustomServerUrl>
+          <SaveServerSettingsInUserFile>False</SaveServerSettingsInUserFile>
+        </WebProjectProperties>
+      </FlavorProperties>
+    </VisualStudio>
+  </ProjectExtensions>
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target> -->
+</Project>

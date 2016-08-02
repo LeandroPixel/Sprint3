@@ -1,0 +1,41 @@
+﻿@media (min-width: 1200px){
+    /*VALORES DEFAULT*/
+}
+
+@media (min-width: 1000px) and (max-width: 1150px) {
+
+    .page-header-fotos {
+        font-size: 14px;
+    }
+
+    .btn-default-border-rounded{
+        font-size: 12px;
+    }
+}
+
+@media (max-width: 999px) {
+
+    .page-header-fotos .dvproduto{
+        float: none;
+        width: auto;
+        margin: 0em 0em 0em 0em;
+    }
+
+    .page-header-fotos {
+        font-size: 12px;
+    }
+
+    .page-header-fotos .dvSelecao{
+        width: 55%;
+        margin: 10px 0px 0px 0px;
+    }
+
+    .page-header-fotos .btn-eu-quero{
+        font-size:12px;
+    }
+
+    .page-header-fotos .dvProsseguir{
+        margin: -0.5em 0em 0em 0em;
+    }
+
+}

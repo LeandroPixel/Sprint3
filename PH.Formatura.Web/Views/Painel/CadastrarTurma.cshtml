@@ -1,0 +1,94 @@
+﻿@{
+	ViewBag.Title = HttpContext.Current.Application["Site_Name"] + " | Cadastrar Turma";
+
+	ViewBag.MinCSS = HttpContext.Current.Application["MIN_CSS"].ToString() == "1" ? ".min" : "";
+	ViewBag.MinJS = HttpContext.Current.Application["MIN_JS"].ToString() == "1" ? ".min" : "";
+	ViewBag.VersaoCSS = HttpContext.Current.Application["VERSAO_CSS"].ToString();
+	ViewBag.VersaoJS = HttpContext.Current.Application["VERSAO_JS"].ToString();
+
+	ViewBag.Breadcrumb = new Dictionary<string, string>();
+	ViewBag.Breadcrumb.Add("Painel Administrativo", Url.Action("Index"));
+	ViewBag.Breadcrumb.Add("Cadastrar usuário", "");
+
+	Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@section CSSHeader{
+	<link rel="stylesheet" href="~/Content/css/cadastrar-turma@(ViewBag.MinCSS).css?v=@(ViewBag.VersaoCSS)" />
+}
+@section ScriptHeader{
+	@*<script type="text/javascript" src="~/Content/js/login@(ViewBag.MinJS).js?v=@(ViewBag.VersaoJS)"></script>*@
+}
+
+<section id="section-principal">
+	<div class="conteudo-geral">
+		<div class="conteudo-cadastrar">
+			<div class="div-cadastrar-turma">
+				<h3>Dados da Instituição e da Turma</h3>
+				<form class="form-cadastrar-turma">
+					<div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label mdl-cell--8-col">
+						<input class="mdl-textfield__input" type="text" id="tbx-instituicao" required />
+						<label class="mdl-textfield__label" for="tbx-instituicao">Nome da Instituição de Ensino</label>
+					</div>
+					<div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label mdl-cell--4-col">
+						<input class="mdl-textfield__input" type="text" id="tbx-curso" required />
+						<label class="mdl-textfield__label" for="tbx-curso">Curso</label>
+					</div>
+					<div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label mdl-cell--9-col">
+						<input class="mdl-textfield__input" type="text" id="tbx-endereco" required />
+						<label class="mdl-textfield__label" for="tbx-endereco">Endereço</label>
+					</div>
+					<div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label mdl-cell--3-col">
+						<input class="mdl-textfield__input" type="tel" id="tbx-telefone" required />
+						<label class="mdl-textfield__label" for="tbx-telefone">Telefone</label>
+					</div>
+					<div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label mdl-cell--4-col">
+						<input class="mdl-textfield__input" type="tel" id="tbx-turma" required />
+						<label class="mdl-textfield__label" for="tbx-turma">Nome/Número da Turma</label>
+					</div>
+					<div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label mdl-cell--5-col">
+						<input class="mdl-textfield__input" type="tel" id="tbx-vendedor-comum" required />
+						<label class="mdl-textfield__label" for="tbx-vendedor-comum">Atribuir Vendedor comum a todos (Opcional)</label>
+					</div>
+				</form>
+			</div>
+			<div class="div-cadastrar-aluno">
+				<h3 class="mdl-cell--8-col">Dados dos Alunos</h3>
+				<button class="mdl-cell--4-col mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect btn-adicionar-aluno">Adicionar Novo Aluno</button>
+				<form class="form-cadastrar-aluno" method="post">
+					<button id="demo-menu-lower-right" class="mdl-button mdl-js-button mdl-button--icon"><i class="material-icons">more_vert</i></button>
+					<ul class="mdl-menu mdl-menu--bottom-right mdl-js-menu mdl-js-ripple-effect" for="demo-menu-lower-right">
+						<li class="mdl-menu__item">Editar</li>
+						<li class="mdl-menu__item" disabled>Disabled Action</li>
+						<li class="mdl-menu__item">Excluir</li>
+					</ul>
+					<div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label mdl-cell--7-col">
+						<input class="mdl-textfield__input" type="text" id="tbx-nome-aluno" required />
+						<label class="mdl-textfield__label" for="tbx-nome-aluno">Nome do aluno</label>
+					</div>
+					<div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label mdl-cell--5-col">
+						<input class="mdl-textfield__input" type="email" id="tbx-email-aluno" required />
+						<label class="mdl-textfield__label" for="tbx-email-aluno">E-mail</label>
+					</div>
+					<div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label mdl-cell--6-col">
+						<input class="mdl-textfield__input" type="text" id="tbx-endereco-aluno" required />
+						<label class="mdl-textfield__label" for="tbx-endereco-aluno">Endereço</label>
+					</div>
+					<div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label mdl-cell--3-col">
+						<input class="mdl-textfield__input" type="tel" id="tbx-telefone-aluno" required />
+						<label class="mdl-textfield__label" for="tbx-telefone-aluno">Telefone fixo</label>
+					</div>
+					<div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label mdl-cell--3-col">
+						<input class="mdl-textfield__input" type="tel" id="tbx-celular-aluno" required />
+						<label class="mdl-textfield__label" for="tbx-celular-aluno">Telefone celular</label>
+					</div>
+					<div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label mdl-cell--4-col">
+						<input class="mdl-textfield__input" type="text" id="tbx-matricula-aluno" required />
+						<label class="mdl-textfield__label" for="tbx-matricula-aluno">Matrícula/RG</label>
+					</div>
+					<button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect btn-salvar-aluno">Salvar</button>
+				</form>
+			</div>
+			<button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored btn-cadastrar-turma">Cadastrar turma</button>
+		</div>
+	</div>
+</section>

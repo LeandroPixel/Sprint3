@@ -1,0 +1,70 @@
+﻿@{    
+	Layout = "~/Views/Shared/_Layout.cshtml";
+
+	ViewBag.Title = HttpContext.Current.Application["Site_Name"] + " | Faturamento Diário";
+
+	ViewBag.MinCSS = HttpContext.Current.Application["MIN_CSS"].ToString() == "1" ? ".min" : "";
+	ViewBag.MinJS = HttpContext.Current.Application["MIN_JS"].ToString() == "1" ? ".min" : "";
+	ViewBag.VersaoCSS = HttpContext.Current.Application["VERSAO_CSS"].ToString();
+	ViewBag.VersaoJS = HttpContext.Current.Application["VERSAO_JS"].ToString();
+	ViewBag.MinCSS_FRAMEWORK = HttpContext.Current.Application["MIN_CSS_FRAMEWORK"].ToString() == "1" ? ".min" : "";
+	ViewBag.MinJS_FRAMEWORK = HttpContext.Current.Application["MIN_JS_FRAMEWORK"].ToString() == "1" ? ".min" : "";
+
+	ViewBag.Breadcrumb = new Dictionary<string, string>();
+	ViewBag.Breadcrumb.Add("Painel Administrativo", Url.Action("Index", "Painel"));
+	ViewBag.Breadcrumb.Add("Faturamento Diário", "");
+
+	var Url_API_Lista_Faturamento_Diario = Url.Action("ListFaturamentoDiario", "api/Gerencial");
+}
+@section CSSHeader{
+	<link rel="stylesheet" href="~/Content/bootstrap-table-master/src/bootstrap-table@(ViewBag.MinCSS_FRAMEWORK).css?v=@(ViewBag.VersaoCSS)" />
+	<link rel="stylesheet" href="~/Content/css/gerencial@(ViewBag.MinCSS_FRAMEWORK).css?v=@(ViewBag.VersaoCSS)" />
+}
+@section ScriptHeader{
+	<script type="text/javascript" src="~/Content/bootstrap-table-master/src/bootstrap-table@(ViewBag.MinJS_FRAMEWORK).js?v=@(ViewBag.VersaoJS)"></script>
+	<script type="text/javascript" src="~/Content/bootstrap-table-master/src/locale/bootstrap-table-pt-BR@(ViewBag.MinJS).js?v=@(ViewBag.VersaoJS)"></script>
+	<script type="text/javascript" src="~/Content/js/gerencial@(ViewBag.MinJS).js?v=@(ViewBag.VersaoJS)"></script>   
+
+	<script>
+		BootstrapTable = '#table-faturamento-diario-list';
+	</script>
+}
+<section id="section-principal">    
+	<div class="conteudo-geral">                
+		<div class="conteudo-alunos mdl-tabs mdl-js-tabs mdl-js-ripple-effect">
+			<nav class="menu-tipo-pessoa mdl-navigation mdl-tabs__tab-bar">
+				<a href="#div-faturamento-diario-list" class="mdl-tabs__tab is-active">Faturamento Diário</a>				
+			</nav>
+
+			<div class="mdl-tabs__panel is-active" id="div-faturamento-diario-list">
+				<table id="table-faturamento-diario-list"
+					data-toggle="table"
+					data-locale="pt-BR"
+					data-url="@(Url_API_Lista_Faturamento_Diario)"          
+					data-ajax-options="oUtil.GetConfigAjaxBootstrapTable"          
+					data-sort-name="Usuario_Tipo"
+					data-sort-order="asc"
+					data-show-refresh="true"
+					data-show-toggle="false"
+					data-show-columns="true"
+					data-search="true"
+                    data-trim-on-search="false"
+					data-pagination="true"
+					data-page-size="20"
+					data-page-list="[10,20,50]"
+				>
+					<thead>												
+						<tr>
+							<th data-sortable="false" data-field="periodo">Período</th>
+							<th data-sortable="false" data-field="Pedidos">Pedidos</th>
+							<th data-sortable="false" data-field="Total">Total</th>
+							<th data-sortable="false" data-field="FormaPgto">Tipo Pagamento</th>
+							<th data-sortable="false" data-field="Parcelas">Parcelas</th>
+						</tr>
+					</thead>
+				</table>
+			</div>
+		</div>        
+	</div>
+</section>
+

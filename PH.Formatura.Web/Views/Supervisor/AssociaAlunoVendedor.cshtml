@@ -1,0 +1,79 @@
+﻿@{    
+	Layout = "~/Views/Shared/_Layout.cshtml";
+
+	ViewBag.Title = HttpContext.Current.Application["Site_Name"] + " | Associar Alunos a Vendedores";
+
+	ViewBag.MinCSS = HttpContext.Current.Application["MIN_CSS"].ToString() == "1" ? ".min" : "";
+	ViewBag.MinJS = HttpContext.Current.Application["MIN_JS"].ToString() == "1" ? ".min" : "";
+	ViewBag.VersaoCSS = HttpContext.Current.Application["VERSAO_CSS"].ToString();
+	ViewBag.VersaoJS = HttpContext.Current.Application["VERSAO_JS"].ToString();
+	ViewBag.MinCSS_FRAMEWORK = HttpContext.Current.Application["MIN_CSS_FRAMEWORK"].ToString() == "1" ? ".min" : "";
+	ViewBag.MinJS_FRAMEWORK = HttpContext.Current.Application["MIN_JS_FRAMEWORK"].ToString() == "1" ? ".min" : "";
+
+	ViewBag.Breadcrumb = new Dictionary<string, string>();
+	ViewBag.Breadcrumb.Add("Painel Administrativo", Url.Action("Index", "Painel"));
+	ViewBag.Breadcrumb.Add("Associar Alunos a Vendedores", "");
+
+	var Url_API_Lista_Alunos = Url.Action("ListAlunos", "api/Supervisor");
+
+	List<PH.Formatura.DTO.Supervisor.Vendedor> Vendedor = (List<PH.Formatura.DTO.Supervisor.Vendedor>)ViewBag.Vendedor;
+}
+@section CSSHeader{
+	<link rel="stylesheet" href="~/Content/bootstrap-table-master/src/bootstrap-table@(ViewBag.MinCSS_FRAMEWORK).css?v=@(ViewBag.VersaoCSS)">
+}
+@section ScriptHeader{
+	<script type="text/javascript" src="~/Content/bootstrap-table-master/src/bootstrap-table@(ViewBag.MinJS_FRAMEWORK).js?v=@(ViewBag.VersaoJS)"></script>
+	<script type="text/javascript" src="~/Content/bootstrap-table-master/src/locale/bootstrap-table-pt-BR@(ViewBag.MinJS).js?v=@(ViewBag.VersaoJS)"></script>
+	<script type="text/javascript" src="~/Content/js/supervisor@(ViewBag.MinJS).js?v=@(ViewBag.VersaoJS)"></script>   
+	
+	<script>		
+		var ListVendedor = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(Vendedor));
+		var Url_API_Lista_Alunos = "@(Url_API_Lista_Alunos)";
+	</script>
+}
+<section id="section-principal">    
+	<div class="conteudo-geral">                
+		<div class="conteudo-alunos mdl-tabs mdl-js-tabs mdl-js-ripple-effect">
+			<nav class="menu-tipo-pessoa mdl-navigation mdl-tabs__tab-bar">
+				<a href="#div-associa-alunos-vendedor-list" class="mdl-tabs__tab is-active">Alunos Cadastrados</a>				
+			</nav>
+
+			<div class="mdl-tabs__panel is-active" id="div-associa-alunos-vendedor-list">
+				<table id="table-associa-alunos-vendedor-list"
+					data-toggle="table"
+					data-locale="pt-BR"
+					data-url="@(Url_API_Lista_Alunos)"          
+					data-ajax-options="oUtil.GetConfigAjaxBootstrapTable"          
+					data-sort-name="Usuario_Tipo"
+					data-sort-order="asc"
+					data-show-refresh="true"
+					data-show-toggle="false"
+					data-show-columns="true"
+					data-search="true"
+                    data-trim-on-search="false"
+					data-pagination="true"
+					data-page-size="20"
+					data-page-list="[10,20,50]"
+				>
+					<thead>
+						<tr>
+							<th data-sortable="false" data-field="AlunoID" data-switchable="false" data-card-visible="false" data-visible="false">AlunoID</th>
+							<th data-sortable="false" data-field="AlunoTurmaID" data-switchable="false" data-card-visible="false" data-visible="false">AlunoTurmaID</th>                            
+							<th data-sortable="false" data-field="VendedorID" data-switchable="false" data-card-visible="false" data-visible="false">VendedorID</th>
+							<th data-sortable="false" data-field="TurmaID" data-switchable="false" data-card-visible="false" data-visible="false">TurmaID</th>
+							<th data-sortable="false" data-field="StatusIDAgendamento" data-switchable="false" data-card-visible="false" data-visible="false">StatusIDAgendamento</th>                            
+							<th data-sortable="false" data-field="AlbumID" data-switchable="false" data-card-visible="false" data-visible="false">AlbumID</th>                            
+							<th data-sortable="true" data-field="NomeTurma">Turma</th>
+							<th data-sortable="true" data-field="NomeAluno">Aluno</th>
+							<th data-sortable="true" data-field="TelefoneAluno">Telefone</th>			
+							<th data-sortable="true" data-field="EnderecoAluno">Endereço</th>
+							<th data-sortable="true" data-field="State">UF</th>
+							<th data-sortable="true" data-field="NomeVendedor" data-formatter="oSupervisor.MostrarVendedores">Vendedor</th>
+						</tr>
+					</thead>
+				</table>
+			</div>
+		</div>        
+	</div>
+</section>
+

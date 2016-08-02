@@ -1,0 +1,72 @@
+﻿@{
+    var item = Model;
+    string _checked = "";
+    string _disable_checked = "";
+    bool showItem = Convert.ToBoolean(ViewData["showItem"]);
+    string appPath = ViewData["appPath"].ToString();    
+    string thumb = appPath == "/" ? item.ImgThumb : appPath + item.ImgThumb;
+    string main = appPath == "/" ? item.ImgMain : appPath + item.ImgMain;
+    int minQtd = 0;
+    string disabledMin = "";
+    if (item.QtdProductsCart == minQtd)
+    {
+        disabledMin = "disabled=disabled";   
+    }
+    if (item.ExibirListaProdutos)
+    {
+        _checked = "";                                        
+        if (item.QtdProductsCart > 0) { _checked = "checked"; };
+        if (item.ProdutoObrigatorio)
+        {
+            _checked = "checked";
+            _disable_checked = "disabled='disabled'";
+        }
+        <li class="@("li-product-"+item.ProductID) @(showItem || _checked != "" ? "" : "hidden")">
+            <div class="zoom-img" img_zoom_path="@main">
+                <i class="material-icons">zoom_in</i>
+            </div>                                            
+            <img class="thumb-img" src="@thumb" />                                            
+
+            <div class="infos">
+                <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="chk_@item.ProductID">
+			        <input type="checkbox" id="chk_@item.ProductID" class="mdl-checkbox__input jqProduct" @_checked data-prod_id="@item.ProductID" @_disable_checked />
+			        <span class="mdl-checkbox__label">
+                        <strong>@item.NomeProduto</strong>
+			        </span>
+		        </label>
+                <div class="txt-fotos-selecionadas">
+                    
+                     @Html.Raw(item.QtdMaxFoto > 0 ? "Fotos Selecionadas: <span id='qtd_fotos_"+ item.ProductID + "'>"+@item.QtdFotosSelecionadas + "</span>" : "&nbsp")
+                </div>
+                <div class="info-inferior">
+                    @if (@item.QtdMaxFoto > 0)
+                    {
+                        string parametros = PH.Formatura.Web.Controllers.ProdutosController.GetParamsValidaFotosProduto(item, ViewData["keyPixel"].ToString(), ViewData["AlunoTurmaID_Cript"].ToString());
+                        string urlValidacaoFotos = Url.Action("ValidacaoFotos", "Agendamento", new { a = parametros });
+                        <input type="hidden" id="urlValidacaoFotos_@item.ProductID" value="@urlValidacaoFotos" />
+                        <div class="cont-btn-visualizar">
+                            <a href="#" onclick="oProdutos.GotoValidation('@urlValidacaoFotos','_@item.ProductID')"  target="_self" class="ancora-acao ancora-acao-visualizar ancora-acao-btn" title="Visualizar">Selecionar Fotos</a>
+                        </div>                        
+                    }
+
+                    <div class="div-grupo-alterar-qtd">
+                        <div class="input-group">
+                            <span class="input-group-btn">
+                                <button type="button" class="btn btn-danger btn-number btn-number-@item.ProductID btn-number-minus-@item.ProductID" data-product-id="@item.ProductID" data-type="minus" data-field="quant[2]" @disabledMin>
+                                    <span class="glyphicon glyphicon-minus"></span>
+                                </button>
+                            </span>
+                            <input type="text" name="quant[2]" class="form-control input-number jqQtdProduct" id="txt_@item.ProductID" data-product-id="@item.ProductID" value="@item.QtdProductsCart" min="@minQtd" max="1000" >
+                            <span class="input-group-btn"> " 
+                                <button type="button" class="btn btn-success btn-number btn-number-@item.ProductID" data-product-id="@item.ProductID" data-type="plus" data-field="quant[2]">
+                                    <span class="glyphicon glyphicon-plus"></span> 
+                                </button> 
+                            </span>
+                        </div>
+                    </div>                    
+                </div>    
+                <div class="clear"></div>                                            
+            </div>                                            
+        </li>            
+    }
+}

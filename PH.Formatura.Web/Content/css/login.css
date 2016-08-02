@@ -1,0 +1,128 @@
+﻿.header-principal {
+	-moz-box-shadow: 0 0 1em rgba(255,255,255,0.75);
+	-webkit-box-shadow: 0 0 1em rgba(255,255,255,0.75);
+	box-shadow: 0 0 1em rgba(255,255,255,0.75);
+	background-color: #fff !important;
+}
+
+#section-principal {
+	/*background-image: url('http://isrv.pixelhouse.com.br/albuns/images/bg_login_fdv.jpg');*/
+    background-image: url(../images/bg_login_fdv.jpg);
+	-moz-background-origin: border-box;
+	-webkit-background-origin: border-box;
+	background-origin: border-box;
+	background-repeat: repeat;
+	-moz-background-clip: border-box;
+	-webkit-background-clip: border-box;
+	background-clip: border-box;
+	background-position: center;
+	background-size: initial;
+	overflow: hidden;
+}
+
+#section-principal .conteudo-geral {
+	width: 100%;
+	position: absolute;
+	height: 100%;
+	top: 0;
+	left: 0;
+	bottom: 0;
+	right: 0;
+	background-color: rgba(0,0,0,0.6);
+}
+
+#section-principal .conteudo-geral .conteudo-login {
+	display: -webkit-box;
+	display: -moz-box;
+	display: -ms-flexbox;
+	display: -webkit-flex;
+	display: flex;
+	height: 100%;
+	align-items: center;
+	justify-content: center;
+}
+
+#section-principal .conteudo-geral .conteudo-login .login-modal {
+	display: -webkit-box;
+	display: -moz-box;
+	display: -ms-flexbox;
+	display: -webkit-flex;
+	display: flex;
+	-ms-flex-direction: column;
+	-webkit-flex-direction: column;
+	flex-direction: column;
+	position: relative;
+	top: -3em;
+	text-align: center;
+	background-color: #fff;
+	padding: 0.5em 1em;
+	-moz-box-sizing: border-box;
+	-webkit-box-sizing: border-box;
+	box-sizing: border-box;
+	width: 24em;
+}
+
+#section-principal .conteudo-geral .conteudo-login .login-modal > * {
+	margin: 0.5em 0px;
+}
+
+#section-principal .conteudo-geral .conteudo-login .login-modal > h2,
+#section-principal .conteudo-geral .conteudo-login .login-modal input[type="submit"],
+#section-principal .conteudo-geral .conteudo-login .login-modal .esqueci-minha-senha {
+	color: #03a3af;
+}
+
+#section-principal .conteudo-geral .conteudo-login .login-modal input[type="text"],
+#section-principal .conteudo-geral .conteudo-login .login-modal input[type="password"],
+#section-principal .conteudo-geral .conteudo-login .login-modal input[type="submit"] {
+	height: 2.5em;
+	padding: 0 0.5em;
+	-moz-box-sizing: border-box;
+	-webkit-box-sizing: border-box;
+	box-sizing: border-box;
+	border: 1px solid #03a3af;
+	font-family: 'Signika', sans-serif;
+	font-size: 14pt;
+}
+
+#section-principal .conteudo-geral .conteudo-login .login-modal > h2 {
+	font-size: 200%;
+	font-weight: 600;
+	-ms-word-break: break-word;
+	word-break: break-word;
+	letter-spacing: -0.5pt;
+}
+
+#section-principal .conteudo-geral .conteudo-login .login-modal input[type="submit"] {
+	background-color: #439c42;
+	color: #fff;
+	font-size: 140%;
+}
+
+#section-principal .conteudo-geral .conteudo-login .login-modal a {
+	text-decoration: none;
+}
+
+#section-principal .conteudo-geral .conteudo-login .login-modal .span-esqueci-minha-senha {
+	color: #565656;
+}
+
+#section-principal .conteudo-geral .conteudo-login .login-modal input[type="submit"].ativo {
+	/*background-image: url('http://isrv.pixelhouse.com.br/albuns/images/loader.gif');*/
+    background-image: url(../images/loader.gif);
+	background-repeat: no-repeat;
+	background-position: center;
+}
+
+.rodape {
+	width: 100vw;
+	text-align: center;
+	position: fixed;
+	background-color: transparent;
+	bottom: 1.5em;
+	z-index: 5;
+}
+
+.rodape span {
+	color: #999;
+}

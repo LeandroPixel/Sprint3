@@ -1,0 +1,71 @@
+﻿@{
+	Layout = "~/Views/Shared/_Layout.cshtml";
+	ViewBag.Title = HttpContext.Current.Application["Site_Name"] + " | Projetos em andamento";
+	ViewBag.MinCSS = HttpContext.Current.Application["MIN_CSS"].ToString() == "1" ? ".min" : "";
+	ViewBag.MinJS = HttpContext.Current.Application["MIN_JS"].ToString() == "1" ? ".min" : "";
+	ViewBag.VersaoCSS = HttpContext.Current.Application["VERSAO_CSS"].ToString();
+	ViewBag.VersaoJS = HttpContext.Current.Application["VERSAO_JS"].ToString();
+
+	var ModeloDadosProjetosEmAndamento = (List<PH.Formatura.DTO.ProjetosEmAndamento>)Model;
+
+	ViewBag.Breadcrumb = new Dictionary<string, string>();
+	ViewBag.Breadcrumb.Add("Painel Administrativo", Url.Action("Index"));
+	ViewBag.Breadcrumb.Add("Projetos em andamento", "");
+}
+@section CSSHeader{
+	<link rel="stylesheet" href="~/Content/css/projetos-em-andamento@(ViewBag.MinCSS).css?v=@(ViewBag.VersaoCSS)" />
+}
+@section ScriptHeader{
+	<script type="text/javascript" src="~/Content/js/projetos-em-andamento@(ViewBag.MinJS).js?v=@(ViewBag.VersaoJS)"></script>
+	<script type="text/javascript">var DadosProjetosEmAndamento = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(ModeloDadosProjetosEmAndamento))</script>
+}
+
+<section id="section-principal">
+	<div class="conteudo-geral">
+		<div class="conteudo-projetos-em-andamento">
+			<table class="tabela-padrao table-projetos-em-andamento">
+				<thead>
+					<tr>
+					@{
+						if (ModeloDadosProjetosEmAndamento.Count == 0)
+						{
+							<th>
+								<span style="text-align: center;">Nenhum dado encontrado</span>
+							</th>
+						}
+						else
+						{
+							<th>Nome do álbum</th>
+							<th>Data</th>
+							<th>Modelo de álbum</th>
+							<th>Opções</th>
+						}
+					}
+					</tr>
+				</thead>
+				<tbody>
+					@foreach (var item in ModeloDadosProjetosEmAndamento)
+					{
+						<tr>
+							<td>
+								@item.Album_Nome
+							</td>
+							<td>
+								@item.Data
+							</td>
+							<td>
+								@item.Album_Modelo
+							</td>
+							<td>
+								<a href="~/Painel/EditarProjeto/?book_id=@item.ID" target="_blank" class="ancora-acao ancora-acao-editar ancora-acao-btn" title="Editar">Editar</a>
+								<a href="#" book_id="@item.ID" class="ancora-acao ancora-acao-excluir-projeto" title="Excluir">&nbsp;</a>
+							</td>
+						</tr>
+					}
+				</tbody>
+				<tfoot>
+				</tfoot>
+			</table>
+		</div>
+	</div>
+</section>

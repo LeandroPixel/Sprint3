@@ -1,0 +1,34 @@
+﻿@{
+    ViewBag.Title = HttpContext.Current.Application["Site_Name"] + " | Erro";
+    ViewBag.MinCSS = HttpContext.Current.Application["MIN_CSS"].ToString() == "1" ? ".min" : "";
+    ViewBag.MinJS = HttpContext.Current.Application["MIN_JS"].ToString() == "1" ? ".min" : "";
+    ViewBag.VersaoCSS = HttpContext.Current.Application["VERSAO_CSS"].ToString();
+    ViewBag.VersaoJS = HttpContext.Current.Application["VERSAO_JS"].ToString();
+    
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+    ViewBag.Breadcrumb = new Dictionary<string, string>();
+
+    ViewBag.Breadcrumb.Add("Detalhes do Erro", "");  
+}
+@section CSSHeader{
+    
+}
+@section ScriptHeader{
+    
+}
+<section id="section-principal">
+    <div class="conteudo-geral">        
+        <div class="panel panel-default">            
+            <div class="panel-heading">
+                <svg fill="#DD0000" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><path d="M0 0h24v24H0z" fill="none"/><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg>
+					&nbsp;Ops! Infelizmente ocorreu um erro
+            </div>
+            <div class="panel-body">                                
+                
+		        <p><span class="bold"><strong>Código do erro:</strong></span> @(ViewBag.CodErro)</p>
+		        <p><span class="bold"><strong>Mensagem:</strong></span> @(ViewBag.Message)</p>
+            </div>
+        </div>	    
+    </div>
+</section><!--PAGE_ERROR-->

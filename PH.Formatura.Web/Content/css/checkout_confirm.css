@@ -1,0 +1,60 @@
+﻿.h3-msg-status-pedido {
+}
+
+.h4-label-numero-pedido {
+	display: inline-block;
+}
+
+.span-msg-code-pedido {
+	display: block;
+	text-align: center;
+	font-size: x-large;
+	text-transform: uppercase;
+	margin-top: 0.5em;
+	font-weight: 600;
+}
+
+.div-info {
+	display: table;
+}
+
+.div-info > div {
+	display: table-cell;
+	vertical-align: middle;
+	border-right: 10px solid transparent;
+}
+
+.div-info > div:last-child {
+	border-right: 0 none;
+}
+
+.div-icone-info {
+}
+
+.div-icone-info .icones-infos {
+	color: #FFF;
+	background-color: #444;
+	-moz-border-radius: 50%;
+	-webkit-border-radius: 50%;
+	border-radius: 50%;
+	padding: 0.2em;
+}
+
+.divPedidoInfoCode {
+	padding: 1em 0;
+	-moz-box-shadow: 0 0 0.2em rgba(0,0,0, 0.45);
+	-webkit-box-shadow: 0 0 0.2em rgba(0,0,0, 0.45);
+	box-shadow: 0 0 0.2em rgba(0,0,0, 0.45);
+	-moz-border-radius: 2px;
+	-webkit-border-radius: 2px;
+	border-radius: 2px;
+}
+
+.p-msg-status-pedido {
+	margin-top: 1em;
+	color: #666;
+}
+
+.p-msg-status-pedido a {
+	color: indigo;
+}

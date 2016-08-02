@@ -1,0 +1,84 @@
+﻿@{
+	Layout = "~/Views/Shared/_Layout.cshtml";
+	ViewBag.Title = HttpContext.Current.Application["Site_Name"] + " | Projetos finalizados";
+	ViewBag.MinCSS = HttpContext.Current.Application["MIN_CSS"].ToString() == "1" ? ".min" : "";
+	ViewBag.MinJS = HttpContext.Current.Application["MIN_JS"].ToString() == "1" ? ".min" : "";
+	ViewBag.VersaoCSS = HttpContext.Current.Application["VERSAO_CSS"].ToString();
+	ViewBag.VersaoJS = HttpContext.Current.Application["VERSAO_JS"].ToString();
+
+	var ModeloDadosProjetosFinalizados = (List<PH.Formatura.DTO.ProjetosFinalizados>)Model;
+
+	ViewBag.Breadcrumb = new Dictionary<string, string>();
+	ViewBag.Breadcrumb.Add("Painel Administrativo", Url.Action("Index"));
+	ViewBag.Breadcrumb.Add("Projetos finalizados", "");
+}
+@section CSSHeader{
+	<link rel="stylesheet" href="~/Content/css/projetos-finalizados@(ViewBag.MinCSS).css?v=@(ViewBag.VersaoCSS)" />
+}
+@section ScriptHeader{
+	<script type="text/javascript" src="~/Content/js/projetos-finalizados@(ViewBag.MinJS).js?v=@(ViewBag.VersaoJS)"></script>
+	<script type="text/javascript">var DadosProjetosFinalizados = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(ModeloDadosProjetosFinalizados))</script>
+}
+
+<section id="section-principal">
+	<div class="conteudo-geral">
+		<div class="conteudo-projetos-finalizados">
+			<table class="tabela-padrao table-projetos-finalizados">
+				<thead>
+					<tr>
+					@{
+						if (ModeloDadosProjetosFinalizados.Count == 0)
+						{
+							<th>
+								<span style="text-align: center;">Nenhum dado encontrado</span>
+							</th>
+						}
+						else
+						{
+							<th>Nome do álbum</th>
+							<th>Lombada</th>
+							<th>Qtd de fotos</th>
+							<th>Data</th>
+							<th>Modelo de álbum</th>
+							<th>Status</th>
+							<th>Opções</th>
+						}
+					}
+					</tr>
+				</thead>
+				<tbody>
+					@foreach (var item in ModeloDadosProjetosFinalizados)
+					{
+						<tr>
+							<td>
+								@item.Album_Nome
+							</td>
+							<td>
+								@item.Texto_Lombada
+							</td>
+							<td>
+								@item.Qtd_fotos
+							</td>
+							<td>
+								@item.Data
+							</td>
+							<td>
+								@item.Album_Modelo
+							</td>
+							<td>
+								<span class="span-pedido-status">@item.Pedido_Status</span>
+								<br />
+								<span class="span-pedido-code">@item.Pedido_Code</span>
+							</td>
+							<td>
+								<a href="~/Painel/EditarProjeto/?book_id=@item.ID" target="_blank" class="ancora-acao ancora-acao-visualizar ancora-acao-btn" title="Visualizar">Visualizar</a>
+							</td>
+						</tr>
+					}
+				</tbody>
+				<tfoot>
+				</tfoot>
+			</table>
+		</div>
+	</div>
+</section>

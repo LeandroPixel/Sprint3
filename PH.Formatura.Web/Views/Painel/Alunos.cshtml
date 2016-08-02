@@ -1,0 +1,99 @@
+﻿@{
+	ViewBag.Title = HttpContext.Current.Application["Site_Name"] + " | Alunos";
+
+	ViewBag.MinCSS = HttpContext.Current.Application["MIN_CSS"].ToString() == "1" ? ".min" : "";
+	ViewBag.MinJS = HttpContext.Current.Application["MIN_JS"].ToString() == "1" ? ".min" : "";
+	ViewBag.VersaoCSS = HttpContext.Current.Application["VERSAO_CSS"].ToString();
+	ViewBag.VersaoJS = HttpContext.Current.Application["VERSAO_JS"].ToString();
+
+	ViewBag.Breadcrumb = new Dictionary<string, string>();
+	ViewBag.Breadcrumb.Add("Painel Administrativo", Url.Action("Index"));
+	ViewBag.Breadcrumb.Add("Cadastros", "");
+
+	Layout = "~/Views/Shared/_Layout.cshtml";
+
+	PH.Formatura.DTO.User _User = (ViewData["_User"] != null) ? (PH.Formatura.DTO.User)ViewData["_User"] : null;	
+}
+@section CSSHeader{
+	<link rel="stylesheet" href="~/Content/css/alunos@(ViewBag.MinCSS).css?v=@(ViewBag.VersaoCSS)" />
+}
+@section ScriptHeader{
+	@*<script type="text/javascript" src="~/Content/js/alunos@(ViewBag.MinJS).js?v=@(ViewBag.VersaoJS)"></script>*@
+}
+
+<section id="section-principal">
+	<div class="conteudo-geral">
+		<div class="conteudo-produtos">
+			<table class="tabela-padrao table-alunos">
+				<thead>						
+					<tr>
+						<th>Turma</th>
+						<th>Aluno</th>
+						<th>Telefone</th>
+						<th>Endereço</th>
+						<th>Data agendamento</th>
+						<th>Status</th>
+						<th>Ação</th>
+                        <th>Baixar para uso Offline</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<td>
+							PUC - Medicina - 2013.1
+						</td>
+						<td>
+							Alberto Ebaide Robers
+						</td>
+						<td>
+							(21) 99999-99999
+						</td>
+						<td>
+							Rua Buenos Aires, 44 - 24000-000
+						</td>
+						<td>
+							25/05/2016 - 13:00
+						</td>
+						<td>
+							Agendado
+						</td>
+						<td>
+							<a href="~/Agendamento/ValidacaoFotos?a=28A99CDD31B1EC" class="ancora-acao ancora-acao-montar ancora-acao-btn" title="Visualizar">Visualizar fotos</a>
+						</td>
+                        <td>
+							<i class="material-icons">file_download</i>
+						</td>
+					</tr>
+					<tr>
+						<td>
+							PUC - Informática - 1980.1
+						</td>
+						<td>
+							Alexandre Salomão
+						</td>
+						<td>
+							(21) 99999-99999
+						</td>
+						<td>
+							Avenida Atlântica, 15 - 200010-000
+						</td>
+						<td>
+							17/05/2016 - 13:00
+						</td>
+						<td>
+							Não agendado
+						</td>
+						<td>
+							<a href="~/Agendamento/ValidacaoFotos?a=28A99CDD31B1EC" class="ancora-acao ancora-acao-montar ancora-acao-btn" title="Visualizar">Visualizar fotos</a>
+						</td>
+                        <td>
+							<i class="material-icons">file_download</i>
+						</td>
+					</tr>
+				</tbody>
+				<tfoot>
+				</tfoot>
+			</table>
+		</div>
+	</div>
+</section>

@@ -1,0 +1,86 @@
+﻿@{
+	ViewBag.Title = HttpContext.Current.Application["Site_Name"] + " | Login";
+
+	ViewBag.MinCSS = HttpContext.Current.Application["MIN_CSS"].ToString() == "1" ? ".min" : "";
+	ViewBag.MinJS = HttpContext.Current.Application["MIN_JS"].ToString() == "1" ? ".min" : "";
+	ViewBag.VersaoCSS = HttpContext.Current.Application["VERSAO_CSS"].ToString();
+	ViewBag.VersaoJS = HttpContext.Current.Application["VERSAO_JS"].ToString();
+
+	ViewBag.bShowLogoPixel = true;
+	ViewBag.bHideIconeFullScreen = true;
+
+	Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@section CSSHeader{
+	<link rel="stylesheet" href="~/Content/css/login@(ViewBag.MinCSS).css?v=@(ViewBag.VersaoCSS)" />
+}
+@section ScriptHeader{	
+    <script>            
+        var cookie_user_name = "@System.Web.HttpContext.Current.Application["Cookie_User_Offline"].ToString()";                        
+    </script>
+    <script type="text/javascript" src="~/Content/js/framework/md5@(ViewBag.MinJS).js"></script>
+    <script type="text/javascript" src="~/Content/js/login@(ViewBag.MinJS).js?v=@(ViewBag.VersaoJS)"></script>    
+    <script type="text/javascript" src="~/Content/js/login-offline@(ViewBag.MinJS).js?v=@(ViewBag.VersaoJS)"></script>
+}
+<section id="section-principal">
+	<div class="conteudo-geral">
+		<div class="conteudo-login">
+			<div class="login-modal">
+                @*<h2>Acesse sua conta</h2>*@
+				<input type="text" name="login" value="" placeholder="EMAIL" class="tbx-login" autocomplete="on" autofocus required  />
+				<input type="password" name="password" value="" placeholder="SENHA" class="tbx-password" required />
+				<input type="submit" value="ENTRAR" class="btn-entrar cursor-pointer" />                				
+                <div class="alert alert-danger alert-danger-on" role="alert" style="display:none;"></div>
+				<a href="#" class="ancora-esqueci-minha-senha"><span class="span-esqueci-minha-senha">Esqueci minha senha</span></a>                
+			</div>
+            <div class="login-modal login-modal-offline hidden">
+                <h2>Acesse sua conta Offline</h2>
+                <input type="text" name="login-offline" value="" placeholder="EMAIL" class="tbx-login-offline" autocomplete="off" autofocus required  />
+				<input type="password" name="password-offline" value="" placeholder="SENHA" class="tbx-password-offline" required />
+				<input type="submit" value="ENTRAR OFFLINE" class="btn-entrar-offline cursor-pointer" />
+                <div class="alert alert-danger alert-danger-off" role="alert" style="display:none;"></div>
+			</div>
+		</div>
+	</div>
+</section>
+<!-- MODAL ESQUECI MINHA SENHA-->
+<div class="modal fade div-esqueci-senha-modal" role="dialog">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal">&times;</button>
+				<h4 class="modal-title">Esqueci minha senha</h4>
+			</div>
+			<div class="modal-body">
+				<div class="form-group-modal">
+					<div class="row">
+						@*
+						<div class="col-sm-4 col-lg-4">
+							<label for="tbx-email">Email</label>
+						</div>
+						*@
+						<div class="col-sm-12 col-lg-12 text-center">
+							<input type="text" class="tbx-email" id="tbx-email" placeholder="Digite seu email" />
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="modal-footer">
+				<div class="div-esqueci-senha-mensagem text-center">
+					<p style="display: none;"></p>
+				</div>
+				<div class="loader text-center">
+					<span class="glyphicon glyphicon-refresh spin hidden"></span>
+				</div>
+				<button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+				<button type="button" class="btn btn-primary btn-esqueci-senha-enviar">Enviar</button>
+			</div>
+		</div>
+	</div>
+</div>
+<!-- /MODAL ESQUECI MINHA SENHA -->
+<!-- FOOTER -->
+<footer class="rodape">
+	<span>&COPY; Copyright @DateTime.Now.Year - PixelHouse</span>
+</footer>
+<!-- /FOOTER -->

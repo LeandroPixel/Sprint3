@@ -1,0 +1,15 @@
+﻿@{
+    var ModeloDadosProdutos = (List<PH.Formatura.DAL.pr_GRD_ProductsAluno_Result>)Model;
+    PH.Formatura.DTO.Produtos.Pacote pacoteSelected = (PH.Formatura.DTO.Produtos.Pacote)ViewData["pacoteSelected"];
+    ViewData["appPath"] = System.Web.HttpContext.Current.Request.ApplicationPath;
+}
+@foreach (var item in ModeloDadosProdutos.Where(o=>pacoteSelected.Products.Contains(o.ProductID)))
+{
+    ViewData["showItem"] = true;    
+    Html.RenderPartial("~/Views/Shared/ProdutoItem.cshtml", item, ViewData);
+}                                              
+@foreach (var item in ModeloDadosProdutos.Where(o=>!pacoteSelected.Products.Contains(o.ProductID)))
+{
+    ViewData["showItem"] = false;
+    Html.RenderPartial("~/Views/Shared/ProdutoItem.cshtml", item, ViewData);
+}     

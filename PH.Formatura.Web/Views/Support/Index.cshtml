@@ -1,0 +1,117 @@
+﻿
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>Browser Support</title>
+    <link rel="stylesheet" href="~/Content/css/geral@(ViewBag.MinCSS).css?v=@(ViewBag.VersaoCSS)" />
+    <link href='https://fonts.googleapis.com/css?family=Signika:400,600,700,300' rel='stylesheet' type='text/css'>
+
+
+    <style type="text/css">
+
+        h1 {
+            font-size: 20px;
+        }
+
+        h2 {
+            font-size: 16px;
+            margin: 10px 0;
+        }
+
+        body {
+            line-height: 1;
+            width: 100vw;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        #sectioninfos {
+            width: 100%;
+            height: 100%;
+            background-color: #231f20;
+            text-align: center;
+        }
+
+        #alert {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            z-index: 9999;
+            left: 10px;
+            top: 10px;
+            text-align: left;
+            vertical-align: top;
+        }
+
+        #infos {
+            position: relative;
+            top: 20%;
+            width: 100%;
+            color: #FFF;
+            font-family: 'Signika', sans-serif;
+        }
+
+        #infos h1 {
+            font-size: 1.3em;
+            margin: 0 5%;
+            text-transform: uppercase;
+            line-height: 1.2em;
+        }
+
+        #infos p {
+            padding: 15px 0;
+            color: #ccc;
+            text-transform: uppercase;
+        }
+
+        #infos ul {
+            list-style: none;
+            color: #cdb79f;
+        }
+
+        #infos ul li {
+            display: inline;
+            padding: 20px 0px;
+        }
+
+        #infos ul li span {
+            display: inline-block;
+            border: 1px solid #cdb79f;
+            padding: 10px 15px;
+            margin: 15px;
+        }
+
+        #infos .dica {
+            font-size: 1em;
+            font-weight: 300;
+            padding: 0 10%;
+            text-transform: none;
+            line-height: 1.2em;
+        }
+
+    </style>
+
+</head>
+<body align="center">
+<section id="sectioninfos">
+  <div id="alert"><img src="~/Content/images/alert.png" alt="Requisitos do sistema" /></div>
+  <div id="infos">
+    <h1>Seu Browser não possui os requisitos necessários para executar a aplicação.</h1>
+    <p>Requisitos do sistema</p>
+    <ul>
+      <li><span>HTML 5</span></li>
+      <li><span>IndexedDB</span></li>
+      <li><span>Resolução mínima 700px de largura.</span></li>
+    </ul>
+    <p class="dica">Tente atualizar o seu browser ou tente utilizar o sistema com outro navegador.
+    Em caso de dúvidas entre em contato com nosso suporte suporte@empresa.com.br</p>
+  </div>
+</section>
+
+</body>
+</html>

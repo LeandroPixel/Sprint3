@@ -1,0 +1,84 @@
+﻿@{
+	string Url_Image_Server = HttpContext.Current.Application["IMAGES_SERVER_URL_HTTP"].ToString();
+	string Name = null;
+	string Url_Logo = null;
+	PH.Formatura.DTO.User _User = (ViewData["_User"] != null) ? (PH.Formatura.DTO.User)ViewData["_User"] : null;
+	Dictionary<string, string> Breadcrumb = (ViewBag.Breadcrumb != null) ? (Dictionary<string, string>)ViewBag.Breadcrumb : new Dictionary<string, string>();
+
+	if (_User != null)
+	{
+		Name = _User.Brand;
+		Url_Logo = _User.url_logo;
+	}
+	else
+	{
+		PH.Formatura.DTO.DadosBrand DadosBrand = (PH.Formatura.DTO.DadosBrand)ViewBag.DadosBrand;
+		if (DadosBrand != null)
+		{
+			Name = DadosBrand.Name;
+			Url_Logo = DadosBrand.Url_Logo;
+		}
+	}
+}
+<!-- HEADER -->
+<header class="header-principal">
+	@{
+		if (ViewBag.bShowLogoPixel != null && ViewBag.bShowLogoPixel)
+		{
+			<h1 class="titulo-header">
+				<a href="~/" class="">
+					<img src="~/Content/images/logo_pixel.png" title="Início" alt="Logo" class="logo" />
+				</a>
+			</h1>
+		}
+		<div class="div-breadcrumb">
+			@{
+				Html.RenderPartial("~/Views/Shared/Breadcrumb.cshtml", Breadcrumb);
+			}
+		</div>
+		<div class="div-info-especiais">
+		</div>
+		<div class="div-info-gerais">
+			@if (ViewBag.bHideBtnSair == null || !ViewBag.bHideBtnSair)
+			{
+				if(_User != null){
+					<a href="~/User/Logout" title="Deslogar" class="ancora-logout">Sair</a>
+				} else if (ViewBag.MenuAcoes != null)
+				{
+					@Html.Raw(ViewBag.MenuAcoes);
+				}
+			}
+
+			@if (ViewBag.bHideStatusNetwork == null || !ViewBag.bHideStatusNetwork)
+			{
+				<div id="status_network">
+					<span id="network_on" class="network_on">
+						<i class="material-icons">signal_wifi_4_bar</i>
+					</span>
+					<div class="mdl-tooltip mdl-tooltip--left" for="network_on">
+						Você está Online
+					</div>
+					<span id="network_off" class="network_off hidden">
+						<i class="material-icons">signal_wifi_off</i>
+					</span>
+					<div class="mdl-tooltip mdl-tooltip--left" for="network_off">
+						Você está Offline
+					</div>
+				</div>
+			}
+
+			@{
+				if (ViewBag.bHideIconeFullScreen == null || !ViewBag.bHideIconeFullScreen)
+				{
+					<i class="material-icons icone-fullScreen" title="TELA CHEIA">launch</i>
+				}
+			}
+
+			@if (!String.IsNullOrEmpty(Url_Logo) && !String.IsNullOrEmpty(Name))
+			{
+				<!-- <img src="@Url_Logo" title="@Name" alt="Logo @Name" class="logo logo-brand" /> -->
+			}
+		</div>
+	}
+</header>
+<!-- /HEADER -->

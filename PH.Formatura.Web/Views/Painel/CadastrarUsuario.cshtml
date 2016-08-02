@@ -1,0 +1,64 @@
+﻿@{
+	Layout = "~/Views/Shared/_Layout.cshtml";
+	ViewBag.Title = HttpContext.Current.Application["Site_Name"] + " | Cadastrar usuário";
+	ViewBag.MinCSS = HttpContext.Current.Application["MIN_CSS"].ToString() == "1" ? ".min" : "";
+	ViewBag.MinJS = HttpContext.Current.Application["MIN_JS"].ToString() == "1" ? ".min" : "";
+	ViewBag.VersaoCSS = HttpContext.Current.Application["VERSAO_CSS"].ToString();
+	ViewBag.VersaoJS = HttpContext.Current.Application["VERSAO_JS"].ToString();
+
+	ViewBag.Breadcrumb = new Dictionary<string, string>();
+	ViewBag.Breadcrumb.Add("Painel Administrativo", Url.Action("Index"));
+	ViewBag.Breadcrumb.Add("Cadastrar usuário", "");
+}
+@section CSSHeader{
+	<link rel="stylesheet" href="~/Content/css/cadastrar-usuario@(ViewBag.MinCSS).css?v=@(ViewBag.VersaoCSS)" />
+}
+@section ScriptHeader{
+	<script type="text/javascript" src="~/Content/js/cadastrar-usuario@(ViewBag.MinJS).js?v=@(ViewBag.VersaoJS)"></script>
+}
+
+<section id="section-principal">
+	<div class="conteudo-geral">
+		<div class="conteudo-cadastrar-usuario">
+			<form class="form-horizontal form-cadastrar-usuario">
+				<div class="form-group">
+					<label for="tbx-nome" class="col-sm-2 control-label">Nome</label>
+					<div class="col-sm-10">
+						<input type="text" class="form-control" id="tbx-nome" placeholder="Informe seu nome" required minlength="2" maxlength="150" autocomplete="off" />
+					</div>
+				</div>
+				<div class="form-group">
+					<label for="tbx-email" class="col-sm-2 control-label">E-mail</label>
+					<div class="col-sm-10">
+						<input type="email" class="form-control" id="tbx-email" placeholder="Informe seu e-mail" required autocomplete="off" />
+					</div>
+				</div>
+				<div class="form-group">
+					<label for="tbx-senha" class="col-sm-2 control-label">Senha</label>
+					<div class="col-sm-10">
+						<input type="password" class="form-control" id="tbx-senha" placeholder="Crie uma senha" required minlength="6" maxlength="24" autocomplete="off" />
+					</div>
+				</div>
+				<div class="form-group">
+					<label for="tbx-ddd" class="col-sm-2 control-label">Telefone</label>
+					<div class="col-sm-2">
+						<input type="tel" class="form-control" id="tbx-ddd" placeholder="DDD" required minlength="2" maxlength="2" autocomplete="off" />
+					</div>
+					<div class="col-sm-8">
+						<input type="tel" class="form-control" id="tbx-telefone" placeholder="Telefone" required minlength="8" maxlength="9" autocomplete="off" />
+					</div>
+				</div>
+				<div class="form-group">
+					<div class="col-sm-offset-2 col-sm-10">
+						<button type="submit" class="btn btn-primary btn-block btn-confirma-cadastro">Cadastrar</button>
+					</div>
+				</div>
+				<div class="form-group">
+					<div class="col-sm-offset-2 col-sm-10">
+						<p class="p-mensagem-cadastro" style="display: none;"></p>
+					</div>
+				</div>
+			</form>
+		</div>
+	</div>
+</section>

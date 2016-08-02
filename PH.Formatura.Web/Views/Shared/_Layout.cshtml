@@ -1,0 +1,213 @@
+﻿@{
+	ViewBag.MinCSS = HttpContext.Current.Application["MIN_CSS"].ToString() == "1" ? ".min" : "";
+	ViewBag.MinJS = HttpContext.Current.Application["MIN_JS"].ToString() == "1" ? ".min" : "";
+	ViewBag.VersaoCSS = HttpContext.Current.Application["VERSAO_CSS"].ToString();
+	ViewBag.VersaoJS = HttpContext.Current.Application["VERSAO_JS"].ToString();
+	ViewBag.MinCSS_FRAMEWORK = HttpContext.Current.Application["MIN_CSS_FRAMEWORK"].ToString() == "1" ? ".min" : "";
+	ViewBag.MinJS_FRAMEWORK = HttpContext.Current.Application["MIN_JS_FRAMEWORK"].ToString() == "1" ? ".min" : "";
+    var RouteData = System.Web.HttpContext.Current.Request.RequestContext.RouteData;
+    string controler = RouteData == null || RouteData.Values.Count == 0 ? "" : RouteData.Values["controller"].ToString().ToLower();
+    string action = RouteData == null || RouteData.Values.Count == 0 ? "" : RouteData.Values["action"].ToString().ToLower();
+
+    bool useManifest = Convert.ToBoolean(HttpContext.Current.Application["USE_MANIFEST"]);
+
+    PH.Formatura.DTO.User _User = (ViewData["_User"] != null) ? (PH.Formatura.DTO.User)ViewData["_User"] : null;
+
+	int Brand_ID = 0;
+	string request_brand = (String.IsNullOrEmpty(Request.QueryString["brand"]) ? System.Web.HttpContext.Current.Application["BRAND_ID_DEFAULT"].ToString() : Request.QueryString["brand"].ToString());
+	if (!String.IsNullOrEmpty(request_brand))
+	{
+		PH.Formatura.BLL.CriptografiaBLL BLLCrypt = new PH.Formatura.BLL.CriptografiaBLL();
+
+		string KeyCripto;
+        
+		try
+		{
+			KeyCripto = System.Web.HttpContext.Current.Application["KeyPixel"].ToString();
+			Int32.TryParse(BLLCrypt.Decrypt(request_brand, KeyCripto), out Brand_ID);
+		}
+		catch (Exception e)
+		{
+			Brand_ID = 0;
+		}
+	}
+}
+<!DOCTYPE html>
+<html lang="pt-br" @Html.Raw( (controler == "login" && action == "index") ? " manifest='"+ Url.RouteUrl("cache.manifest") +"'" : ""  ) >
+<head>
+	<title>@ViewBag.Title</title>
+	<meta charset="utf-8" />
+	<meta name="theme-color" content="#D22027" />
+	<meta name="viewport" content="width=device-width, user-scalable=no, initial-scale = 1.0, maximum-scale = 1.0" />
+	<link rel="icon" type="image/ico" href="~/Content/images/favicon.ico" />
+	<link rel="shortcut icon" href="~/Content/images/favicon.png" />
+	<link rel="apple-touch-icon" href="~/Content/images/apple-touch-icon.png">
+	<link rel="apple-touch-icon" sizes="72x72" href="~/Content/images/apple-touch-icon-72x72.png">
+	<link rel="apple-touch-icon" sizes="114x114" href="~/Content/images/apple-touch-icon-114x114.png">
+    
+	<!-- FRAMEWORKS CSS -->
+	<link rel="stylesheet" href="~/Content/css/framework/bootstrap@(ViewBag.MinCSS_FRAMEWORK).css" />
+	<link rel="stylesheet" href="~/Content/css/framework/jquery-ui@(ViewBag.MinCSS_FRAMEWORK).css" />
+	<link rel="stylesheet" href="~/Content/css/framework/material-design-lite@(ViewBag.MinCSS_FRAMEWORK).css" />
+	<link rel="stylesheet" href="~/Content/css/framework/material-design-lite-customized@(ViewBag.MinCSS_FRAMEWORK).css" />
+	<link rel="stylesheet" href="~/Content/css/framework/material-icons-lite-font@(ViewBag.MinCSS_FRAMEWORK).css" />    
+	<!-- /FRAMEWORKS CSS -->
+     
+	<link rel="stylesheet" href="~/Content/css/geral@(ViewBag.MinCSS).css?v=@(ViewBag.VersaoCSS)" />
+	
+    @RenderSection("CSSHeader", false)
+
+    <script type="text/javascript">
+        function CheckBrowserSupport() {
+            try {
+                var indexedDB = window.indexedDB || window.mozIndexedDB || window.webkitIndexedDB || window.msIndexedDB;
+                var msg = "Seu browser não oferece suporte para a utilização do sistema. Detalhes: ";
+                var aux = "";
+
+                //Suporte IndexedDB
+                if (indexedDB == undefined) {
+                    aux = "\n - IndexedDB não suportado.";
+                }
+
+                //Suporte resolução de tela
+                if (screen.width < 750) {
+                    aux += "\n - Resolução de tela: mínimo de 750px.";
+                }
+
+                //HTML5
+                var test_canvas = document.createElement("canvas");
+                if (!test_canvas.getContext("2d")) {
+                    aux += "\n - HTML5 não suportado.";
+                }
+
+                if (aux != "") {
+                    document.location = '@Url.Action("Index","Support")';
+                }
+            }
+            catch (e) {
+                document.location = '@Url.Action("Index","Support")';
+            }
+        }
+        CheckBrowserSupport();
+
+        var oInicial = { BaseUrlAplicacao: '@System.Web.HttpContext.Current.Request.ApplicationPath', Brand_ID: '@Brand_ID' }
+        oInicial.BaseUrlAplicacao = ((oInicial.BaseUrlAplicacao.substr(0, 1) == '/' ? oInicial.BaseUrlAplicacao : '/' + oInicial.BaseUrlAplicacao).length == 1 ? '' : (oInicial.BaseUrlAplicacao.substr(0, 1) == '/' ? oInicial.BaseUrlAplicacao : '/' + oInicial.BaseUrlAplicacao));
+        var baseUrl = "@HttpContext.Current.Request.Url.GetLeftPart(UriPartial.Authority).ToString()";
+        var token = "@(_User != null ? _User.Token : "")";
+        var pageDefault = "@Url.Action("Index", "Painel")";
+        var default_page_logged_offline = "@Url.Action("Painel", "Offline")";
+        var url_vefiryUserIsLogged = "@Url.Action("IsUserLogged", "Painel")";
+        var cookie_offline_name = "@HttpContext.Current.Application["Cookie.Offline.Name"]";
+        var logout_online = "@Url.Action("Logout", "User")";
+    </script>
+
+	<!-- FRAMEWORKS JS -->
+	<script type="text/javascript" src="~/Content/js/framework/jquery@(ViewBag.MinJS_FRAMEWORK).js"></script>
+	<script type="text/javascript" src="~/Content/js/framework/jquery-ui@(ViewBag.MinJS_FRAMEWORK).js"></script>
+    <script type="text/javascript" src="~/Content/js/framework/jquery.cookie@(ViewBag.MinJS_FRAMEWORK).js"></script>
+	<script type="text/javascript" src="~/Content/js/framework/bootstrap@(ViewBag.MinJS_FRAMEWORK).js"></script>
+	<script type="text/javascript" src="~/Content/js/framework/modernizr@(ViewBag.MinJS_FRAMEWORK).js"></script>
+    <script type="text/javascript" src="~/Content/js/framework/material-design-lite@(ViewBag.MinJS_FRAMEWORK).js"></script>
+	<!-- /FRAMEWORKS JS -->
+
+	<script type="text/javascript" src="~/Content/js/util@(ViewBag.MinJS).js?v=@(ViewBag.VersaoJS)"></script>
+	<script type="text/javascript" src="~/Content/js/geral@(ViewBag.MinJS).js?v=@(ViewBag.VersaoJS)"></script>
+    <script type="text/javascript" src="~/Content/js/offline@(ViewBag.MinJS).js?v=@(ViewBag.VersaoJS)"></script>
+    <script type="text/javascript" src="~/Content/js/DbControl@(ViewBag.MinJS).js?v=@(ViewBag.VersaoJS)"></script>
+	@RenderSection("ScriptHeader", false)
+    
+</head>
+<body>
+	<!-- @Request.ServerVariables["LOCAL_ADDR"] -->
+	@{Html.RenderPartial("~/Views/Shared/Header.cshtml");}
+	@RenderBody()
+    <div class="fader-loader hidden">
+        <div class="cont-loader">
+            <!-- MDL Spinner Component with Single Color -->
+            <div class="bg_white">
+                <div class="mdl-spinner mdl-spinner--single-color mdl-js-spinner"></div>
+            </div>
+        </div>
+    </div>
+    <div class="fader-progress-bar hidden">
+        <div class="cont-progress-bar">
+            <div class="bg_white">
+                <!-- Simple MDL Progress Bar -->
+                <div id="progressBar" class="mdl-progress mdl-js-progress"></div>
+                <div class="step"></div>
+            </div>
+        </div>
+    </div> 
+    <!-- MODAL Error-->
+    <div id="div-error-modal" class="modal fade" role="dialog">
+	    <div class="modal-dialog">
+		    <div class="modal-content">
+			    <div class="modal-header">
+				    <button type="button" class="close" data-dismiss="modal">&times;</button>
+					<svg fill="#DD0000" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><path d="M0 0h24v24H0z" fill="none"/><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg>
+					&nbsp;
+				    <h4 class="modal-title">Ops! Infelizmente ocorreu um erro</h4>
+			    </div>
+			    <div class="modal-body">
+				    <p>Detalhes do Erro:</p>
+                    <p class="pCodError"><strong>Código do erro:</strong> <span class="codErrorModal"></span></p>
+                    <p class="pMsgError"><strong>Mensagem:</strong> <span class="MsgErrorModal"></span></p>
+			    </div>
+			    <div class="modal-footer">
+				    <div class="text-center">
+					    <p style="display: none;"></p>
+				    </div>
+				    <div class="loader text-center">
+					    <span class="glyphicon glyphicon-refresh spin hidden"></span>
+				    </div>
+				    <button type="button" class="btn btn-default" data-dismiss="modal">Ok</button>
+			    </div>
+		    </div>
+	    </div>
+    </div>
+    <!-- /MODAL Error -->
+    <!-- MODAL GERAL-->
+    <div class="modal fade div-modal-geral" role="dialog">
+	    <div class="modal-dialog">
+		    <div class="modal-content">
+			    <div class="modal-header">
+				    <button type="button" class="close" data-dismiss="modal">&times;</button>
+				    <h4 class="modal-title"></h4>
+			    </div>
+			    <div class="modal-body">
+			    </div>
+			    <div class="modal-footer">
+				    <div class="text-center">
+					    <p style="display: none;"></p>
+				    </div>
+				    <div class="loader text-center">
+					    <span class="glyphicon glyphicon-refresh spin hidden"></span>
+				    </div>
+				    <button type="button" class="btn btn-default" data-dismiss="modal">Ok</button>
+			    </div>
+		    </div>
+	    </div>
+    </div>
+    <!-- /MODAL GERAL -->
+    <!-- MODAL UPDATE CACHE-->
+    <div class="modal fade div-update-cache" role="dialog">
+	    <div class="modal-dialog">
+		    <div class="modal-content">
+			    <div class="modal-header">
+				    <button type="button" class="close" data-dismiss="modal">&times;</button>
+				    <h4 class="modal-title">Erro ao Atualizar o Cache</h4>
+			    </div>
+			    <div class="modal-body">
+                    <p>Aconteceu um erro ao recarregar o cache.</p>
+                    <p>Favor clicar no botão Recarregar Página para tentar novamente.</p>
+			    </div>
+			    <div class="modal-footer">
+				    <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+				    <button type="button" class="btn btn-default  btn-ok" data-dismiss="modal">Recarregar Página</button>
+			    </div>
+		    </div>
+	    </div>
+    </div>
+    <!-- /MODAL GERAL -->
+</body>
+</html>

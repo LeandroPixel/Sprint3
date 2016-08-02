@@ -1,0 +1,584 @@
+﻿@{
+	ViewBag.Title = HttpContext.Current.Application["Site_Name"] + " | Checkout";
+
+	ViewBag.MinCSS = HttpContext.Current.Application["MIN_CSS"].ToString() == "1" ? ".min" : "";
+	ViewBag.MinJS = HttpContext.Current.Application["MIN_JS"].ToString() == "1" ? ".min" : "";
+	ViewBag.VersaoCSS = HttpContext.Current.Application["VERSAO_CSS"].ToString();
+	ViewBag.VersaoJS = HttpContext.Current.Application["VERSAO_JS"].ToString();
+	ViewBag.MinCSS_FRAMEWORK = HttpContext.Current.Application["MIN_CSS_FRAMEWORK"].ToString() == "1" ? ".min" : "";
+	ViewBag.MinJS_FRAMEWORK = HttpContext.Current.Application["MIN_JS_FRAMEWORK"].ToString() == "1" ? ".min" : "";
+
+	ViewBag.Breadcrumb = new Dictionary<string, string>();
+	ViewBag.Breadcrumb.Add("Painel Administrativo", Url.Action("Index", "Painel"));
+    ViewBag.Breadcrumb.Add("Produtos", "javascript:oCheckout.GoToProducts('" + Url.Action("Index", "Produtos") + "','"+Url.Action("Produtos", "Offline")+"')");
+	ViewBag.Breadcrumb.Add("Carrinho", "");
+
+	Layout = "~/Views/Shared/_Layout.cshtml";
+
+	int QtdMaxParcelasCartao = 12;
+	int QtdMaxParcelasBoleto = 12;
+	int QtdMaxParcelasCheque = 12;
+    int QtdMaxPeriodos = 12;
+	string Url_Image_Server = HttpContext.Current.Application["IMAGES_SERVER_URL_HTTP"].ToString();
+}
+@section CSSHeader{
+	<link rel="stylesheet" href="~/Content/css/framework/jquery.datetimepicker@(ViewBag.MinCSS_FRAMEWORK).css" />
+	<link rel="stylesheet" href="~/Content/css/checkout@(ViewBag.MinCSS).css?v=@(ViewBag.VersaoCSS)" />
+}
+@section ScriptHeader{
+    <script>
+        var cookie_user_name = "@System.Web.HttpContext.Current.Application["Cookie_User_Offline"].ToString()"; 
+    </script>    
+	<script type="text/javascript" src="~/Content/js/framework/jquery.datetimepicker.full@(ViewBag.MinJS_FRAMEWORK).js"></script>
+	<script type="text/javascript" src="~/Content/js/checkout_classes@(ViewBag.MinJS).js?v=@(ViewBag.VersaoJS)"></script>
+	<script type="text/javascript" src="~/Content/js/checkout@(ViewBag.MinJS).js?v=@(ViewBag.VersaoJS)"></script>
+
+}
+
+<section id="section-principal">
+	<form method="post" id="formPedido">
+		<div class="conteudo-geral mdl-grid">
+			<div class="mdl-cell--12-col">
+				<div class="selos-informativos text-center">
+					<a href="http://www.google.com/safebrowsing/diagnostic?site=@(HttpContext.Current.Request.Url.GetLeftPart(UriPartial.Authority).ToString() + System.Web.HttpContext.Current.Request.ApplicationPath)" target="_blank">
+						<img src="~/Content/images/selo_navegacao-segura.png" title="Navegação segura" alt="Selo navegação segura Google Safe" class="" />
+					</a>
+					<img src="~/Content/images/selo_compra-segura.png" title="Compra segura" alt="Selo compra segura" class="" />
+					<img src="~/Content/images/selo_satisfacao.png" title="Satisfação garantida" alt="Selo satisfação garantida" class="" />
+				</div>
+			</div>
+			<div class="mdl-cell--12-col">
+				<label class="mdl-cell--12-col mdl-typography--title label-dados-pedido label-dados-pedido-resumo">Dados do pedido</label>
+				<div class="mdl-cell--12-col">
+					<!-- TABELA DE PRODUTOS -->
+					<table class="table table-striped" id="tb_produtos">
+						<thead>
+							<tr>
+								<th>&nbsp;</th>
+								<th>Produto</th>
+								<th class="text-center">Quantidade</th>
+								<th class="text-center">Fotos selecionadas</th>
+							</tr>
+						</thead>
+						<tbody>
+						</tbody>
+					</table>
+					<input type="hidden" class="" id="dadosPedidoValorTotal" value="" />
+					<!-- /TABELA DE PRODUTOS -->
+				</div>
+			</div>
+			<div class="mdl-cell--6-col">
+				<!-- CPF PARA NF-e -->
+				<label class="mdl-cell--12-col mdl-typography--title label-dados-pedido label-dados-pedido-nfe" for="dadosPedidoNfeCpfCnpj">CPF / CNPJ</label>
+				<div class="mdl-cell--12-col mdl-textfield mdl-js-textfield div-dados-pedido-nfe-cpf-cnpj">
+					<input class="mdl-textfield__input" type="text" pattern="[0-9]*(\.[0-9]+)?" maxlength="14" title="Somente números" id="dadosPedidoNfeCpfCnpj" name="dadosPedidoNfeCpfCnpj" />
+					<label class="mdl-textfield__label" for="dadosPedidoNfeCpfCnpj">Digite seu CPF/CNPJ</label>
+					<span class="mdl-textfield__error span-msg-cpf-cnpj">Favor informar CPF ou CNPJ válido (somente números)</span>
+				</div>
+				<!-- /CPF PARA NF-e -->
+			</div>
+			<div class="mdl-cell--6-col">
+				<!-- ENDEREÇO PARA ENTREGA -->
+				<label class="mdl-cell--12-col mdl-typography--title label-dados-pedido label-dados-pedido-endereco" for="">Dados de entrega</label>
+				<div class="mdl-cell--12-col font_weight-300 mdl-grid padding-0">
+					<div class="mdl-cell--10-col">
+						<p class="dados-pedido-endereco dados-pedido-endereco-destinatario"></p>
+						<p class="dados-pedido-endereco dados-pedido-endereco-completo"></p>
+						<p class="dados-pedido-endereco dados-pedido-endereco-cep"></p>
+							
+						<input type="hidden" name="dadosPedidoEnderecoCEP" class="hiddenPedidoEnderecoCEP" value="" />
+						<input type="hidden" name="dadosPedidoEnderecoDestinatario" class="hiddenPedidoEnderecoDestinatario" value="" />
+						<input type="hidden" name="dadosPedidoEnderecoLogradouro" class="hiddenPedidoEnderecoLogradouro" value="" />
+						<input type="hidden" name="dadosPedidoEnderecoNumero" class="hiddenPedidoEnderecoNumero" value="" />
+						<input type="hidden" name="dadosPedidoEnderecoComplemento" class="hiddenPedidoEnderecoComplemento" value="" />
+						<input type="hidden" name="dadosPedidoEnderecoBairro" class="hiddenPedidoEnderecoBairro" value="" />
+						<input type="hidden" name="dadosPedidoEnderecoMunicipio" class="hiddenPedidoEnderecoMunicipio" value="" />
+						<input type="hidden" name="dadosPedidoEnderecoEstado" class="hiddenPedidoEnderecoEstado" value="" />
+					</div>
+					<div class="mdl-cell--2-col">
+						<button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect btn-alterar-endereco-entrega">Alterar</button>
+						@*<button type="button" class="btn btn-secondary btn-alterar-endereco-entrega">Alterar</button>*@
+					</div>
+				</div>
+				<!-- /ENDEREÇO PARA ENTREGA -->
+			</div>
+            <div class="mdl-cell--6-col">
+				<label class="mdl-cell--12-col mdl-typography--title label-dados-pedido label-dados-pedido-endereco" for="">Observação</label>
+				<div class="mdl-cell--12-col font_weight-300 mdl-grid padding-0">
+                    <p>
+                        <textarea maxlength="250" cols="60" rows="5" id="txtObservacao"></textarea>
+                    </p>
+                </div>
+            </div>
+			<div class="mdl-cell--6-col">
+				<!-- DADOS COMPRA -->
+				<label class="mdl-cell--12-col mdl-typography--title label-dados-pedido label-dados-pedido-endereco" for="">Dados do Comprador:</label>
+				<div class="mdl-cell--12-col font_weight-300 mdl-grid padding-0">
+					<div class="mdl-cell--10-col">
+						<p class="dados-pedido-endereco dados-pedido-comprador"></p>
+						<p class="dados-pedido-endereco dados-pedido-comprador-completo"></p>
+						<p class="dados-pedido-endereco dados-pedido-comprador-cep"></p>
+
+						<input type="hidden" name="dadosPedidoCompradorCpfCnpj" class="hiddenPedidoCompradorCpfCnpj" value="" />
+                        <input type="hidden" name="dadosPedidoCompradorNome" class="hiddenPedidoCompradorNome" value="" />
+                        <input type="hidden" name="dadosPedidoCompradorDDD" class="hiddenPedidoCompradorDDD" value="" />
+                        <input type="hidden" name="dadosPedidoCompradorTelefone" class="hiddenPedidoCompradorTelefone" value="" />
+						<input type="hidden" name="dadosPedidoCompradorEmail" class="hiddenPedidoCompradorEmail" value="" />
+							
+						<input type="hidden" name="dadosPedidoCompradorCEP" class="hiddenPedidoCompradorCEP" value="" />
+						<input type="hidden" name="dadosPedidoCompradorDestinatario" class="hiddenPedidoCompradorDestinatario" value="" />
+						<input type="hidden" name="dadosPedidoCompradorLogradouro" class="hiddenPedidoCompradorLogradouro" value="" />
+						<input type="hidden" name="dadosPedidoCompradorNumero" class="hiddenPedidoCompradorNumero" value="" />
+						<input type="hidden" name="dadosPedidoCompradorComplemento" class="hiddenPedidoCompradorComplemento" value="" />
+						<input type="hidden" name="dadosPedidoCompradorBairro" class="hiddenPedidoCompradorBairro" value="" />
+						<input type="hidden" name="dadosPedidoCompradorMunicipio" class="hiddenPedidoCompradorMunicipio" value="" />
+						<input type="hidden" name="dadosPedidoCompradorEstado" class="hiddenPedidoCompradorEstado" value="" />
+                        <input type="hidden" name="dadosPedidoCompradorDataNascimento" class="hiddenPedidoCompradorDataNascimento" value="" />
+					</div>
+					<div class="mdl-cell--2-col">
+                        <button id="btn-alterar-comprador-entrega" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect">Alterar</button>
+						@*<button type="button" class="btn btn-secondary btn-alterar-endereco-entrega">Alterar</button>*@
+					</div>
+				</div>
+				<!-- /ENDEREÇO PARA ENTREGA -->
+			</div>
+			@*<div class="mdl-cell--12-col">
+				<!-- FRETE -->
+				<label class="mdl-cell--12-col mdl-typography--title label-dados-pedido label-dados-pedido-frete" for="">Frete e manuseio</label>
+				<div class="mdl-cell--12-col font_weight-300">
+					<label class="mdl-radio mdl-js-radio mdl-js-ripple-effect" for="dadosPedidoOpcaoFreteNormal">
+						<input type="radio" id="dadosPedidoOpcaoFreteNormal" class="mdl-radio__button" name="dadosPedidoOpcaoFrete" value="n" checked />
+						<span class="mdl-radio__label">Frete Normal - R$ 9,80</span>
+						<span class="">- Entrega em até 13 dias úteis</span>
+					</label>
+					<label class="mdl-radio mdl-js-radio mdl-js-ripple-effect" for="dadosPedidoOpcaoFreteExpresso">
+						<input type="radio" id="dadosPedidoOpcaoFreteExpresso" class="mdl-radio__button" name="dadosPedidoOpcaoFrete" value="e" />
+						<span class="mdl-radio__label">Frete Expresso - R$ 14,50</span>
+						<span class="">- Entrega em até 13 dias úteis</span>
+					</label>
+				</div>
+				<!-- /FRETE -->
+			</div>*@
+
+            <div class="mdl-cell--12-col">
+				<label class="mdl-cell--12-col mdl-typography--title label-dados-pedido label-dados-pedido-endereco" for="">Opções de pagamento</label>
+				<div class="font_weight-300 mdl-grid padding-0 dvBoxItensTotalPrazo">
+                    Valor Total
+                    <p>
+                        <input type="text" id="txtTotalVendedor" placeholder="0,00" pattern="[0-9]*(\.[0-9]+)?" title="Somente números"/>
+                    </p>
+                </div>
+                <div class="dvBoxItensTotalPrazo">
+                    Períodos ( meses )
+                    <p>
+                        <select id="qtdPeriodos">
+							<option value="" selected>Número de períodos</option>
+							@{
+                                for (int i = 1; i <= QtdMaxPeriodos; i++)
+								{
+									<option value="@(i.ToString())">@(i.ToString())</option>
+								}
+							}
+                        </select>
+                    </p>
+                </div>
+				<div class="font_weight-300 mdl-grid padding-0 dvBoxItensTotalPrazo">
+                    Data Início
+                    <p>
+                        <input type="text" id="txtDataInicio" disabled/>
+                    </p>
+                </div>
+                <div class="dvBoxItensTotalPrazo">
+                    Data Fim
+                    <p>
+                        <input type="text" id="txtDataFim" disabled />
+                    </p>
+                </div>
+            </div>
+
+			<!-- FORMA DE PAGAMENTO -->
+			<div class="mdl-cell--6-col">
+				<label class="mdl-cell--12-col mdl-typography--title label-dados-pedido label-dados-pedido-pagamento" for="">Forma de pagamento</label>
+				<div class="mdl-grid mdl-tabs mdl-js-tabs mdl-js-ripple-effect mdl-cell--12-col">
+					<div class="mdl-tabs__tab-bar mdl-cell--12-col" id="div-tabs-formas-pgto">
+						<input type="hidden" class="hiddenPedidoFormaPgto" name="dadosPedidoFormaPgto" value="cartao-credito" />
+						<a href="#forma-pgto-tab-cartao-credito" class="mdl-tabs__tab mdl-cell--4-col is-active ancora-pedido-forma-pgto" forma-pgto="cartao-credito">
+							Cartão
+							<svg version="1.1" id="svg-forma-pgto-cc" class="svg-forma-pgto" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="40.00px" viewBox="0 0 489.656 334.941" enable-background="new 0 0 489.656 334.941" xml:space="preserve"> <g> <defs> <rect id="SVGID_1_" width="489.656" height="334.941"/> </defs> <clipPath id="SVGID_2_"> <use xlink:href="#SVGID_1_"  overflow="visible"/> </clipPath> <path clip-path="url(#SVGID_2_)" d="M449.922,0H39.734C17.781,0,0,17.781,0,39.734v255.473c0,21.953,17.781,39.734,39.734,39.734 h410.188c21.953,0,39.734-17.781,39.734-39.734V39.68C489.602,17.781,471.82,0,449.922,0 M39.734,21.898h410.188 c9.492,0,17.781,7.684,17.781,17.782v33.203H21.953V39.68C21.953,30.238,29.691,21.898,39.734,21.898 M467.703,126.832H21.953 V94.23h445.75V126.832z M449.922,312.933H39.734c-9.496,0-17.781-7.679-17.781-17.781V148.785h445.75v145.82 C467.703,304.648,459.965,312.933,449.922,312.933 M416.715,207.453c0,5.927-4.719,10.648-10.645,10.648H292.246 c-5.926,0-10.648-4.722-10.648-10.648c0-5.926,4.723-10.647,10.648-10.647h113.219 C411.395,196.203,416.715,200.922,416.715,207.453 M416.715,265.519c0,5.926-4.719,10.645-10.645,10.645h-65.199 c-5.93,0-10.648-4.719-10.648-10.645c0-5.929,4.719-10.648,10.648-10.648h65.199C411.395,254.871,416.715,259.59,416.715,265.519" /> </g> </svg>
+						</a>
+						<a href="#forma-pgto-tab-boleto" class="mdl-tabs__tab mdl-cell--4-col ancora-pedido-forma-pgto" forma-pgto="boleto" style="display:none;">
+							Boleto
+							<svg version="1.1" id="svg-forma-pgto-boleto" class="svg-forma-pgto" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="40.00px" height="29.99975586056709px" viewBox="0 0 409.602 307.199" enable-background="new 0 0 409.602 307.199" xml:space="preserve"> <path d="M0,307.199h25.602v-25.597H0V307.199z M76.801,307.199h25.598v-25.597H76.801V307.199z M128,307.199h25.602v-25.597H128 V307.199z M179.199,307.199h51.199v-25.597h-51.199V307.199z M256,307.199h25.602v-25.597H256V307.199z M307.199,307.199h51.199 v-25.597h-51.199V307.199z M384,307.199h25.601v-25.597H384V307.199z M0,256h51.199V0H0V256z M76.801,256h25.598V0H76.801V256z M128,256h25.602V0H128V256z M179.199,256H192V0h-12.801V256z M204.801,256h25.598V0h-25.598V256z M256,256h12.802V0H256V256z M307.199,256h25.602V0h-25.602V256z M345.602,256h12.797V0h-12.797V256z M384,256h25.601V0H384V256z"/> </svg>
+						</a>
+						<a href="#forma-pgto-tab-cheque" class="mdl-tabs__tab mdl-cell--4-col ancora-pedido-forma-pgto" forma-pgto="cheque" >
+							Cheque
+							<svg version="1.1" id="svg-forma-pgto-cheque" class="svg-forma-pgto" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="40.00px" height="26.8490536960526px" viewBox="0 0 408.801 274.398" enable-background="new 0 0 408.801 274.398" xml:space="preserve"> <g> <defs> <rect id="SVGID_1_" width="408.801" height="274.398"/> </defs> <clipPath id="SVGID_2_"> <use xlink:href="#SVGID_1_"  overflow="visible"/> </clipPath> <path clip-path="url(#SVGID_2_)" d="M326,140.801c-3.313,0-6,2.687-6,6v102.397c0,7.278-5.922,13.199-13.199,13.199H25.199 c-7.277,0-13.199-5.921-13.199-13.199v-122h211.602c3.313,0,6-2.687,6-6c0-3.312-2.688-6-6-6H12V88.801h250c3.312,0,6-2.688,6-6 c0-3.313-2.688-6-6-6H12v-0.403c0-7.277,5.922-13.199,13.199-13.199h262.402c3.313,0,6-2.687,6-6c0-3.312-2.688-6-6-6H25.199 C11.305,51.199,0,62.504,0,76.398v172.801c0,13.896,11.305,25.199,25.199,25.199h281.602c13.895,0,25.199-11.304,25.199-25.199 V146.801C332,143.488,329.312,140.801,326,140.801"/> <path clip-path="url(#SVGID_2_)" d="M294,204c3.312,0,6-2.687,6-6c0-3.312-2.688-6-6-6h-19.199c-3.313,0-6,2.688-6,6 c0,3.313,2.688,6,6,6H294z"/> <path clip-path="url(#SVGID_2_)" d="M153.199,192h-44.801c-3.312,0-6,2.688-6,6c0,3.313,2.688,6,6,6h44.801c3.313,0,6-2.687,6-6 C159.199,194.688,156.512,192,153.199,192"/> <path clip-path="url(#SVGID_2_)" d="M153.199,224h-44.801c-3.312,0-6,2.688-6,6c0,3.313,2.688,6,6,6h44.801c3.313,0,6-2.687,6-6 C159.199,226.688,156.512,224,153.199,224"/> <path clip-path="url(#SVGID_2_)" d="M236.801,230c0,3.313,2.688,6,6,6H294c3.312,0,6-2.687,6-6c0-3.312-2.688-6-6-6h-51.199 C239.488,224,236.801,226.688,236.801,230"/> <path clip-path="url(#SVGID_2_)" d="M38,192c-3.312,0-6,2.688-6,6c0,3.313,2.688,6,6,6h44.801c3.312,0,6-2.687,6-6 c0-3.312-2.688-6-6-6H38z"/> <path clip-path="url(#SVGID_2_)" d="M403.293,20.531L388.27,5.508C384.719,1.957,379.996,0,374.977,0 c-5.023,0-9.746,1.957-13.297,5.508L196.047,171.141c-1.93,1.929-3.387,4.203-4.336,6.761l-18.535,50.012 c-0.817,2.199-0.278,4.673,1.383,6.328c1.144,1.146,2.679,1.758,4.242,1.758c0.699,0,1.406-0.12,2.086-0.375l50.011-18.538 c2.559-0.945,4.832-2.406,6.762-4.332L403.293,47.117c3.551-3.551,5.508-8.273,5.508-13.293 C408.801,28.805,406.844,24.082,403.293,20.531 M213.008,210.922l-15.129-15.13l4.062-10.965l22.032,22.027L213.008,210.922z M209.121,175.035L354.238,29.922L362.316,38L217.199,183.113L209.121,175.035z M193.289,208.176l7.336,7.336l-11.656,4.319 L193.289,208.176z M233.762,199.68l-8.078-8.078L370.801,46.484l8.078,8.079L233.762,199.68z M394.809,38.633l-7.445,7.445 l-24.641-24.64l7.445-7.446c1.281-1.285,2.992-1.992,4.809-1.992s3.523,0.707,4.805,1.992l15.027,15.024 c1.285,1.285,1.992,2.992,1.992,4.808C396.801,35.641,396.094,37.348,394.809,38.633"/> <path clip-path="url(#SVGID_2_)" d="M44.398,152.801h147.204c3.312,0,6-2.688,6-6c0-3.313-2.688-6-6-6H44.398 c-6.836,0-12.398,5.562-12.398,12.397V166c0,6.837,5.562,12.398,12.398,12.398h128c3.317,0,6-2.683,6-6c0-3.312-2.683-6-6-6h-128 C44.18,166.398,44,166.223,44,166v-12.801C44,152.98,44.18,152.801,44.398,152.801"/> </g> </svg>
+						</a>
+						<a href="#forma-pgto-tab-dinheiro" class="mdl-tabs__tab mdl-cell--4-col ancora-pedido-forma-pgto" forma-pgto="dinheiro" >
+							Dinheiro
+							<svg version="1.1" id="svg-forma-pgto-dinheiro" class="svg-forma-pgto" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="40.00px" viewBox="0 0 36.671 36.671" style="enable-background:new 0 0 36.671 36.671;" xml:space="preserve"> <g> <path d="M36.171,29.091H0.5c-0.276,0-0.5-0.224-0.5-0.5V8.08c0-0.276,0.224-0.5,0.5-0.5h35.671c0.276,0,0.5,0.224,0.5,0.5v20.512 C36.671,28.868,36.447,29.091,36.171,29.091z M1,28.091h34.671V8.58H1V28.091z"/> <path d="M36.171,12.788c-2.596,0-4.708-2.112-4.708-4.708c0-0.276,0.224-0.5,0.5-0.5s0.5,0.224,0.5,0.5 c0,2.045,1.664,3.708,3.708,3.708c0.276,0,0.5,0.224,0.5,0.5S36.447,12.788,36.171,12.788z"/> <path d="M31.962,29.091c-0.276,0-0.5-0.224-0.5-0.5c0-2.596,2.112-4.708,4.708-4.708c0.276,0,0.5,0.224,0.5,0.5s-0.224,0.5-0.5,0.5 c-2.045,0-3.708,1.664-3.708,3.708C32.462,28.868,32.239,29.091,31.962,29.091z"/> <path d="M0.5,12.788c-0.276,0-0.5-0.224-0.5-0.5s0.224-0.5,0.5-0.5c2.045,0,3.708-1.664,3.708-3.708c0-0.276,0.224-0.5,0.5-0.5 s0.5,0.224,0.5,0.5C5.208,10.676,3.096,12.788,0.5,12.788z"/> <path d="M4.708,29.091c-0.276,0-0.5-0.224-0.5-0.5c0-2.045-1.664-3.708-3.708-3.708c-0.276,0-0.5-0.224-0.5-0.5s0.224-0.5,0.5-0.5 c2.596,0,4.708,2.112,4.708,4.708C5.208,28.868,4.985,29.091,4.708,29.091z"/> <g> <g> <path d="M18.546,23.579c-1.369,0-3.082-0.853-3.808-1.429c-0.216-0.171-0.253-0.486-0.081-0.702 c0.172-0.216,0.486-0.253,0.702-0.081c0.625,0.495,2.119,1.212,3.187,1.212c1.039,0,2.576-0.555,2.576-1.748 c0-1.065-1.047-1.485-2.415-1.923l-0.405-0.132c-1.082-0.364-3.332-1.123-3.332-2.945c0-1.761,1.37-2.944,3.408-2.944 c2.054,0,3.342,1.055,3.396,1.1c0.212,0.177,0.241,0.492,0.063,0.704c-0.176,0.211-0.49,0.241-0.703,0.065 c-0.02-0.016-1.087-0.869-2.757-0.869c-1.485,0-2.408,0.745-2.408,1.944c0,0.973,1.34,1.556,2.651,1.998l0.39,0.127 c1.238,0.396,3.11,0.995,3.11,2.875C22.122,22.727,20.031,23.579,18.546,23.579z"/> <path d="M18.378,25.068c-0.276,0-0.5-0.224-0.5-0.5V12.151c0-0.276,0.224-0.5,0.5-0.5s0.5,0.224,0.5,0.5v12.417 C18.878,24.844,18.654,25.068,18.378,25.068z"/> </g> </g> </g> <g> </g> <g> </g> <g> </g> <g> </g> <g> </g> <g> </g> <g> </g> <g> </g> <g> </g> <g> </g> <g> </g> <g> </g> <g> </g> <g> </g> <g> </g> </svg>
+						</a>
+					</div>
+
+					<!-- CARTÃO DE CRÉDITO -->
+					<div class="mdl-tabs__panel is-active aba-pgto-conteudo aba-pgto-conteudo-cartao-credito" id="forma-pgto-tab-cartao-credito">
+						<!-- FADE INFO TRANSAÇÃO CARTÃO -->
+						<div class="div-fade-offline" id="div-checkout-transacao-fade-offline" style="display: none;">
+							<div class="background">
+								<div class="centralizadora">
+									<span class="color-white">TRANSAÇÃO INDISPONÍVEL PARA OPERAÇÃO OFF-LINE</span>
+								</div>
+							</div>
+						</div>
+						<!-- /FADE INFO TRANSAÇÃO CARTÃO -->
+						@*<label class="mdl-radio mdl-js-radio mdl-js-ripple-effect radioDadosPedidoPgtoCartao" for="radioDadosPedidoPgtoCartao1">
+							<input type="radio" id="radioDadosPedidoPgtoCartao1" class="mdl-radio__button" name="dadosPedidoPgtoCartao" value="1" checked />
+							<span class="mdl-radio__label">Pagar com 1 (um) cartão</span>
+						</label>*@
+						@*<label class="mdl-radio mdl-js-radio mdl-js-ripple-effect radioDadosPedidoPgtoCartao" for="radioDadosPedidoPgtoCartao2">
+							<input type="radio" id="radioDadosPedidoPgtoCartao2" class="mdl-radio__button" name="dadosPedidoPgtoCartao" value="2" />
+							<span class="mdl-radio__label">Pagar com 2 (dois) cartões</span>
+						</label>*@
+						<div class="mdl-cell--12-col divDadosPedidoPgtoCartao1">
+							<div class="mdl-cell--12-col mdl-textfield mdl-js-textfield">
+								<input class="mdl-textfield__input" type="text" pattern="[0-9]*(\.[0-9]+)?" title="Somente números" id="dadosPedidoPgtoCartaoValor" name="dadosPedidoPgtoCartaoValor" />
+								<label class="mdl-textfield__label" for="dadosPedidoPgtoCartaoValor">Valor pago com cartão</label>
+								<span class="mdl-textfield__error">Somente números</span>
+							</div>
+							<div class="mdl-cell--6-col mdl-textfield">
+								<select name="dadosPedidoPgtoCartao1Parcelas" id="dadosPedidoPgtoCartao1Parcelas" class="width-100" >
+									<option value="" selected>Número de parcelas</option>
+									@{
+										for (int i = 1; i <= QtdMaxParcelasCartao; i++)
+										{
+											<option value="@(i.ToString())">@(i.ToString())</option>
+										}
+									}
+								</select>
+							</div>
+							<div class="mdl-cell--6-col mdl-textfield mdl-js-textfield text-right">
+								<span id="spanValorParcelasCartao">0x de R$ 0,00</span>
+							</div>
+							<div class="mdl-cell--6-col mdl-textfield mdl-js-textfield">
+								<input class="mdl-textfield__input" type="text" pattern="[0-9]*(\.[0-9]+)?" title="Somente números" id="dadosPedidoPgtoCartao1Numero" name="dadosPedidoPgtoCartao1Numero" />
+								<label class="mdl-textfield__label" for="dadosPedidoPgtoCartao1Numero">Número do cartão</label>
+								<span class="mdl-textfield__error">Somente números</span>
+							</div>
+							<div class="mdl-cell--6-col mdl-textfield mdl-js-textfield">
+								<input class="mdl-textfield__input" type="text" title="Nome impresso no cartão" id="dadosPedidoPgtoCartao1Nome" name="dadosPedidoPgtoCartao1Nome" />
+								<label class="mdl-textfield__label" for="dadosPedidoPgtoCartao1Nome">Nome impresso no cartão</label>
+							</div>
+							<div class="mdl-cell--6-col mdl-textfield mdl-js-textfield">
+								<input class="mdl-textfield__input" type="text" pattern="(01|02|03|04|05|06|07|08|09|10|11|12)\/[0-9]{4}" maxlength="7" title="Validade (mm/aaaa)" id="dadosPedidoPgtoCartao1Validade" name="dadosPedidoPgtoCartao1Validade" />
+								<label class="mdl-textfield__label" for="dadosPedidoPgtoCartao1Validade">Validade (mm/aaaa)</label>
+								<span class="mdl-textfield__error">Formato: mm/aaaa</span>
+							</div>
+							<div class="mdl-cell--6-col mdl-textfield mdl-js-textfield">
+								<input class="mdl-textfield__input" type="text" pattern="^\d{3,4}" maxlength="4" minlength="3" title="Código de segurança" id="dadosPedidoPgtoCartao1CVV" name="dadosPedidoPgtoCartao1CVV" />
+								<label class="mdl-textfield__label" for="dadosPedidoPgtoCartao1CVV">Código de segurança</label>
+								<span class="mdl-textfield__error">Formato: 000 ou 0000</span>
+							</div>
+							@*<div class="mdl-cell--6-col mdl-textfield mdl-js-textfield">
+								<input class="mdl-textfield__input" type="text" pattern="^\d+(\.)\d{2}$" title="Valor a ser debitado no cartão" id="dadosPedidoPgtoCartao1ValorDebitado" />
+								<label class="mdl-textfield__label" for="dadosPedidoPgtoCartao1ValorDebitado">Valor debitado nesse cartão</label>
+								<span class="mdl-textfield__error">Formato: 0.00</span>
+							</div>*@
+						</div>
+						@*<div class="mdl-cell--12-col divDadosPedidoPgtoCartao2" style="display: none;">
+							<div class="mdl-cell--6-col mdl-textfield mdl-js-textfield">
+								<input class="mdl-textfield__input" type="text" pattern="[0-9]*(\.[0-9]+)?" title="Somente números" id="dadosPedidoPgtoCartao2Numero" />
+								<label class="mdl-textfield__label" for="dadosPedidoPgtoCartao2Numero">Número do cartão</label>
+								<span class="mdl-textfield__error">Somente números</span>
+							</div>
+							<div class="mdl-cell--6-col mdl-textfield mdl-js-textfield">
+								<input class="mdl-textfield__input" type="text" title="Nome impresso no cartão" id="dadosPedidoPgtoCartao2Nome" />
+								<label class="mdl-textfield__label" for="dadosPedidoPgtoCartao2Nome">Nome impresso no cartão</label>
+							</div>
+							<div class="mdl-cell--6-col mdl-textfield mdl-js-textfield">
+								<input class="mdl-textfield__input" type="text" pattern="(01|02|03|04|05|06|07|08|09|10|11|12)\/[0-9]{2}" maxlength="5" title="Validade (mm/aa)" id="dadosPedidoPgtoCartao2Validade" />
+								<label class="mdl-textfield__label" for="dadosPedidoPgtoCartao2Validade">Validade (mm/aa)</label>
+								<span class="mdl-textfield__error">Formato: mm/aa</span>
+							</div>
+							<div class="mdl-cell--6-col mdl-textfield mdl-js-textfield">
+								<input class="mdl-textfield__input" type="text" pattern="^\d{3,4}" maxlength="4" title="Código de segurança" id="dadosPedidoPgtoCartao2CVV" />
+								<label class="mdl-textfield__label" for="dadosPedidoPgtoCartao2CVV">Código de segurança</label>
+								<span class="mdl-textfield__error">Formato: 000 ou 0000</span>
+							</div>
+							<div class="mdl-cell--6-col mdl-textfield mdl-js-textfield">
+								<input class="mdl-textfield__input" type="text" pattern="^\d+(\.)\d{2}$" title="Valor a ser debitado nesse cartão" id="dadosPedidoPgtoCartao2ValorDebitado" />
+								<label class="mdl-textfield__label" for="dadosPedidoPgtoCartao2ValorDebitado">Valor debitado nesse cartão</label>
+								<span class="mdl-textfield__error">Formato: 0.00</span>
+							</div>
+							<div class="mdl-cell--6-col mdl-textfield">
+								<select name="dadosPedidoPgtoCartao2Parcelas" id="dadosPedidoPgtoCartao2Parcelas" style="width: 100%;" >
+									<option value="" selected>Número de parcelas</option>
+									<option value="1">1</option>
+									<option value="2">2</option>
+									<option value="3">3</option>
+									<option value="4">4</option>
+									<option value="5">5</option>
+									<option value="6">6</option>
+								</select>
+							</div>
+						</div>*@
+					</div>
+					<!-- /CARTÃO DE CRÉDITO -->
+
+					<!-- BOLETO -->
+					<div class="mdl-cell--12-col mdl-tabs__panel aba-pgto-conteudo aba-pgto-conteudo-boleto" id="forma-pgto-tab-boleto">
+						<div class="mdl-cell--6-col mdl-textfield">
+							<select name="dadosPedidoPgtoBoletoQtdParcelas" id="dadosPedidoPgtoBoletoQtdParcelas" class="width-100" >
+								<option value="" selected>Número de parcelas</option>
+								@{
+									for (int i = 1; i <= QtdMaxParcelasBoleto; i++)
+									{
+										<option value="@(i.ToString())">@(i.ToString())</option>
+									}
+								}
+							</select>
+						</div>
+						<div class="mdl-cell--6-col mdl-textfield mdl-js-textfield text-right">
+							<span id="spanValorParcelasBoleto">0x de R$ 0,00</span>
+						</div>
+					</div>
+					<!-- /BOLETO -->
+
+					<!-- CHEQUE -->
+					<div class="mdl-cell--12-col mdl-tabs__panel aba-pgto-conteudo aba-pgto-conteudo-cheque" id="forma-pgto-tab-cheque">
+						<div class="mdl-cell--12-col mdl-textfield">
+							<select name="dadosPedidoPgtoChequeQtd" id="dadosPedidoPgtoChequeQtd" class="width-100" >
+								<option value="" selected>Número de parcelas</option>
+								@{
+									for (int i = 1; i <= QtdMaxParcelasCheque; i++)
+									{
+										<option value="@(i.ToString())">@(i.ToString())</option>
+									}
+								}
+							</select>
+						</div>
+						@{
+							for (int i = 1; i <= QtdMaxParcelasCheque; i++)
+							{
+								<!-- Parcela-@(i.ToString()) -->
+								<div class="mdl-cell--12-col divDadosPedidoPgtoCheque" id="divDadosPedidoPgtoCheque@(i.ToString())" parcela="@(i.ToString())" style="display: none;">
+									<div class="mdl-cell--12-col">
+										@(i.ToString())ª parcela
+									</div>
+									<!-- CPF -->
+									<div class="mdl-cell--6-col mdl-textfield mdl-js-textfield div-dados-pedido-pgto-cheque-cpf">
+										<input class="mdl-textfield__input dadosPedidoPgtoChequeCPF @(i == 1 ? "replicar" : "")" type="text" pattern="[0-9]*(.[0-9]+)?" maxlength="14" title="Somente números" id="dadosPedidoPgtoCheque@(i.ToString())CPFEmitente" name="dadosPedidoPgtoCheque@(i.ToString())CPFEmitente" />
+										<label class="mdl-textfield__label" for="dadosPedidoPgtoCheque@(i.ToString())CPFEmitente">CPF/CNPJ do Emitente</label>
+										<span class="mdl-textfield__error">Favor informar um CPF/CNPJ válido (somente números)</span>
+									</div>
+									<!-- /CPF -->
+									<!-- VALOR -->
+									<div class="mdl-cell--6-col mdl-textfield">
+										<input class="mdl-textfield__input dadosPedidoPgtoChequeValor outline-none" type="text" pattern="^\d+(\.)\d{2}$" maxlength="10" title="Formato: 0.00" placeholder="Valor (Formato: 0.00)" id="dadosPedidoPgtoCheque@(i.ToString())Valor" name="dadosPedidoPgtoCheque@(i.ToString())Valor" />
+										<span class="mdl-textfield__error">Formato: 0.00</span>
+									</div>
+									<!-- /VALOR -->
+									<!-- TELEFONE-->
+									<div class="mdl-cell--6-col mdl-textfield mdl-js-textfield">
+										<input class="mdl-textfield__input dadosPedidoPgtoChequeTelefone @(i == 1 ? "replicar" : "")" type="text" pattern="[0-9]*(.[0-9]+)?" maxlength="11" title="Somente números" id="dadosPedidoPgtoCheque@(i.ToString())Telefone" name="dadosPedidoPgtoCheque@(i.ToString())Telefone" />
+										<label class="mdl-textfield__label" for="dadosPedidoPgtoCheque@(i.ToString())Telefone">Telefone</label>
+										<span class="mdl-textfield__error">Favor informar um telefone válido (somente números)</span>
+									</div>
+									<!-- /TELEFONE -->
+									<!-- VENCIMENTO -->
+									<div class="mdl-cell--6-col mdl-textfield mdl-js-textfield">
+										<input class="mdl-textfield__input dadosPedidoPgtoChequeVencimento @(i == 1 ? "replicar" : "") datepicker outline-none" type="text"  maxlength="10" title="Somente números" placeholder="Vencimento" id="dadosPedidoPgtoCheque@(i.ToString())Vencimento" name="dadosPedidoPgtoCheque@(i.ToString())Vencimento" />
+										<span class="mdl-textfield__error">Formato: dd/mm/aaaa</span>
+									</div>
+									<!-- /VENCIMENTO -->
+									<!-- NOME DO EMITENTE -->
+									<div class="mdl-cell--12-col mdl-textfield mdl-js-textfield">
+										<input class="mdl-textfield__input dadosPedidoPgtoChequeEmitente @(i == 1 ? "replicar" : "")" type="text" title="Emitente" id="dadosPedidoPgtoCheque@(i.ToString())Emitente" name="dadosPedidoPgtoCheque@(i.ToString())Emitente" />
+										<label class="mdl-textfield__label" for="dadosPedidoPgtoCheque@(i.ToString())Emitente">Emitente</label>
+									</div>
+									<!-- /NOME DO EMITENTE -->
+									<!-- CMC7 -->
+									<div class="mdl-cell--12-col div-dadosPedidoPgtoChequeCMC7">
+											<span>CMC7:</span>&nbsp;&nbsp;<span class="span-msg-erro-cmc7">O número é inválido</span>
+											<br />
+											<!-- BLOCO 1 -->
+											<div class="div-dadosPedidoPgtoChequeCMC7bloco1">
+												&nbsp;
+												#
+												<input type="text" cheque="@(i.ToString())" id="dadosPedidoPgtoCheque@(i.ToString())CMC7bloco1Input1" class="tbxDadosPedidoPgtoChequeCMC7 dadosPedidoPgtoChequeCMC7bloco1 dadosPedidoPgtoChequeCMC7bloco1Input1 dadosPedidoPgtoCheque@(i.ToString())CMC7bloco1Input1 @(i == 1 ? "replicar" : "")" target=".dadosPedidoPgtoChequeCMC7bloco1Input1" pattern="[0-9]*(.[0-9]+)?" title="Número do cheque" value="" size="7" maxlength="7" minlength="7" />
+												<input type="text" cheque="@(i.ToString())" id="dadosPedidoPgtoCheque@(i.ToString())CMC7bloco1Input2" class="tbxDadosPedidoPgtoChequeCMC7 dadosPedidoPgtoChequeCMC7bloco1 dadosPedidoPgtoChequeCMC7bloco1Input2 dadosPedidoPgtoCheque@(i.ToString())CMC7bloco1Input2" pattern="[0-9]*(.[0-9]+)?" title="Número do cheque" value="" size="1" maxlength="1" minlength="1" />
+												#
+												&nbsp;&nbsp;
+											</div>
+											<!-- /BLOCO 1 -->
+											<!-- BLOCO 2 -->
+											<div class="div-dadosPedidoPgtoChequeCMC7bloco2">
+												<input type="text" cheque="@(i.ToString())" id="dadosPedidoPgtoCheque@(i.ToString())CMC7bloco2Input1" class="tbxDadosPedidoPgtoChequeCMC7 dadosPedidoPgtoChequeCMC7bloco2 dadosPedidoPgtoChequeCMC7bloco2Input1 dadosPedidoPgtoCheque@(i.ToString())CMC7bloco2Input1 @(i == 1 ? "replicar" : "")" target=".dadosPedidoPgtoChequeCMC7bloco2Input1" pattern="[0-9]*(.[0-9]+)?" title="Número do cheque" value="" size="3" maxlength="3" minlength="3" />
+												<input type="text" cheque="@(i.ToString())" id="dadosPedidoPgtoCheque@(i.ToString())CMC7bloco2Input2" class="tbxDadosPedidoPgtoChequeCMC7 dadosPedidoPgtoChequeCMC7bloco2 dadosPedidoPgtoChequeCMC7bloco2Input2 dadosPedidoPgtoCheque@(i.ToString())CMC7bloco2Input2" pattern="[0-9]*(.[0-9]+)?" title="Número do cheque" value="" size="6" maxlength="6" minlength="6" />
+												<input type="text" cheque="@(i.ToString())" id="dadosPedidoPgtoCheque@(i.ToString())CMC7bloco2Input3" class="tbxDadosPedidoPgtoChequeCMC7 dadosPedidoPgtoChequeCMC7bloco2 dadosPedidoPgtoChequeCMC7bloco2Input3 dadosPedidoPgtoCheque@(i.ToString())CMC7bloco2Input3" pattern="[0-9]*(.[0-9]+)?" title="Número do cheque" value="" size="1" maxlength="1" minlength="1" />
+												#
+												&nbsp;&nbsp;
+											</div>
+											<!-- /BLOCO 2 -->
+											<!-- BLOCO 3 -->
+											<div class="div-dadosPedidoPgtoChequeCMC7bloco3">
+												<input type="text" cheque="@(i.ToString())" id="dadosPedidoPgtoCheque@(i.ToString())CMC7bloco3Input1" class="tbxDadosPedidoPgtoChequeCMC7 dadosPedidoPgtoChequeCMC7bloco3 dadosPedidoPgtoChequeCMC7bloco3Input1 dadosPedidoPgtoCheque@(i.ToString())CMC7bloco3Input1" pattern="[0-9]*(.[0-9]+)?" title="Número do cheque" value="" size="1" maxlength="1" minlength="1" />
+												<input type="text" cheque="@(i.ToString())" id="dadosPedidoPgtoCheque@(i.ToString())CMC7bloco3Input2" class="tbxDadosPedidoPgtoChequeCMC7 dadosPedidoPgtoChequeCMC7bloco3 dadosPedidoPgtoChequeCMC7bloco3Input2 dadosPedidoPgtoCheque@(i.ToString())CMC7bloco3Input2 @(i == 1 ? "replicar" : "")" target=".dadosPedidoPgtoChequeCMC7bloco3Input2" pattern="[0-9]*(.[0-9]+)?" title="Número do cheque" value="" size="11" maxlength="10" minlength="10" />
+												<input type="text" cheque="@(i.ToString())" id="dadosPedidoPgtoCheque@(i.ToString())CMC7bloco3Input3" class="tbxDadosPedidoPgtoChequeCMC7 dadosPedidoPgtoChequeCMC7bloco3 dadosPedidoPgtoChequeCMC7bloco3Input3 dadosPedidoPgtoCheque@(i.ToString())CMC7bloco3Input3" pattern="[0-9]*(.[0-9]+)?" title="Número do cheque" value="" size="1" maxlength="1" minlength="1" />
+												#
+											</div>
+											<!-- /BLOCO 3 -->
+										@*<input type="hidden" name="dadosPedidoPgtoChequeCMC7Completo_@(i.ToString())" class="dadosPedidoPgtoChequeCMC7Completo_@(i.ToString())" value="" />*@
+										<input type="hidden" name="dadosPedidoPgtoCheque@(i.ToString())CMC7Completo" class="dadosPedidoPgtoChequeCMC7Completo dadosPedidoPgtoChequeCMC7Completo_@(i.ToString())" value="" />
+									</div>
+									<!-- /CMC7 -->
+								</div>
+								<!-- /Parcela-@(i.ToString()) -->
+							}
+						}
+					</div>
+					<!-- /CHEQUE -->
+						
+					<!-- DINHEIRO -->
+					<div class="mdl-tabs__panel aba-pgto-conteudo aba-pgto-conteudo-dinheiro" id="forma-pgto-tab-dinheiro">
+						<div class="mdl-cell--12-col mdl-textfield mdl-js-textfield">
+							<input class="mdl-textfield__input" type="text" pattern="[0-9]*(\.[0-9]+)?" title="Somente números" id="dadosPedidoPgtoDinheiroValor" name="dadosPedidoPgtoDinheiroValor" />
+							<label class="mdl-textfield__label" for="dadosPedidoPgtoCartaoValor">Valor pago em dinheiro</label>
+							<span class="mdl-textfield__error">Somente números</span>
+						</div>
+						<div class="mdl-cell--12-col">
+							<label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="dadosPedidoCheckRecebimento">
+								<input type="checkbox" id="dadosPedidoCheckRecebimento" class="mdl-checkbox__input">
+								<span class="mdl-checkbox__label">Confirmo o recebimento e conferência de dinheiro em espécie na quantia de <span class="span-valor-dinheiro-especie-recebido">R$ 0.00</span> </span>
+							</label>
+						</div>
+					</div>
+					<!-- /DINHEIRO -->
+
+					@*<div class="mdl-cell--12-col">
+						<label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="dadosPedidoCheckContratoServico">
+							<input type="checkbox" id="dadosPedidoCheckContratoServico" class="mdl-checkbox__input">
+							<span class="mdl-checkbox__label">Concordo com o <a href="#"class="ancora-contrato-prestacao-servico">contrato de compra e prestação de serviço</a></span>
+						</label>
+					</div>*@
+					<div class="mdl-cell--12-col text-left div-info-conclusao">
+						<div class="div-info-valor-total">
+							<span>Valor Total:</span>
+							<span id="spn_valortotal">R$ 0,00</span>
+						</div>
+						<div class="div-btn-concluir-compra">
+							<button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored" id="btn-concluir-compra">Concluir compra</button>
+						</div>
+					</div>
+				</div>
+			</div>
+			<!-- /FORMA DE PAGAMENTO -->
+		</div>
+	</form>
+</section>
+<!-- MODAL ALTERAÇÃO ENDEREÇO -->
+<div class="modal fade div-modal-alteracao-entrega" role="dialog" style="font-size:12px;">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal">&times;</button>
+				<h4 class="modal-title jqTituloBoxDados">Dados de entrega</h4>
+			</div>
+			<div class="modal-body">
+				<form id="form-alteracao-endereco-entrega">
+                    <input type="hidden" name="tipo_entrega_comprador" class="hidden_tipo_destinatario_comprador" value="" />
+					<table class="table-alteracao-endereco-entrega">
+						<tbody>
+							<tr class="jqComprador">
+								<td><label for="">CPF / CNPJ</label></td>
+								<td><input type="text" name="" class="tbxCpfCnpj" pattern="[0-9]*(\.[0-9]+)?" title="Somente números" value="" placeholder="" maxlength="14" size="25" /></td>
+							</tr>
+							<tr class="jqComprador">
+								<td><label for="">Nome</label></td>
+								<td><input type="text" name="" class="tbxNome" value="" placeholder="Ex.: José da Silva" maxlength="50" size="40" /></td>
+							</tr>
+							<tr class="jqComprador">
+								<td><label for="">DDD</label></td>
+								<td><input type="text" name="" class="tbxDDD" value="" placeholder="" maxlength="3" size="10" /></td>
+							</tr>
+							<tr class="jqComprador">
+								<td><label for="">Telefone</label></td>
+								<td><input type="text" name="" class="tbxTelefone" value="" placeholder="" maxlength="50" size="40" /></td>
+							</tr>
+							<tr class="jqComprador">
+								<td><label for="">Email</label></td>
+								<td><input type="text" name="" class="tbxEmail" value="" placeholder="" maxlength="50" size="40" /></td>
+							</tr>
+							<tr class="jqComprador">
+
+								<td><label for="">Data Nascimento</label></td>
+								<td>
+                                    <!--<input type="date" name="" class="tbxDtNascimento" value="" placeholder="" maxlength="50" size="40" />-->
+
+                                    <div id='datePickerDataNascimento' class='div-input-date-picker'> 
+                                        <input class='datetimepicker' onfocus='blur();' id="data_nascimento_comprador" type='text'>
+                                        <button id="btnDataNascimento" class='mdl-button mdl-js-button mdl-button--icon btn-data-picker'>
+                                            <i class='material-icons'>more_horiz</i>
+                                        </button>
+                                    </div>
+								</td>
+							</tr>
+							<tr>
+								<td><label for="">CEP</label></td>
+								<td>
+									<input type="text" name="" class="tbxCep" value="" placeholder="Somente números" maxlength="8" size="17" />
+									<a href="http://www.buscacep.correios.com.br/sistemas/buscacep/buscaCep.cfm" target="_blank" class="btn-alteracao-endereco-entrega-nao-sei-meu-cep" style="color: indigo;">Não sei meu CEP</a>
+								</td>
+							</tr>
+							<tr class="jqEntrega">
+								<td><label for="">Destinatário</label></td>
+								<td><input type="text" name="" class="tbxDestinatario" value="" placeholder="Ex.: José da Silva" maxlength="50" size="40" /></td>
+							</tr>
+							<tr>
+								<td><label for="">Logradouro</label></td>
+								<td><input type="text" name="" class="tbxLogradouro" value="" placeholder="Ex.: Avenida Paulista" maxlength="50" size="40" /></td>
+							</tr>
+							<tr>
+								<td><label for="">Número</label></td>
+								<td><input type="text" name="" class="tbxNumero" value="" placeholder="Ex.: 20" maxlength="6" size="10" /></td>
+							</tr>
+							<tr>
+								<td><label for="">Complemento</label></td>
+								<td><input type="text" name="" class="tbxComplemento" value="" placeholder="Ex.: APTO 1012" maxlength="30" size="40"/></td>
+							</tr>
+							<tr>
+								<td><label for="">Bairro</label></td>
+								<td><input type="text" name="" class="tbxBairro" value="" placeholder="Ex.: Centro" maxlength="40" size="40" /></td>
+							</tr>
+							<tr>
+								<td><label for="">Cidade</label></td>
+								<td><input type="text" name="" class="tbxCidade" value="" placeholder="Ex.: Rio de Janeiro" maxlength="40" size="40" /></td>
+							</tr>
+							<tr>
+								<td><label for="">Estado</label></td>
+								<td>
+									<select name="" class="sbxEstado">
+										<option value="" selected>Selecione</option>
+										@{
+											foreach (var Estado in ((Dictionary<string, string>)ViewBag.Estados).OrderBy(e => e.Value))
+											{
+												<option value="@Estado.Key">@Estado.Value</option>
+											}
+										}
+									</select>
+								</td>
+							</tr>
+						</tbody>
+					</table>
+				</form>
+			</div>
+			<div class="modal-footer">
+				<div class="text-center">
+					<p class="msg-erro-validacao-alteracao-endereco-entrega" style="display: none;"></p>
+				</div>
+				<button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+				<button type="button" class="btn btn-primary btn-confirmar-alteracao-endereco-entrega" >Alterar</button>
+			</div>
+		</div>
+	</div>
+</div>
+<!-- /MODAL ALTERAÇÃO ENDEREÇO -->

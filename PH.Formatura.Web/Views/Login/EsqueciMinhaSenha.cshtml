@@ -1,0 +1,70 @@
+﻿@{
+	Layout = "~/Views/Shared/_Layout.cshtml";
+	ViewBag.Title = HttpContext.Current.Application["Site_Name"] + " | Esqueci minha senha";
+	ViewBag.MinCSS = HttpContext.Current.Application["MIN_CSS"].ToString() == "1" ? ".min" : "";
+	ViewBag.MinJS = HttpContext.Current.Application["MIN_JS"].ToString() == "1" ? ".min" : "";
+	ViewBag.VersaoCSS = HttpContext.Current.Application["VERSAO_CSS"].ToString();
+	ViewBag.VersaoJS = HttpContext.Current.Application["VERSAO_JS"].ToString();
+
+	var ModeloDadosValidacaoHash = (PH.Formatura.DTO.DadosValidacaoHash)Model;
+
+	ViewBag.Breadcrumb = new Dictionary<string, string>();
+	ViewBag.Breadcrumb.Add("Login", Url.Action("Index"));
+	ViewBag.Breadcrumb.Add("Esqueci minha senha", "");
+}
+@section CSSHeader{
+	<link rel="stylesheet" href="~/Content/css/esqueci-senha@(ViewBag.MinCSS).css?v=@(ViewBag.VersaoCSS)" />
+}
+@section ScriptHeader{
+	<script type="text/javascript" src="~/Content/js/esqueci-senha@(ViewBag.MinJS).js?v=@(ViewBag.VersaoJS)"></script>
+	<script type="text/javascript">var DadosValidacaoHash = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(ModeloDadosValidacaoHash))</script>
+}
+
+<section id="section-principal">
+	<div class="conteudo-geral">
+		<div class="conteudo-esqueci-senha">
+			@{
+				if (ModeloDadosValidacaoHash != null)
+				{
+					if(!ModeloDadosValidacaoHash.Sucesso)
+					{
+						@(ModeloDadosValidacaoHash.Mensagem)
+					}
+					else
+					{					
+						<form class="form-horizontal" id="form_esqueci_senha_alterar">
+							<div class="form-group form_campos">
+								<div class="form-group">
+									<label for="tbx_nova_senha" class="col-sm-4 control-label">Nova senha</label>
+									<div class="col-sm-8">
+										<input type="password" class="form-control" id="tbx_nova_senha" title="Crie uma senha nova" placeholder="Mínimo de 6 caracteres" minlength="6" required>
+									</div>
+								</div>
+								<div class="form-group">
+									<label for="tbx_nova_senha_confirmacao" class="col-sm-4 control-label">Confirmar nova senha</label>
+									<div class="col-sm-8">
+										<input type="password" class="form-control" id="tbx_nova_senha_confirmacao" title="Repita a senha criada" minlength="6" placeholder="As senhas devem ser iguais" required>
+									</div>
+								</div>
+								<div class="form-group">
+									<div class="col-sm-offset-4 col-sm-8">
+										<button type="submit" class="btn btn-primary btn-alterar-senha">Alterar senha</button>
+									</div>
+								</div>
+							</div>
+							<div class="form-group">
+								<div class="col-sm-offset-4 col-sm-8">
+									<p class="msg_retorno_alteracao" style="display: none;"></p>
+								</div>
+							</div>
+						</form>
+					}
+				}
+				else
+				{
+					@("Hash não informado")
+				}
+			}
+		</div>
+	</div>
+</section>

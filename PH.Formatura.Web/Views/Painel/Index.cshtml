@@ -1,0 +1,157 @@
+﻿@{
+	Layout = "~/Views/Shared/_Layout.cshtml";
+	ViewBag.Title = HttpContext.Current.Application["Site_Name"] + " | Painel";
+	ViewBag.MinCSS = HttpContext.Current.Application["MIN_CSS"].ToString() == "1" ? ".min" : "";
+	ViewBag.MinJS = HttpContext.Current.Application["MIN_JS"].ToString() == "1" ? ".min" : "";
+	ViewBag.VersaoCSS = HttpContext.Current.Application["VERSAO_CSS"].ToString();
+	ViewBag.VersaoJS = HttpContext.Current.Application["VERSAO_JS"].ToString();
+	PH.Formatura.DTO.User _User = (ViewData["_User"] != null) ? (PH.Formatura.DTO.User)ViewData["_User"] : null;
+
+	ViewBag.Breadcrumb = new Dictionary<string, string>();
+	ViewBag.Breadcrumb.Add("Painel Administrativo", "");
+
+    
+	
+}
+@section CSSHeader{
+	<link rel="stylesheet" href="~/Content/css/painel@(ViewBag.MinCSS).css?v=@(ViewBag.VersaoCSS)" />
+}
+@section ScriptHeader{
+	<script type="text/javascript">
+		var cookie_user_name = "@System.Web.HttpContext.Current.Application["Cookie_User_Offline"].ToString()"; 
+	</script>
+	<script type="text/javascript" src="~/Content/js/painel@(ViewBag.MinJS).js?v=@(ViewBag.VersaoJS)"></script>
+}
+
+<section id="section-principal">
+	<div class="conteudo-geral">
+		<div class="conteudo-painel">
+			<ul class="lista-acoes">
+				@{
+					if (ViewBag.Privilegio == "SUPERVISOR_TABLET"){
+						<li class="item-associacao-alunos-vendedores">
+							<a href="@Url.Action("AssociaAlunoVendedor", "Supervisor")" title="Associação de Aluno a Vendedor" class="">
+								<h2>Associar Alunos a Vendedores</h2>
+								<h3>Lista os alunos para associação a vendedores</h3>
+							</a>
+						</li>
+					} else if (ViewBag.Privilegio == "GERENCIAL_TABLET"){
+						<li class="item-pedidos">
+							<a href="~/Gerencial/Pedidos" title="Pedidos" class="">
+								<h2>Status dos Pedidos Realizados</h2>
+								<h3>Listagem e status dos pedidos realizados</h3>
+							</a>
+						</li>
+						<li class="item-fotos-pedidos">
+							<a href="~/Gerencial/FotosPedidos" title="Fotos dos Pedidos" class="">
+								<h2>Fotos dos Pedidos</h2>
+								<h3>Listagem e status das fotos dos pedidos realizados</h3>
+							</a>
+						</li>
+						<li class="item-faturamento-diario">
+							<a href="~/Gerencial/FaturamentoDiario" title="Faturamento Diário" class="">
+								<h2>Faturamento Diário</h2>
+								<h3>Listagem de faturamento diário</h3>
+							</a>
+						</li>
+						<li class="item-faturamento-mensal">
+							<a href="~/Gerencial/FaturamentoMensal" title="Faturamento Mensal" class="">
+								<h2>Faturamento Mensal</h2>
+								<h3>Listagem de faturamento mensal</h3>
+							</a>
+						</li>
+						<li class="item-integracao-cp7-vendas">
+							<a href="~/Gerencial/IntegracaoCP7Vendas" title="Integração CP7 Vendas" class="">
+								<h2>Integração CP7</h2>
+								<h3>Vendas</h3>
+							</a>
+						</li>
+						<!--
+						<li class="item-integracao-cp7-vendas-itens">
+							<a href="~/Gerencial/IntegracaoCP7VendasItens" title="Integração CP7 Vendas de Itens" class="">
+								<h2>Integração CP7</h2>
+								<h3>Vendas de Itens</h3>
+							</a>
+						</li>
+						<li class="item-integracao-cp7-vendas-parcela">
+							<a href="~/Gerencial/IntegracaoCP7VendasParcela" title="Integração CP7 Vendas Parcela" class="">
+								<h2>Integração CP7</h2>
+								<h3>Vendas Parcela</h3>
+							</a>
+						</li>-->
+					} else if (ViewBag.Privilegio == "VENDEDOR_TABLET"){
+						<li class="item-alunos">
+							<a href="~/Alunos" title="Lista os alunos associados" class="">
+								<h2>Alunos</h2>
+								<h3>Lista os alunos associados</h3>
+							</a>
+						</li>
+						<li class="item-alunos-sincronizados">
+							<a href="~/Offline/Alunos" title="Lista os alunos sincronizados neste dispositivo" class="">
+								<h2>Alunos sincronizados</h2>
+								<h3>Lista os alunos sincronizados neste dispositivo</h3>
+							</a>
+						</li>
+						<li class="item-pedidos-finalizados">
+							<a href="~/Pedidos/Realizados" title="Lista de pedidos solicitados" class="">
+								<h2>Pedidos realizados</h2>
+								<h3>Lista de pedidos concluidos</h3>
+							</a>
+						</li>
+						<li class="item-pedidos-pendentes">
+							<a href="@Url.Action("PedidosPendentes","Offline")" title="Lista de pedidos pendentes de sincronização" class="">
+								<h2>Pedidos pendentes</h2>
+								<h3>Lista de pedidos pendentes de sincronização</h3>
+							</a>
+						</li>
+					} else {
+						<li class="item-montar-projeto">
+							<a href="~/Painel/MontarProjeto" title="Crie o projeto de um novo álbum" class="">
+								<h2>Montar Projeto</h2>
+								<h3>Crie o projeto de um novo álbum</h3>
+							</a>
+						</li>
+						<li class="item-projetos-em-andamento">
+							<a href="~/Painel/ProjetosEmAndamento" title="Lista de álbuns existentes" class="">
+								<h2>Projetos em andamento</h2>
+								<h3>Lista de álbuns existentes</h3>
+							</a>
+						</li>
+						<li class="item-projetos-finalizados">
+							<a href="~/Painel/ProjetosFinalizados" title="Lista de álbuns já solicitados" class="">
+								<h2>Projetos Finalizados</h2>
+								<h3>Lista de álbuns já solicitados</h3>
+							</a>
+						</li>
+						<li class="item-extrato">
+							<a href="~/Painel/Extrato" title="Confira pedidos e pagamentos" class="">
+								<h2>Extrato</h2>
+								<h3>Confira pedidos e pagamentos</h3>
+							</a>
+						</li>
+						
+						List<string> EmailsPermitidos = new List<string>();
+						EmailsPermitidos.Add("zangraf@zangraf.com.br");
+
+						if (EmailsPermitidos.Contains(_User.Email))
+						{
+							<li class="item-cadastrar-usuario">
+								<a href="~/Painel/CadastrarUsuario" title="" class="">
+									<h2>Cadastrar usuário</h2>
+									<h3>Crie um login de acesso</h3>
+								</a>
+							</li>
+						}
+						
+						<li class="item-carrinho">
+							<a href="~/Painel/Carrinho" target="_blank" title="" class="">							
+								<h2>Carrinho</h2>
+								<h3>Confira os itens do seu carrinho</h3>							
+							</a>
+						</li>
+					}
+				}
+			</ul>
+		</div>
+	</div>
+</section>

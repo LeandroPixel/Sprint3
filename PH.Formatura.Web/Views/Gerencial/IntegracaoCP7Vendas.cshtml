@@ -1,0 +1,78 @@
+﻿@{    
+	Layout = "~/Views/Shared/_Layout.cshtml";
+
+	ViewBag.Title = HttpContext.Current.Application["Site_Name"] + " | Integração CP7 Vendas";
+
+	ViewBag.MinCSS = HttpContext.Current.Application["MIN_CSS"].ToString() == "1" ? ".min" : "";
+	ViewBag.MinJS = HttpContext.Current.Application["MIN_JS"].ToString() == "1" ? ".min" : "";
+	ViewBag.VersaoCSS = HttpContext.Current.Application["VERSAO_CSS"].ToString();
+	ViewBag.VersaoJS = HttpContext.Current.Application["VERSAO_JS"].ToString();
+	ViewBag.MinCSS_FRAMEWORK = HttpContext.Current.Application["MIN_CSS_FRAMEWORK"].ToString() == "1" ? ".min" : "";
+	ViewBag.MinJS_FRAMEWORK = HttpContext.Current.Application["MIN_JS_FRAMEWORK"].ToString() == "1" ? ".min" : "";
+
+	ViewBag.Breadcrumb = new Dictionary<string, string>();
+	ViewBag.Breadcrumb.Add("Painel Administrativo", Url.Action("Index", "Painel"));
+	ViewBag.Breadcrumb.Add("Integração CP7 Vendas", "");
+
+	var Url_API_Lista = Url.Action("ListIntegracaoCP7Vendas", "api/Gerencial");
+}
+@section CSSHeader{
+	<link rel="stylesheet" href="~/Content/bootstrap-table-master/src/bootstrap-table@(ViewBag.MinCSS_FRAMEWORK).css?v=@(ViewBag.VersaoCSS)" />
+	<link rel="stylesheet" href="~/Content/css/gerencial@(ViewBag.MinCSS_FRAMEWORK).css?v=@(ViewBag.VersaoCSS)" />
+}
+@section ScriptHeader{
+	<script type="text/javascript" src="~/Content/bootstrap-table-master/src/bootstrap-table@(ViewBag.MinJS_FRAMEWORK).js?v=@(ViewBag.VersaoJS)"></script>
+	<script type="text/javascript" src="~/Content/bootstrap-table-master/src/locale/bootstrap-table-pt-BR@(ViewBag.MinJS).js?v=@(ViewBag.VersaoJS)"></script>
+	<script type="text/javascript" src="~/Content/js/gerencial@(ViewBag.MinJS).js?v=@(ViewBag.VersaoJS)"></script>   
+
+	<script>
+		BootstrapTable = '#table-list';
+	</script>
+}
+<section id="section-principal">    
+	<div class="conteudo-geral">                
+		<div class="conteudo-alunos mdl-tabs mdl-js-tabs mdl-js-ripple-effect">
+			<nav class="menu-tipo-pessoa mdl-navigation mdl-tabs__tab-bar">
+				<a href="#div-list" class="mdl-tabs__tab is-active">Integração CP7 Vendas</a>				
+			</nav>
+
+			<div class="mdl-tabs__panel is-active" id="div-list">
+				<table id="table-list"
+					data-toggle="table"
+					data-locale="pt-BR"
+					data-url="@(Url_API_Lista)"          
+					data-ajax-options="oUtil.GetConfigAjaxBootstrapTable"          
+					data-sort-name="Usuario_Tipo"
+					data-sort-order="asc"
+					data-show-refresh="true"
+					data-show-toggle="false"
+					data-show-columns="true"
+					data-search="true"
+                    data-trim-on-search="false"
+					data-pagination="true"
+					data-page-size="20"
+					data-page-list="[10,20,50]"
+				>
+					<thead>												
+						<tr>
+							<th data-sortable="false" data-field="chave">chave</th>
+							<th data-sortable="false" data-field="Formando">Formando</th>
+							<th data-sortable="false" data-field="Parcelas">Parcelas</th>
+							<th data-sortable="false" data-field="ValeVendedor">ValeVendedor</th>
+							<th data-sortable="false" data-field="ValeEmpresa">ValeEmpresa</th>
+							<th data-sortable="false" data-field="DataContrato">DataContrato</th>
+							<th data-sortable="false" data-field="Recibo1">Recibo1</th>
+							<th data-sortable="false" data-field="Recibo2">Recibo2</th>
+							<th data-sortable="false" data-field="Recibo3">Recibo3</th>
+							<th data-sortable="false" data-field="ValorRecebido">ValorRecebido</th>
+							<th data-sortable="false" data-field="NomeContrato">NomeContrato</th>
+							<th data-sortable="false" data-field="CpfOuCnpjContrato">CpfOuCnpjContrato</th>
+							<th data-sortable="false" data-field="RgOuIeContrato">RgOuIeContrato</th>
+						</tr>
+					</thead>
+				</table>
+			</div>
+		</div>        
+	</div>
+</section>
+

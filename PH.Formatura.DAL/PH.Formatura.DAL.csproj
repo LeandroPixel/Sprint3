@@ -1,0 +1,305 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{973A56D9-1B64-4BD2-8BBE-CEFA8B2C269A}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>PH.Formatura.DAL</RootNamespace>
+    <AssemblyName>PH.Formatura.DAL</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="EntityFramework.BulkInsert">
+      <HintPath>..\packages\EntityFramework.BulkInsert-ef6.6.0.2.8\lib\Net45\EntityFramework.BulkInsert.dll</HintPath>
+    </Reference>
+    <Reference Include="EntityFramework.MappingAPI">
+      <HintPath>..\packages\EntityFramework.MappingAPI.6.0.0.7\lib\net45\EntityFramework.MappingAPI.dll</HintPath>
+    </Reference>
+    <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.SqlServer.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=9.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.9.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Security" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="albums.cs">
+      <DependentUpon>PixelHouse.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Brand.cs">
+      <DependentUpon>PixelHouse.tt</DependentUpon>
+    </Compile>
+    <Compile Include="CART_LOG_REFRESH_CACHE.cs">
+      <DependentUpon>PixelHouse.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DynamicSQLQuery.cs" />
+    <Compile Include="FB_Photobook.cs">
+      <DependentUpon>PixelHouse.tt</DependentUpon>
+    </Compile>
+    <Compile Include="FB_UserToken.cs">
+      <DependentUpon>PixelHouse.tt</DependentUpon>
+    </Compile>
+    <Compile Include="GRD_Address.cs">
+      <DependentUpon>PixelHouse.tt</DependentUpon>
+    </Compile>
+    <Compile Include="GRD_Agendamento.cs">
+      <DependentUpon>PixelHouse.tt</DependentUpon>
+    </Compile>
+    <Compile Include="GRD_Aluno.cs">
+      <DependentUpon>PixelHouse.tt</DependentUpon>
+    </Compile>
+    <Compile Include="GRD_AlunoTurma_Album.cs">
+      <DependentUpon>PixelHouse.tt</DependentUpon>
+    </Compile>
+    <Compile Include="GRD_AlunoTurma_Book.cs">
+      <DependentUpon>PixelHouse.tt</DependentUpon>
+    </Compile>
+    <Compile Include="GRD_AlunoTurma_Photos.cs">
+      <DependentUpon>PixelHouse.tt</DependentUpon>
+    </Compile>
+    <Compile Include="GRD_Aluno_Pacote.cs">
+      <DependentUpon>PixelHouse.tt</DependentUpon>
+    </Compile>
+    <Compile Include="GRD_Aluno_Turma.cs">
+      <DependentUpon>PixelHouse.tt</DependentUpon>
+    </Compile>
+    <Compile Include="GRD_Boleto.cs">
+      <DependentUpon>PixelHouse.tt</DependentUpon>
+    </Compile>
+    <Compile Include="GRD_Cart_Product.cs">
+      <DependentUpon>PixelHouse.tt</DependentUpon>
+    </Compile>
+    <Compile Include="GRD_Cheque.cs">
+      <DependentUpon>PixelHouse.tt</DependentUpon>
+    </Compile>
+    <Compile Include="GRD_Company.cs">
+      <DependentUpon>PixelHouse.tt</DependentUpon>
+    </Compile>
+    <Compile Include="GRD_DadosComprador.cs">
+      <DependentUpon>PixelHouse.tt</DependentUpon>
+    </Compile>
+    <Compile Include="GRD_Frete_Hist.cs">
+      <DependentUpon>PixelHouse.tt</DependentUpon>
+    </Compile>
+    <Compile Include="GRD_OrderRequest.cs">
+      <DependentUpon>PixelHouse.tt</DependentUpon>
+    </Compile>
+    <Compile Include="GRD_Order_Product.cs">
+      <DependentUpon>PixelHouse.tt</DependentUpon>
+    </Compile>
+    <Compile Include="GRD_Order_Product_Photos.cs">
+      <DependentUpon>PixelHouse.tt</DependentUpon>
+    </Compile>
+    <Compile Include="GRD_Pacote.cs">
+      <DependentUpon>PixelHouse.tt</DependentUpon>
+    </Compile>
+    <Compile Include="GRD_PessoaFisica.cs">
+      <DependentUpon>PixelHouse.tt</DependentUpon>
+    </Compile>
+    <Compile Include="GRD_PessoaJuridica.cs">
+      <DependentUpon>PixelHouse.tt</DependentUpon>
+    </Compile>
+    <Compile Include="GRD_Process_Upload.cs">
+      <DependentUpon>PixelHouse.tt</DependentUpon>
+    </Compile>
+    <Compile Include="GRD_Product_Config.cs">
+      <DependentUpon>PixelHouse.tt</DependentUpon>
+    </Compile>
+    <Compile Include="GRD_Prospect.cs">
+      <DependentUpon>PixelHouse.tt</DependentUpon>
+    </Compile>
+    <Compile Include="GRD_Status.cs">
+      <DependentUpon>PixelHouse.tt</DependentUpon>
+    </Compile>
+    <Compile Include="GRD_Turma.cs">
+      <DependentUpon>PixelHouse.tt</DependentUpon>
+    </Compile>
+    <Compile Include="GRD_Turma_Pacote.cs">
+      <DependentUpon>PixelHouse.tt</DependentUpon>
+    </Compile>
+    <Compile Include="GRD_Turma_Preco.cs">
+      <DependentUpon>PixelHouse.tt</DependentUpon>
+    </Compile>
+    <Compile Include="GRD_Turma_Preco_Hist.cs">
+      <DependentUpon>PixelHouse.tt</DependentUpon>
+    </Compile>
+    <Compile Include="GRD_Vendedor.cs">
+      <DependentUpon>PixelHouse.tt</DependentUpon>
+    </Compile>
+    <Compile Include="INodes.cs">
+      <DependentUpon>PixelHouse.tt</DependentUpon>
+    </Compile>
+    <Compile Include="InodesThumb.cs">
+      <DependentUpon>PixelHouse.tt</DependentUpon>
+    </Compile>
+    <Compile Include="order_payment_relation.cs">
+      <DependentUpon>PixelHouse.tt</DependentUpon>
+    </Compile>
+    <Compile Include="PaymentType.cs">
+      <DependentUpon>PixelHouse.tt</DependentUpon>
+    </Compile>
+    <Compile Include="PaymentTypeGroup.cs">
+      <DependentUpon>PixelHouse.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Photos.cs">
+      <DependentUpon>PixelHouse.tt</DependentUpon>
+    </Compile>
+    <Compile Include="PixelHouse.Context.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>PixelHouse.Context.tt</DependentUpon>
+    </Compile>
+    <Compile Include="PixelHouse.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>PixelHouse.tt</DependentUpon>
+    </Compile>
+    <Compile Include="PixelHouse.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>PixelHouse.edmx</DependentUpon>
+    </Compile>
+    <Compile Include="Products.cs">
+      <DependentUpon>PixelHouse.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="pr_GRD_AlunoUpload_Result.cs">
+      <DependentUpon>PixelHouse.tt</DependentUpon>
+    </Compile>
+    <Compile Include="PR_GRD_CADASTRAR_USUARIO_PF_Result.cs">
+      <DependentUpon>PixelHouse.tt</DependentUpon>
+    </Compile>
+    <Compile Include="PR_GRD_CADASTRAR_USUARIO_PJ_C_Result.cs">
+      <DependentUpon>PixelHouse.tt</DependentUpon>
+    </Compile>
+    <Compile Include="PR_GRD_CADASTRAR_USUARIO_PJ_U_Result.cs">
+      <DependentUpon>PixelHouse.tt</DependentUpon>
+    </Compile>
+    <Compile Include="pr_GRD_CreatePhoto_Result.cs">
+      <DependentUpon>PixelHouse.tt</DependentUpon>
+    </Compile>
+    <Compile Include="pr_GRD_PopulaTurmaAluno_Result.cs">
+      <DependentUpon>PixelHouse.tt</DependentUpon>
+    </Compile>
+    <Compile Include="pr_GRD_ProductsAluno_Result.cs">
+      <DependentUpon>PixelHouse.tt</DependentUpon>
+    </Compile>
+    <Compile Include="pr_GRD_SaveTurmaAlunoPorFora_Result.cs">
+      <DependentUpon>PixelHouse.tt</DependentUpon>
+    </Compile>
+    <Compile Include="pr_GRD_SelectPhotoGroupProducts_Result.cs">
+      <DependentUpon>PixelHouse.tt</DependentUpon>
+    </Compile>
+    <Compile Include="PR_USER_ALTERA_SENHA_Result.cs">
+      <DependentUpon>PixelHouse.tt</DependentUpon>
+    </Compile>
+    <Compile Include="SqlDynamic.cs" />
+    <Compile Include="template_email_mkt.cs">
+      <DependentUpon>PixelHouse.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Users.cs">
+      <DependentUpon>PixelHouse.tt</DependentUpon>
+    </Compile>
+    <Compile Include="user_account_transaction_history.cs">
+      <DependentUpon>PixelHouse.tt</DependentUpon>
+    </Compile>
+    <Compile Include="User_Forgot_Password.cs">
+      <DependentUpon>PixelHouse.tt</DependentUpon>
+    </Compile>
+    <Compile Include="usuario_acesso.cs">
+      <DependentUpon>PixelHouse.tt</DependentUpon>
+    </Compile>
+    <Compile Include="v_CartoesAceitos.cs">
+      <DependentUpon>PixelHouse.tt</DependentUpon>
+    </Compile>
+    <Compile Include="v_GRD_ListaUsuarios.cs">
+      <DependentUpon>PixelHouse.tt</DependentUpon>
+    </Compile>
+    <Compile Include="v_GRD_Products.cs">
+      <DependentUpon>PixelHouse.tt</DependentUpon>
+    </Compile>
+    <Compile Include="v_GRD_TabelaPreco.cs">
+      <DependentUpon>PixelHouse.tt</DependentUpon>
+    </Compile>
+    <Compile Include="v_Informacoes_Photobook_Formatura.cs">
+      <DependentUpon>PixelHouse.tt</DependentUpon>
+    </Compile>
+    <Compile Include="V_NICKNAME_USER.cs">
+      <DependentUpon>PixelHouse.tt</DependentUpon>
+    </Compile>
+    <Compile Include="v_products.cs">
+      <DependentUpon>PixelHouse.tt</DependentUpon>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config">
+      <SubType>Designer</SubType>
+    </None>
+    <EntityDeploy Include="PixelHouse.edmx">
+      <Generator>EntityModelCodeGenerator</Generator>
+      <LastGenOutput>PixelHouse.Designer.cs</LastGenOutput>
+    </EntityDeploy>
+    <None Include="packages.config" />
+    <None Include="PixelHouse.Context.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <DependentUpon>PixelHouse.edmx</DependentUpon>
+      <LastGenOutput>PixelHouse.Context.cs</LastGenOutput>
+    </None>
+    <None Include="PixelHouse.edmx.diagram">
+      <DependentUpon>PixelHouse.edmx</DependentUpon>
+    </None>
+    <None Include="PixelHouse.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <DependentUpon>PixelHouse.edmx</DependentUpon>
+      <LastGenOutput>PixelHouse.cs</LastGenOutput>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

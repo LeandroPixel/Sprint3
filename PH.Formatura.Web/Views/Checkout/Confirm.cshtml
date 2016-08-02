@@ -1,0 +1,120 @@
+﻿@{
+	ViewBag.Title = HttpContext.Current.Application["Site_Name"] + " | Confirmação da compra";
+
+	ViewBag.MinCSS = HttpContext.Current.Application["MIN_CSS"].ToString() == "1" ? ".min" : "";
+	ViewBag.MinJS = HttpContext.Current.Application["MIN_JS"].ToString() == "1" ? ".min" : "";
+	ViewBag.VersaoCSS = HttpContext.Current.Application["VERSAO_CSS"].ToString();
+	ViewBag.VersaoJS = HttpContext.Current.Application["VERSAO_JS"].ToString();
+	ViewBag.MinCSS_FRAMEWORK = HttpContext.Current.Application["MIN_CSS_FRAMEWORK"].ToString() == "1" ? ".min" : "";
+	ViewBag.MinJS_FRAMEWORK = HttpContext.Current.Application["MIN_JS_FRAMEWORK"].ToString() == "1" ? ".min" : "";
+
+	ViewBag.Breadcrumb = new Dictionary<string, string>();
+	ViewBag.Breadcrumb.Add("Confirmação de compra", "");
+
+	Layout = "~/Views/Shared/_Layout.cshtml";
+
+}
+@section CSSHeader{
+	<link rel="stylesheet" href="~/Content/css/checkout_confirm@(ViewBag.MinCSS).css?v=@(ViewBag.VersaoCSS)" />
+}
+@section ScriptHeader{
+	<script>
+        var cookie_user_name = "@System.Web.HttpContext.Current.Application["Cookie_User_Offline"].ToString()"; 
+    </script>
+	<script type="text/javascript" src="~/Content/js/checkout_confirm@(ViewBag.MinJS).js?v=@(ViewBag.VersaoJS)"></script>
+}
+
+<section id="section-principal">
+	<div class="conteudo-geral">
+		<div class="mdl-grid">
+			<!-- ONLINE -->
+			<div class="mdl-cell mdl-cell--12-col divPedidoConcluidoOnline" style="display: none;" >
+				<div class="mdl-grid">
+					<div class="mdl-cell mdl-cell--12-col divPedidoInfoStatus">
+						<svg fill="#00AD00" height="48" viewBox="0 0 24 24" width="48" xmlns="http://www.w3.org/2000/svg"><path d="M0 0h24v24H0z" fill="none"/><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
+						<h3 class="h3-msg-status-pedido"></h3>
+					</div>
+				</div>
+				<div class="mdl-grid">
+					<div class="mdl-cell mdl-cell--4-col divPedidoInfoCode">
+						<svg fill="#000000" height="48" viewBox="0 0 24 24" width="48" xmlns="http://www.w3.org/2000/svg"> <path d="M17 3H7c-1.1 0-1.99.9-1.99 2L5 21l7-3 7 3V5c0-1.1-.9-2-2-2zm0 15l-5-2.18L7 18V5h10v13z"/> <path d="M0 0h24v24H0z" fill="none"/> </svg>
+						<h4 class="h4-label-numero-pedido">Número do pedido</h4>
+						<span class="span-msg-code-pedido"></span>
+					</div>
+					<div class="mdl-cell mdl-cell--8-col">
+						
+					</div>
+				</div>
+				<div class="mdl-grid">
+					<div class="div-infos">
+						<div class="mdl-grid">
+							<div class="mdl-cell mdl-cell--6-col div-info">
+								<div class="div-icone-info">
+									<i class="material-icons icones-infos">mail_outline</i>
+								</div>
+								<div class="">
+									Um e-mail com os detalhes do pedido foi enviado para o e-mail do aluno.
+								</div>
+							</div>
+							@*<div class="mdl-cell mdl-cell--6-col div-info">
+								<div class="div-icone-info">
+									<i class="material-icons icones-infos">receipt</i>
+								</div>
+								<div class="">
+									Esta compra aparecerá em seu extrato em nome de "Pixel House", gestora do serviço.
+								</div>
+							</div>*@
+							@*<div class="mdl-cell mdl-cell--4-col div-info">
+								<div class="div-icone-info">
+									<i class="material-icons icones-infos">settings_phone</i>
+								</div>
+								<div class="">
+									Para mais informações sobre esta e outras compras entre em contato conosco pelo telefone (21) 2491-6448.
+								</div>
+							</div>*@
+						</div>
+					</div>
+				</div>				
+				<div class="mdl-grid">
+					<div class="mdl-cell mdl-cell--12-col divPedidoInfoAncoraPedidosRealizados">
+						<p class="p-msg-status-pedido">Para visualizar seus pedidos realizados, <a href="@Url.Action("Realizados", "Pedidos")">clique aqui</a>.</p>
+					</div>
+				</div>
+			</div>
+			<!-- /ONLINE -->
+			<!-- OFFLINE -->
+			<div class="mdl-cell mdl-cell--12-col divPedidoConcluidoOffline" style="display: none;" >
+				<div class="mdl-grid">
+					<div class="mdl-cell mdl-cell--12-col divPedidoInfoStatus">
+						<svg fill="#000000" height="48" viewBox="0 0 24 24" width="48" xmlns="http://www.w3.org/2000/svg"><path d="M0 0h24v24H0z" fill="none"/><path d="M3 12c0 2.21.91 4.2 2.36 5.64L3 20h6v-6l-2.24 2.24C5.68 15.15 5 13.66 5 12c0-2.61 1.67-4.83 4-5.65V4.26C5.55 5.15 3 8.27 3 12zm8 5h2v-2h-2v2zM21 4h-6v6l2.24-2.24C18.32 8.85 19 10.34 19 12c0 2.61-1.67 4.83-4 5.65v2.09c3.45-.89 6-4.01 6-7.74 0-2.21-.91-4.2-2.36-5.64L21 4zm-10 9h2V7h-2v6z"/></svg>
+						<h3 class="h3-msg-status-pedido"></h3>
+						<p class="p-msg-status-pedido">Para visualizar seus pedidos pedentes de sincrozinação, <a href="@Url.Action("PedidosPendentes", "Offline")">clique aqui</a>.</p>
+					</div>
+				</div>
+				<div class="mdl-grid">
+					<div class="div-infos">
+						<div class="mdl-grid">
+							@*<div class="mdl-cell mdl-cell--6-col div-info">
+								<div class="div-icone-info">
+									<i class="material-icons icones-infos">receipt</i>
+								</div>
+								<div class="">
+									Esta compra aparecerá em seu extrato em nome de "Pixel House", gestora do serviço.
+								</div>
+							</div>*@
+							@*<div class="mdl-cell mdl-cell--4-col div-info">
+								<div class="div-icone-info">
+									<i class="material-icons icones-infos">settings_phone</i>
+								</div>
+								<div class="">
+									Para mais informações sobre esta e outras compras entre em contato conosco pelo telefone (21) 2491-6448.
+								</div>
+							</div>*@
+						</div>
+					</div>
+				</div>
+			</div>
+			<!-- /OFFLINE -->
+		</div>
+	</div>
+</section>

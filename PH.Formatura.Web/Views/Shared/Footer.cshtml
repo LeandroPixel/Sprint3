@@ -1,0 +1,31 @@
+﻿<!-- FOOTER -->
+<footer id="footer-principal">
+	<div>
+        &COPY; Copyright @DateTime.Now.Year - PixelHouse 
+        <div id="status_network">
+            <!--
+                <i class="material-icons">signal_cellular_4_bar</i>
+                <i class="material-icons">signal_cellular_off</i>
+
+                <i class="material-icons">signal_wifi_4_bar</i>
+                <i class="material-icons">signal_wifi_off</i>
+
+                <i class="material-icons">cloud_off</i>
+                <i class="material-icons">cloud</i>
+            -->
+            <span id="network_on" class="network_on">
+                <i class="material-icons">signal_wifi_4_bar</i>
+            </span>
+            <div class="mdl-tooltip mdl-tooltip--left" for="network_on">
+                Você está Online
+            </div>
+            <span id="network_off" class="network_off hidden">
+                <i class="material-icons">signal_wifi_off</i>
+            </span>            
+            <div class="mdl-tooltip mdl-tooltip--left" for="network_off">
+                Você está Offline
+            </div>
+        </div>
+	</div>     
+</footer>
+<!-- /FOOTER -->

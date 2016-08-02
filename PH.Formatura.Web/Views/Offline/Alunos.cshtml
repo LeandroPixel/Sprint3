@@ -1,0 +1,99 @@
+﻿@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewBag.Title = HttpContext.Current.Application["Site_Name"] + " | Alunos Offline";
+
+    ViewBag.MinCSS = HttpContext.Current.Application["MIN_CSS"].ToString() == "1" ? ".min" : "";
+    ViewBag.MinJS = HttpContext.Current.Application["MIN_JS"].ToString() == "1" ? ".min" : "";
+    ViewBag.VersaoCSS = HttpContext.Current.Application["VERSAO_CSS"].ToString();
+    ViewBag.VersaoJS = HttpContext.Current.Application["VERSAO_JS"].ToString();
+
+    ViewBag.Breadcrumb = new Dictionary<string, string>();
+    ViewBag.Breadcrumb.Add("Painel Administrativo", "javascript:oOffline.RedirectUrlONorOFF('" + Url.Action("Index", "Painel") + "','" + Url.Action("Painel", "Offline") + "')");
+    ViewBag.Breadcrumb.Add("Alunos Sincronizados", "");    
+
+    PH.Formatura.DTO.User _User = (ViewData["_User"] != null) ? (PH.Formatura.DTO.User)ViewData["_User"] : null;	
+    
+    ViewBag.MenuAcoes = "<a href='javascript:oOffline.Logout()' title='Deslogar' class='ancora-logout'>Sair</a>";
+}
+@section CSSHeader{
+    <link rel="stylesheet" href="~/Content/bootstrap-table-master/src/bootstrap-table@(ViewBag.MinCSS).css?v=@(ViewBag.VersaoCSS)" />
+    <link rel="stylesheet" href="~/Content/css/offline-alunos@(ViewBag.MinCSS).css?v=@(ViewBag.VersaoCSS)" />
+    <link rel="stylesheet" href="~/Content/css/offline-alunos-responsivo@(ViewBag.MinCSS).css?v=@(ViewBag.VersaoCSS)" />
+}
+@section ScriptHeader{
+    <script>
+        var cookie_user_name = "@System.Web.HttpContext.Current.Application["Cookie_User_Offline"].ToString()"; 
+    </script>
+    <script type="text/javascript" src="~/Content/bootstrap-table-master/src/bootstrap-table@(ViewBag.MinJS).js?v=@(ViewBag.VersaoJS)"></script>
+	<script type="text/javascript" src="~/Content/bootstrap-table-master/src/locale/bootstrap-table-pt-BR@(ViewBag.MinJS).js?v=@(ViewBag.VersaoJS)"></script>
+    <script type="text/javascript" src="~/Content/js/aluno-offline@(ViewBag.MinJS).js?v=@(ViewBag.VersaoJS)"></script>   
+}
+<section id="section-principal">
+	<div class="conteudo-geral">                
+		<div class="conteudo-alunos mdl-tabs mdl-js-tabs mdl-js-ripple-effect">
+            <nav class="menu-tipo-pessoa mdl-navigation mdl-tabs__tab-bar">
+				<a href="#div-alunos-list" class="mdl-tabs__tab is-active">Alunos Sincronizados</a>				
+			</nav>
+
+            <div class="mdl-tabs__panel is-active" id="div-alunos-list">
+                <table id="table-alunos-list"					
+					data-locale="pt-BR"					                           					
+					data-sort-order="asc"
+					data-show-refresh="false"
+					data-show-toggle="false"
+					data-show-columns="false"
+					data-search="true"
+					data-pagination="true"
+					data-page-size="5"
+					data-page-list="[5,10,20]"
+                    class="CustomTable">
+					<thead>
+						<tr>
+                            <th data-sortable="false" data-field="AlunoID" data-switchable="false" data-card-visible="false" data-visible="false">AlunoID</th>
+                            <th data-sortable="false" data-field="AlunoTurmaID" data-switchable="false" data-card-visible="false" data-visible="false">AlunoTurmaID</th>                            
+                            <th data-sortable="false" data-field="VendedorID" data-switchable="false" data-card-visible="false" data-visible="false">VendedorID</th>
+                            <th data-sortable="false" data-field="TurmaID" data-switchable="false" data-card-visible="false" data-visible="false">TurmaID</th>
+                            <th data-sortable="false" data-field="StatusIDAgendamento" data-switchable="false" data-card-visible="false" data-visible="false">StatusIDAgendamento</th>                            
+							<th data-sortable="true" data-field="NomeTurma" data-visible="false">Turma</th>
+                            <th data-sortable="true" data-field="CodigoCP7">ID Formando</th>	
+                            <th data-sortable="true" data-field="PIT">PIT</th>                            
+                            <th data-sortable="true" data-field="DtAssociaVendedor" data-formatter="oUtil.FormatDate2">Dt Associa Vend.</th>
+							<th data-sortable="true" data-field="NomeAluno" class="thAluno" data-formatter="oAlunoOffline.BtnDetalhes">ALUNO</th>							
+                            <th data-sortable="true" data-field="TelefoneAluno" data-visible="false">Telefone</th>			
+                            <th data-sortable="true" data-field="EnderecoAluno" data-visible="false">Endereço</th>	
+                            <!--<th data-sortable="true" data-field="DataAgendamento" class="thData">DATA AGENDAMENTO</th>	        
+                            <th data-sortable="true" data-field="StatusAgendamento" class="thStatus">STATUS</th>-->
+                            <th data-sortable="true" data-field="QtdFotosAcervo">Qtd Fotos Acervo</th>
+                            <th data-sortable="true" data-field="QtdFotos" class="thQtd">QTD. FOTOS</th>	   
+                            <th data-sortable="true" data-field="AlbumID_Cript" data-switchable="false" data-card-visible="false" data-formatter="oAlunoOffline.BtnVisualizarFotos">Projetos</th>                            
+                            <th data-switchable="false" data-card-visible="false" data-formatter="oAlunoOffline.BtnRemoverAluno" class="thRemover">REMOVER ALUNO</th>
+						</tr>
+					</thead>
+				</table>
+            </div>
+        </div>        
+    </div>
+</section>
+
+<!-- MODAL -->
+<div id="div-remove-usuario" class="modal fade" role="dialog">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal">&times;</button>
+				<h4 class="modal-title"><i class="material-icons ico-warning">warning</i> Atenção</h4>
+			</div>
+			<div class="modal-body">				                
+                <p>Ao remover o aluno sincronizado <strong>não vai ser possível</strong> acessar os dados desse aluno offline.</p>
+                <p>Deseja remover o aluno sincronizado mesmo assim?</p>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+				<button type="button" class="btn btn-default btn-ok" data-dismiss="modal">Remover</button>				
+			</div>
+		</div>
+	</div>
+</div>
+<!-- /MODAL -->
+
+

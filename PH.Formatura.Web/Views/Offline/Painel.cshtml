@@ -1,0 +1,46 @@
+﻿@{
+	Layout = "~/Views/Shared/_Layout.cshtml";
+	ViewBag.Title = HttpContext.Current.Application["Site_Name"] + " | Painel";
+	ViewBag.MinCSS = HttpContext.Current.Application["MIN_CSS"].ToString() == "1" ? ".min" : "";
+	ViewBag.MinJS = HttpContext.Current.Application["MIN_JS"].ToString() == "1" ? ".min" : "";
+	ViewBag.VersaoCSS = HttpContext.Current.Application["VERSAO_CSS"].ToString();
+	ViewBag.VersaoJS = HttpContext.Current.Application["VERSAO_JS"].ToString();	
+
+	ViewBag.Breadcrumb = new Dictionary<string, string>();
+	ViewBag.Breadcrumb.Add("Painel Administrativo", "");
+    
+    ViewBag.MenuAcoes = "<a href='javascript:oOffline.Logout()' title='Deslogar' class='ancora-logout'>Sair</a>";
+}
+@section CSSHeader{
+	<link rel="stylesheet" href="~/Content/css/painel@(ViewBag.MinCSS).css?v=@(ViewBag.VersaoCSS)" />
+}
+@section ScriptHeader{
+    <script>
+        var cookie_user_name = "@System.Web.HttpContext.Current.Application["Cookie_User_Offline"].ToString()"; 
+        oOffline.verifyAcesso();
+	    jQuery(document).ready(function () {
+             
+	    });
+    </script>
+	<script type="text/javascript" src="~/Content/js/painel-offline@(ViewBag.MinJS).js?v=@(ViewBag.VersaoJS)"></script>
+}
+<section id="section-principal">
+	<div class="conteudo-geral">
+		<div class="conteudo-painel">
+			<ul class="lista-acoes">
+				<li class="item-alunos-sincronizados">
+					<a href="~/Offline/Alunos" title="Lista os alunos sincronizados neste dispositivo" class="">
+						<h2>Alunos sincronizados</h2>
+						<h3>Lista os alunos sincronizados neste dispositivo</h3>
+					</a>
+				</li>
+				<li class="item-pedidos-pendentes">
+					<a href="@Url.Action("PedidosPendentes","Offline")" title="Lista de pedidos pendentes de sincronização" class="">
+						<h2>Pedidos pendentes</h2>
+						<h3>Lista de pedidos pendentes de sincronização</h3>
+					</a>
+				</li>
+			</ul>
+		</div>
+	</div>
+</section>

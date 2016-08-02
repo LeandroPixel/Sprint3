@@ -1,0 +1,80 @@
+﻿@{
+	Layout = "~/Views/Shared/_Layout.cshtml";
+	ViewBag.Title = HttpContext.Current.Application["Site_Name"] + " | Extrato";
+	ViewBag.MinCSS = HttpContext.Current.Application["MIN_CSS"].ToString() == "1" ? ".min" : "";
+	ViewBag.MinJS = HttpContext.Current.Application["MIN_JS"].ToString() == "1" ? ".min" : "";
+	ViewBag.VersaoCSS = HttpContext.Current.Application["VERSAO_CSS"].ToString();
+	ViewBag.VersaoJS = HttpContext.Current.Application["VERSAO_JS"].ToString();
+
+	var ModeloDadosExtrato = (List<PH.Formatura.DTO.ExtratoPedidoPagamento>)Model;
+
+	ViewBag.Breadcrumb = new Dictionary<string, string>();
+	ViewBag.Breadcrumb.Add("Painel Administrativo", Url.Action("Index"));
+	ViewBag.Breadcrumb.Add("Extrato", "");
+}
+@section CSSHeader{
+	<link rel="stylesheet" href="~/Content/css/extrato@(ViewBag.MinCSS).css?v=@(ViewBag.VersaoCSS)" />
+}
+@section ScriptHeader{
+	<script type="text/javascript" src="~/Content/js/extrato@(ViewBag.MinJS).js?v=@(ViewBag.VersaoJS)"></script>
+	<script type="text/javascript">var ModeloDadosExtrato = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(ModeloDadosExtrato))</script>
+}
+
+<section id="section-principal">
+	<div class="conteudo-geral">
+		<div class="conteudo-extrato">
+			<table class="tabela-padrao table-extrato">
+				<thead>
+					<tr>
+					@{
+						if (ModeloDadosExtrato.Count == 0)
+						{
+							<th style="text-align: center;">
+								<span>Nenhum dado encontrado</span>
+							</th>
+						}
+						else
+						{
+							<th>Data</th>
+							<th>Descrição</th>
+							<th>Valor</th>
+						}
+					}
+					</tr>
+				</thead>
+				<tbody>
+					@{
+						decimal Total = 0.00M;
+						int i = 0;
+						foreach (var item in ModeloDadosExtrato)
+						{
+							i++;
+							Total += item.Valor;
+							<tr>
+								<td>
+									@item.Data.ToString("dd/MM/yyyy HH:mm")
+								</td>
+								<td>
+									@item.Descricao
+								</td>
+								<td @(item.Valor < 0 ? "class=negativo" : "")>
+									@item.Valor.ToString("C", System.Globalization.CultureInfo.CreateSpecificCulture("pt-BR"))
+								</td>
+							</tr>
+							if (ModeloDadosExtrato.Count == i)
+							{
+								<tr>
+									<td><span style="font-weight: bold;">@DateTime.Now.ToString("dd/MM/yyyy HH:mm")</span></td>
+									<td><span style="font-weight: bold;">Saldo</span></td>
+									<td><span style="font-weight: bold;">@Total.ToString("C", System.Globalization.CultureInfo.CreateSpecificCulture("pt-BR"))</span></td>
+								</tr>
+							}
+						}
+					}
+				</tbody>
+				<tfoot>
+				</tfoot>
+			</table>
+		</div>
+	</div>
+</section>
